@@ -1,0 +1,639 @@
+// Definição das variáveis de cor para fácil customização
+$research-color: #4f46e5; // Azul
+$strategy-color: #7c3aed; // Roxo
+$design-color: #60a5fa; // Azul Claro
+
+.feature-section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.tabs-container {
+  min-height: 35vh;
+  display: flex;
+  color: white;
+  position: relative;
+  z-index: 10;
+
+  .tab-item {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: flex 0.4s ease-in-out, filter 0.3s ease;
+
+    h3 {
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      opacity: 0.7;
+      transition: opacity 0.4s ease;
+    }
+
+    .arrow {
+      font-size: 2rem;
+      position: absolute;
+      bottom: 0rem;
+      left: 2rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    // Aplica a cor de fundo com base na classe
+    &.research {
+      background-color: $research-color;
+    }
+    &.strategy {
+      background-color: $strategy-color;
+    }
+    &.design {
+      background-color: $design-color;
+    }
+
+    // Efeito de hover e quando a aba está ativa
+    &:hover,
+    &.active {
+      flex: 1.5; // Expande a aba
+      filter: brightness(1.1); // Deixa um pouco mais claro
+
+      p {
+        opacity: 1;
+      }
+      .arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+}
+
+.content-display {
+  flex: 1;
+  background-color: #ffffff;
+  position: relative;
+  z-index: 5;
+  padding: 2rem 0;
+
+  .container-fluid {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .content-pane {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .card {
+    border: none;
+    background-color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    img {
+      aspect-ratio: 4 / 3;
+      object-fit: contain;
+      padding: 1rem;
+    }
+    .card-body {
+      padding-top: 0;
+    }
+    .card-title {
+      font-size: 1rem;
+    }
+    .card-text {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Animação de fade-in para o conteúdo
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsividade para telas menores
+@media (max-width: 991.98px) {
+  .feature-section {
+    min-height: auto;
+  }
+
+  .tabs-container {
+    min-height: auto;
+    flex-direction: column;
+
+    .tab-item {
+      min-height: 15vh;
+      padding: 1.5rem;
+
+      &:hover,
+      &.active {
+        flex: 1; // Desativa a expansão no mobile
+      }
+
+      p {
+        display: none; // Esconde descrição em mobile
+      }
+    }
+  }
+
+  .content-display {
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs-container {
+    .tab-item {
+      min-height: 12vh;
+      padding: 1rem;
+
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .content-display {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Estilo para a seção principal */
+.main-section {
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .main-section {
+    flex-direction: row;
+    min-height: 60vh;
+  }
+}
+
+/* Menu Lateral (Desktop) */
+.sidebar {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-right: 1px solid #dee2e6;
+  min-height: 60vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar h2 {
+  font-weight: 700;
+  color: #4a00e0; /* Roxo vibrante */
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar .subtitle {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #6c757d;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+
+.nav-pills .nav-link {
+  color: #495057;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-pills .nav-link:hover {
+  background-color: #e9ecef;
+  color: #000;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #8e2de2; /* Gradiente roxo */
+  background: linear-gradient(45deg, #8e2de2, #4a00e0);
+  color: white;
+  box-shadow: 0 4px 15px rgba(74, 0, 224, 0.3);
+}
+
+/* Área de Conteúdo */
+.content-area {
+  flex-grow: 1;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  min-height: 60vh;
+}
+
+.content-section {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos específicos para cada conteúdo */
+.content-section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.parallax-section {
+  background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop");
+  min-height: 400px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  color: white;
+}
+.parallax-section.parallax-drone {
+  background-image: url("https://images.unsplash.com/photo-1507582020474-3a439b26abc3?q=80&w=1974&auto=format&fit=crop");
+}
+
+.parallax-section h3 {
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* AR Parallax Container Styles */
+.ar-parallax-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  cursor: none; /* Hide cursor for better AR experience */
+}
+
+.ar-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.1s ease-out;
+}
+
+.ar-room {
+  z-index: 1;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.ar-hand {
+  z-index: 2;
+  pointer-events: none;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: right center;
+  }
+}
+
+.ar-sofa {
+  z-index: 3;
+  pointer-events: none;
+  width: auto;
+  height: auto;
+  
+  img {
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ar-parallax-container {
+    height: 300px;
+  }
+  
+  .ar-sofa img {
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ar-parallax-container {
+    height: 250px;
+  }
+  
+  .ar-sofa img {
+    width: 120px;
+  }
+}
+
+/* Navbar para Mobile */
+.navbar-mobile {
+  background: linear-gradient(45deg, #8e2de2, #4a00e0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1030; /* Garante que fique sobre o conteúdo */
+}
+.navbar-mobile .navbar-brand,
+.navbar-mobile .navbar-toggler-icon {
+  color: white;
+}
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Offcanvas Menu (Mobile) */
+.offcanvas {
+  background-color: #ffffff;
+}
+.offcanvas-header {
+  border-bottom: 1px solid #dee2e6;
+}
+.offcanvas-title {
+  color: #4a00e0;
+  font-weight: 700;
+}
+
+/* Estilo para a seção principal */
+.main-section {
+  // margin-top: 500px; //media query pra remover em mobile, e tablet reduzir mais precisa
+  height: 1500px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row; /* Mantém a direção de linha como padrão */
+}
+
+/* Menu Horizontal (Mobile) */
+.mobile-nav-container {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+}
+
+.mobile-nav-container .mobile-title {
+  font-weight: 700;
+  color: #4a00e0;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.mobile-nav-container .nav-pills {
+  justify-content: center; /* Centraliza os itens do menu */
+}
+
+.mobile-nav-container .nav-item {
+  margin: 0.25rem;
+}
+
+.mobile-nav-container .nav-link {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+/* Menu Lateral (Desktop) */
+.sidebar {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-right: 1px solid #dee2e6;
+  min-height: 60vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar h2 {
+  font-weight: 700;
+  color: #4a00e0; /* Roxo vibrante */
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar .subtitle {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #6c757d;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+
+.nav-pills .nav-link {
+  color: #495057;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-pills .nav-link:hover {
+  background-color: #e9ecef;
+  color: #000;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #8e2de2; /* Gradiente roxo */
+  background: linear-gradient(45deg, #8e2de2, #4a00e0);
+  color: white;
+  box-shadow: 0 4px 15px rgba(74, 0, 224, 0.3);
+}
+
+/* Área de Conteúdo */
+.content-area {
+  flex-grow: 1;
+  padding: 1rem; /* Padding ajustado para mobile */
+  background-color: #f8f9fa;
+}
+
+@media (min-width: 768px) {
+  .content-area {
+    padding: 2rem; /* Restaura o padding para desktop */
+  }
+}
+
+@media (max-width: 767px) {
+  .content-area {
+    padding: 1rem;
+    min-height: auto;
+  }
+
+  .mobile-nav-container {
+    margin-bottom: 1rem;
+  }
+}
+
+.content-section {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos específicos para cada conteúdo */
+.content-section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.parallax-section {
+  background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop");
+  min-height: 400px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  color: white;
+}
+.parallax-section.parallax-drone {
+  background-image: url("https://images.unsplash.com/photo-1507582020474-3a439b26abc3?q=80&w=1974&auto=format&fit=crop");
+}
+
+.parallax-section h3 {
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* AR Parallax Container Styles */
+.ar-parallax-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  cursor: none; /* Hide cursor for better AR experience */
+}
+
+.ar-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.1s ease-out;
+}
+
+.ar-room {
+  z-index: 1;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.ar-hand {
+  z-index: 2;
+  pointer-events: none;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: right center;
+  }
+}
+
+.ar-sofa {
+  z-index: 3;
+  pointer-events: none;
+  width: auto;
+  height: auto;
+  
+  img {
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ar-parallax-container {
+    height: 300px;
+  }
+  
+  .ar-sofa img {
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ar-parallax-container {
+    height: 250px;
+  }
+  
+  .ar-sofa img {
+    width: 120px;
+  }
+}

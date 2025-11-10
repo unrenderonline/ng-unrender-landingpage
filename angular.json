@@ -24,10 +24,10 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/ng-unrender-landing-page",
+            "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -37,8 +37,11 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
-            ]
+              "src/styles.scss",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-routing-machine/dist/leaflet-routing-machine.css"
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -82,10 +85,7 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -101,5 +101,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

@@ -1,0 +1,105 @@
+<nav
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  [ngClass]="{ 'bg-white shadow-lg': isScrolled, 'bg-transparent': !isScrolled }"
+>
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a class="flex items-center space-x-2 text-xl font-bold" routerLink="/inicio"
+        [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }">
+        <img
+          class="w-10 h-10 object-contain"
+          src="unrender-logo-small.png"
+          alt="Unrender Logo"
+        />
+        <span>UNRENDER</span>
+      </a>
+
+      <button
+        class="lg:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
+        type="button"
+        (click)="toggleMobileMenu()"
+        aria-label="Toggle navigation"
+      >
+        <svg class="w-6 h-6" [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <div
+        class="hidden lg:flex lg:items-center lg:space-x-8"
+      >
+        <ul class="flex space-x-8">
+          <li>
+            <a class="transition-colors hover:text-unrender-accent"
+               [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }"
+               routerLink="/inicio">Início</a>
+          </li>
+          <li>
+            <a class="transition-colors hover:text-unrender-accent"
+               [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }"
+               routerLink="/inicio" fragment="sistemas">Sistemas</a>
+          </li>
+          <li>
+            <a class="transition-colors hover:text-unrender-accent"
+               [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }"
+               routerLink="/inicio" fragment="serviços">Serviços</a>
+          </li>
+          <li>
+            <a class="transition-colors hover:text-unrender-accent"
+               [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }"
+               routerLink="/ecossistema ">Ecossistema</a>
+          </li>
+          <li>
+            <a class="transition-colors hover:text-unrender-accent"
+               [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }"
+               routerLink="/sobre">Sobre</a>
+          </li>
+          <li>
+            <a class="transition-colors hover:text-unrender-accent"
+               [ngClass]="{ 'text-gray-900': isScrolled, 'text-white': !isScrolled }"
+               routerLink="/inicio" fragment="contato">Contato</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div
+      class="lg:hidden overflow-hidden transition-all duration-300"
+      [ngClass]="{ 'max-h-96': isMobileMenuOpen, 'max-h-0': !isMobileMenuOpen }"
+    >
+      <ul class="py-4 space-y-2">
+        <li>
+          <a class="block px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+             [ngClass]="{ 'text-gray-900': isScrolled, 'text-white hover:bg-white/10': !isScrolled }"
+             routerLink="/inicio" (click)="closeMobileMenu()">Início</a>
+        </li>
+        <li>
+          <a class="block px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+             [ngClass]="{ 'text-gray-900': isScrolled, 'text-white hover:bg-white/10': !isScrolled }"
+             routerLink="/inicio" fragment="sistemas" (click)="closeMobileMenu()">Sistemas</a>
+        </li>
+        <li>
+          <a class="block px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+             [ngClass]="{ 'text-gray-900': isScrolled, 'text-white hover:bg-white/10': !isScrolled }"
+             routerLink="/inicio" fragment="serviços" (click)="closeMobileMenu()">Serviços</a>
+        </li>
+        <li>
+          <a class="block px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+             [ngClass]="{ 'text-gray-900': isScrolled, 'text-white hover:bg-white/10': !isScrolled }"
+             routerLink="/ecossistema " (click)="closeMobileMenu()">Ecossistema</a>
+        </li>
+        <li>
+          <a class="block px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+             [ngClass]="{ 'text-gray-900': isScrolled, 'text-white hover:bg-white/10': !isScrolled }"
+             routerLink="/sobre" (click)="closeMobileMenu()">Sobre</a>
+        </li>
+        <li>
+          <a class="block px-4 py-2 rounded-md transition-colors hover:bg-gray-100"
+             [ngClass]="{ 'text-gray-900': isScrolled, 'text-white hover:bg-white/10': !isScrolled }"
+             routerLink="/inicio" fragment="contato" (click)="closeMobileMenu()">Contato</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

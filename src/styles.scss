@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globais para a aplicação */
+body {
+  font-family: Montserrat, Roboto, Inter, sans-serif;
+  background-color: #f8f9fa; /* Um cinza claro para o fundo geral */
+  overflow-x: hidden;
+}
+
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Prevent horizontal scroll on all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  max-width: 100vw;
+}
+
+/* Estilo para a seção do herói (cubo 3D) */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  // Fundo roxo espacial bem escuro
+  background-color: #0a0311;
+  overflow: hidden;
+}
+
+
+/* Estilo para a seção de conteúdo (cards) */
+.content-section {
+  background-color: #ffffff;
+  padding: 6rem 0;
+}

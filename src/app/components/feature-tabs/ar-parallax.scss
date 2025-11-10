@@ -1,0 +1,154 @@
+/* AR Parallax Override Styles */
+.ar-parallax-container {
+  height: 600px !important; /* Increased height to show full room */
+  padding: 0 !important; /* Remove any padding */
+  margin: 0 !important; /* Remove any margin */
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ar-room {
+  z-index: 1;
+  position: relative !important;
+  width: 585px !important; /* Fixed square size for room */
+  height: 585px !important; /* Fixed square size for room */
+
+  img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; /* Maintain aspect ratio */
+    object-position: center !important;
+    border-radius: 0 !important; /* Remove any rounded borders */
+    filter: none !important; /* Remove any filters/backdrops */
+    background: none !important; /* Remove any background */
+  }
+}
+
+.ar-hand {
+  z-index: 3; /* Higher z-index to appear above sofa */
+  position: absolute !important;
+  left: 400px !important; /* Position at 400x450 from room origin (as placed in image editing) */
+  top: 450px !important;
+  width: auto !important;
+  height: auto !important;
+
+  img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    border-radius: 0 !important; /* Remove any rounded borders */
+    filter: none !important; /* Remove any filters/backdrops */
+    background: none !important; /* Remove any background */
+  }
+}
+
+.ar-sofa {
+  z-index: 2; /* Lower z-index to appear below hand */
+  position: absolute !important;
+  left: 377px !important; /* Position at 377x420 from room origin (as placed in image editing) */
+  top: 420px !important;
+  width: auto !important;
+  height: auto !important;
+
+  img {
+    width: auto !important; /* Let image maintain its natural size */
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 0 !important; /* Remove any rounded borders */
+    filter: none !important; /* Remove any filters/backdrops */
+    background: none !important; /* Remove any background */
+  }
+}
+
+/* Remove any Ionic or Bootstrap image classes */
+.ar-parallax-container img,
+.ar-layer img,
+.room-bg,
+.hand-phone,
+.sofa-3d {
+  border-radius: 0 !important;
+  filter: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Specific overrides for each image */
+.room-bg {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.hand-phone {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: right center !important;
+}
+
+.sofa-3d {
+  width: 350px !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* Override any card or container styles */
+.ar-parallax-container {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+@media (max-width: 768px) {
+  .ar-parallax-container {
+    height: 400px !important;
+  }
+
+  .ar-room {
+    width: 400px !important; /* Scale down proportionally */
+    height: 400px !important;
+  }
+
+  /* Scale positions proportionally: 400/585 = 0.684 */
+  .ar-hand {
+    left: 274px !important; /* 400 * 0.684 */
+    top: 308px !important; /* 450 * 0.684 */
+  }
+
+  .ar-sofa {
+    left: 258px !important; /* 377 * 0.684 */
+    top: 287px !important; /* 420 * 0.684 */
+  }
+}
+
+@media (max-width: 480px) {
+  .ar-parallax-container {
+    height: 300px !important;
+  }
+
+  .ar-room {
+    width: 300px !important; /* Scale down further for small mobile */
+    height: 300px !important;
+  }
+
+  /* Scale positions proportionally: 300/585 = 0.513 */
+  .ar-hand {
+    left: 205px !important; /* 400 * 0.513 */
+    top: 231px !important; /* 450 * 0.513 */
+  }
+
+  .ar-sofa {
+    left: 193px !important; /* 377 * 0.513 */
+    top: 215px !important; /* 420 * 0.513 */
+  }
+}

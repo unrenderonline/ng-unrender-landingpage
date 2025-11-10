@@ -1,0 +1,58 @@
+#map {
+  height: 250px;
+  width: 100%;
+  border: 1px solid #555; /* Darker border for the dark theme */
+  background-color: #1a1a1a; /* Placeholder color while map loads */
+}
+
+.leaflet-routing-container {
+  display: none !important;
+}
+.center-on-mobile {
+  text-align: center;
+  justify-items: center;
+}
+/* On medium screens and smaller (tablets/phones), center the "Fale Conosco" content. */
+@media (max-width: 991.98px) {
+  .center-on-mobile {
+    text-align: center;
+  }
+  .center-on-mobile .d-flex {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+
+.hover-grow {
+  transition: transform 0.3s ease-in-out;
+  transform-origin: center;
+}
+
+.hover-grow:hover {
+  transform: scale(1.1);
+}
+
+
+
+host ::ng-deep .leaflet-routing-container {
+  background-color: #ffffff;
+  color: #333333!important; /* Sets a dark color for all text inside */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+:host ::ng-deep .leaflet-routing-alt h2,
+:host ::ng-deep .leaflet-routing-alt h3 {
+  color: #333333!important; /* Ensures headings are also dark */
+}
+
+:host ::ng-deep .leaflet-routing-instruction {
+  color: #444444!important; /* Slightly lighter color for instruction text */
+}
+
+:host ::ng-deep .leaflet-routing-icon {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+}

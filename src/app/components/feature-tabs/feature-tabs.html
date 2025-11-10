@@ -1,0 +1,498 @@
+<section class="feature-section">
+  <!-- Parte Superior com as Abas Coloridas -->
+  <div class="tabs-container flex flex-col md:flex-row">
+    <div
+      class="tab-item research cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
+      [class.active]="activeTab === 'research'"
+      (click)="selectTab('research')"
+    >
+      <h3 class="text-2xl font-bold mb-3">Desenvolvimento de Software</h3>
+      <p class="text-base">
+        Transformamos suas ideias em realidade digital, desde aplicativos e
+        sistemas web até soluções complexas com IA.
+      </p>
+      <div class="arrow text-3xl mt-4">&#x2192;</div>
+    </div>
+    <div
+      class="tab-item strategy cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
+      [class.active]="activeTab === 'strategy'"
+      (click)="selectTab('strategy')"
+    >
+      <h3 class="text-2xl font-bold mb-3">Infraestrutura On-Premise</h3>
+      <p class="text-base">
+        Garantimos o controle e a segurança dos seus dados com servidores
+        locais, planejados e mantidos por nossa equipe.
+      </p>
+      <div class="arrow text-3xl mt-4">&#x2192;</div>
+    </div>
+    <div
+      class="tab-item design cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
+      [class.active]="activeTab === 'design'"
+      (click)="selectTab('design')"
+    >
+      <h3 class="text-2xl font-bold mb-3">Soluções 3D e Games</h3>
+      <p class="text-base">
+        Criamos experiências imersivas com desenvolvimento de games, maquetes
+        virtuais, showrooms e muito mais.
+      </p>
+      <div class="arrow text-3xl mt-4">&#x2192;</div>
+    </div>
+  </div>
+
+  <!-- Parte Inferior com o Conteúdo das Abas -->
+  <div class="content-display">
+    <div class="w-full px-4">
+      <!-- Nova sintaxe de controle de fluxo @switch -->
+      @switch (activeTab) { @case ('research') {
+      <div class="content-pane active">
+        <!-- Menu Horizontal para Mobile (escondido em desktop) -->
+        <div class="mobile-nav-container md:hidden">
+          <h2 class="mobile-title text-2xl font-bold mb-4">Soluções</h2>
+          <ul class="flex flex-row flex-wrap gap-2">
+            @for (item of developmentMenuItems; track item.id) {
+            <li>
+              <a
+                class="inline-block px-4 py-2 rounded-md transition-colors cursor-pointer"
+                [class.bg-blue-600]="item.id === selectedDevelopmentItem.id"
+                [class.text-white]="item.id === selectedDevelopmentItem.id"
+                [class.bg-gray-200]="item.id !== selectedDevelopmentItem.id"
+                (click)="selectDevelopmentContent(item)"
+              >
+                {{ item.title }}
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 main-section">
+          <!-- Menu Lateral (visível em desktop) -->
+          <aside class="col-md-3 d-none d-md-block sidebar">
+            <h2>Soluções</h2>
+            <p class="subtitle">Desenvolvimento de Software</p>
+            <ul class="nav nav-pills flex-column">
+              @for (item of developmentMenuItems; track item.id) {
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [class.active]="item.id === selectedDevelopmentItem.id"
+                  (click)="selectDevelopmentContent(item)"
+                >
+                  {{ item.title }}
+                </a>
+              </li>
+              }
+            </ul>
+          </aside>
+
+          <!-- Área de Conteúdo Dinâmico -->
+          <main class="col-md-9 content-area">
+            @switch (selectedDevelopmentItem.id) { @case ('web-mobile') {
+            <div class="content-section active">
+              <h3>{{ selectedDevelopmentItem.title }}</h3>
+              <p class="lead">{{ selectedDevelopmentItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="card text-center h-100">
+                    <img
+                      src="webdev.jpg"
+                      class="card-img-top p-4"
+                      alt="Aplicações Web e Mobile"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Aplicações Web e Mobile</h5>
+                      <p class="card-text">
+                        Criamos landing pages, e-commerces, aplicativos e sistemas web
+                        responsivos, focados na experiência do usuário e na conversão.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card text-center h-100">
+                    <img
+                      src="mvp-dev.jpg"
+                      class="card-img-top p-4"
+                      alt="Sistemas Sob Medida e MVPs"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Sistemas Sob Medida e MVPs</h5>
+                      <p class="card-text">
+                        Desenvolvemos softwares desktop e web customizados para
+                        otimizar seus processos. Lançamos seu MVP (Produto Mínimo
+                        Viável) no mercado.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } @case ('ai-solutions') {
+            <div class="content-section active">
+              <h3>{{ selectedDevelopmentItem.title }}</h3>
+              <p class="lead">{{ selectedDevelopmentItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-12">
+                  <div class="card text-center h-100">
+                    <img
+                      src="aiot.jpg"
+                      class="card-img-top p-4"
+                      alt="Soluções de Ponta com IA"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Soluções de Ponta com IA</h5>
+                      <p class="card-text">
+                        Projetamos softwares avançados para controle remoto de
+                        máquinas, veículos autônomos e outras aplicações que utilizam
+                        Inteligência Artificial.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } @default {
+            <div class="content-section active">
+              <h3>{{ selectedDevelopmentItem.title }}</h3>
+              <p class="lead">{{ selectedDevelopmentItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-4">
+                  <div class="card text-center h-100">
+                    <img
+                      src="webdev.jpg"
+                      class="card-img-top p-4"
+                      alt="Aplicações Web e Mobile"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Aplicações Web e Mobile</h5>
+                      <p class="card-text">
+                        Criamos landing pages, e-commerces, aplicativos e sistemas web
+                        responsivos, focados na experiência do usuário e na conversão.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card text-center h-100">
+                    <img
+                      src="mvp-dev.jpg"
+                      class="card-img-top p-4"
+                      alt="Sistemas Sob Medida e MVPs"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Sistemas Sob Medida e MVPs</h5>
+                      <p class="card-text">
+                        Desenvolvemos softwares desktop e web customizados para
+                        otimizar seus processos. Lançamos seu MVP (Produto Mínimo
+                        Viável) no mercado.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card text-center h-100">
+                    <img
+                      src="aiot.jpg"
+                      class="card-img-top p-4"
+                      alt="Soluções de Ponta com IA"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Soluções de Ponta com IA</h5>
+                      <p class="card-text">
+                        Projetamos softwares avançados para controle remoto de
+                        máquinas, veículos autônomos e outras aplicações que utilizam
+                        Inteligência Artificial.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } }
+          </main>
+        </div>
+      </div>
+      } @case ('strategy') {
+      <div class="content-pane active">
+        <!-- Menu Horizontal para Mobile (escondido em desktop) -->
+        <div class="mobile-nav-container d-md-none">
+          <h2 class="mobile-title">Soluções</h2>
+          <ul class="nav nav-pills flex-row flex-wrap">
+            @for (item of infrastructureMenuItems; track item.id) {
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                [class.active]="item.id === selectedInfrastructureItem.id"
+                (click)="selectInfrastructureContent(item)"
+              >
+                {{ item.title }}
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+
+        <div class="row main-section">
+          <!-- Menu Lateral (visível em desktop) -->
+          <aside class="col-md-3 d-none d-md-block sidebar">
+            <h2>Soluções</h2>
+            <p class="subtitle">Infraestrutura On-Premise</p>
+            <ul class="nav nav-pills flex-column">
+              @for (item of infrastructureMenuItems; track item.id) {
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [class.active]="item.id === selectedInfrastructureItem.id"
+                  (click)="selectInfrastructureContent(item)"
+                >
+                  {{ item.title }}
+                </a>
+              </li>
+              }
+            </ul>
+          </aside>
+
+          <!-- Área de Conteúdo Dinâmico -->
+          <main class="col-md-9 content-area">
+            @switch (selectedInfrastructureItem.id) { @case ('planning') {
+            <div class="content-section active">
+              <h3>{{ selectedInfrastructureItem.title }}</h3>
+              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-12">
+                  <div class="card text-center h-100">
+                    <img
+                      src="consulting.jpg"
+                      class="card-img-top p-4"
+                      alt="Planejamento de Servidores"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Planejamento de Servidores</h5>
+                      <p class="card-text">
+                        Analisamos suas necessidades e levantamos os recursos de
+                        hardware e software para montar servidores robustos e seguros
+                        em seu local.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } @case ('implementation') {
+            <div class="content-section active">
+              <h3>{{ selectedInfrastructureItem.title }}</h3>
+              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-12">
+                  <div class="card text-center h-100">
+                    <img
+                      src="server.jpg"
+                      class="card-img-top p-4"
+                      alt="Implementação e Deploy"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Implementação e Deploy</h5>
+                      <p class="card-text">
+                        Cuidamos de toda a instalação, configuração e deploy dos seus
+                        softwares, garantindo que tudo funcione perfeitamente desde o
+                        início.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } @case ('maintenance') {
+            <div class="content-section active">
+              <h3>{{ selectedInfrastructureItem.title }}</h3>
+              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-12">
+                  <div class="card text-center h-100">
+                    <img
+                      src="support.jpg"
+                      class="card-img-top p-4"
+                      alt="Manutenção e Suporte"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Manutenção e Suporte</h5>
+                      <p class="card-text">
+                        Oferecemos contratos de manutenção e suporte contínuo para
+                        garantir a estabilidade, segurança e atualização da sua
+                        infraestrutura.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } @default {
+            <div class="content-section active">
+              <h3>{{ selectedInfrastructureItem.title }}</h3>
+              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
+              <div class="row g-4">
+                <div class="col-md-4">
+                  <div class="card text-center h-100">
+                    <img
+                      src="consulting.jpg"
+                      class="card-img-top p-4"
+                      alt="Planejamento de Servidores"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Planejamento de Servidores</h5>
+                      <p class="card-text">
+                        Analisamos suas necessidades e levantamos os recursos de
+                        hardware e software para montar servidores robustos e seguros
+                        em seu local.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card text-center h-100">
+                    <img
+                      src="server.jpg"
+                      class="card-img-top p-4"
+                      alt="Implementação e Deploy"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Implementação e Deploy</h5>
+                      <p class="card-text">
+                        Cuidamos de toda a instalação, configuração e deploy dos seus
+                        softwares, garantindo que tudo funcione perfeitamente desde o
+                        início.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card text-center h-100">
+                    <img
+                      src="support.jpg"
+                      class="card-img-top p-4"
+                      alt="Manutenção e Suporte"
+                    />
+                    <div class="card-body">
+                      <h5 class="card-title">Manutenção e Suporte</h5>
+                      <p class="card-text">
+                        Oferecemos contratos de manutenção e suporte contínuo para
+                        garantir a estabilidade, segurança e atualização da sua
+                        infraestrutura.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            } }
+          </main>
+        </div>
+      </div>
+      } @case ('design') {
+      <div class="content-pane active">
+        <!-- Menu Horizontal para Mobile (escondido em desktop) -->
+        <div class="mobile-nav-container d-md-none">
+          <h2 class="mobile-title">Soluções</h2>
+          <ul class="nav nav-pills flex-row flex-wrap">
+            @for (item of designMenuItems; track item.id) {
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                [class.active]="item.id === selectedDesignItem.id"
+                (click)="selectDesignContent(item)"
+              >
+                {{ item.title }}
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+
+        <div class="row main-section">
+          <!-- Menu Lateral (visível em desktop) -->
+          <aside class="col-md-3 d-none d-md-block sidebar">
+            <h2>Soluções</h2>
+            <p class="subtitle">Tecnologia e Inovação</p>
+            <ul class="nav nav-pills flex-column">
+              @for (item of designMenuItems; track item.id) {
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [class.active]="item.id === selectedDesignItem.id"
+                  (click)="selectDesignContent(item)"
+                >
+                  {{ item.title }}
+                </a>
+              </li>
+              }
+            </ul>
+          </aside>
+
+          <!-- Área de Conteúdo Dinâmico -->
+          <main class="col-md-9 content-area">
+            @switch (selectedDesignItem.id) { @case ('3d-modeling') {
+            <div class="content-section active">
+              <h3>{{ selectedDesignItem.title }}</h3>
+              <p class="lead">{{ selectedDesignItem.description }}</p>
+            </div>
+            } @case ('virtual-reality') {
+            <div class="content-section active">
+              <h3>{{ selectedDesignItem.title }}</h3>
+              <p class="lead">{{ selectedDesignItem.description }}</p>
+              <div class="parallax-section mt-3">
+                <h3>{{ selectedDesignItem.parallaxTitle }}</h3>
+              </div>
+            </div>
+            } @case ('augmented-reality') {
+            <div class="content-section active">
+              <h3>{{ selectedDesignItem.title }}</h3>
+              <p class="lead">{{ selectedDesignItem.description }}</p>
+              <div class="ar-parallax-container"
+                   (mousemove)="onMouseMove($event)"
+                   (touchmove)="onTouchMove($event)">
+                <!-- Base layer: Room background -->
+                <div class="ar-layer ar-room">
+                  <img src="room-alone.png" alt="Room background" class="room-bg" />
+                </div>
+                <!-- Second layer: Hand with phone -->
+                <div class="ar-layer ar-hand"
+                     [style.transform]="handTransform"
+                     [style.left.px]="handPosition.x"
+                     [style.top.px]="handPosition.y">
+                  <img src="hand-alone.png" alt="Hand holding phone" class="hand-phone" />
+                </div>
+                <!-- Third layer: Sofa -->
+                <div class="ar-layer ar-sofa"
+                     [style.transform]="sofaTransform"
+                     [style.left.px]="sofaPosition.x"
+                     [style.top.px]="sofaPosition.y">
+                  <img src="sofa-alone-small.png" alt="Sofa" class="sofa-3d" />
+                </div>
+              </div>
+            </div>
+            } @case ('productions') {
+            <div class="content-section active">
+              <h3>{{ selectedDesignItem.title }}</h3>
+              <p class="lead">{{ selectedDesignItem.description }}</p>
+              <div class="parallax-section mt-3 parallax-drone">
+                <h3>{{ selectedDesignItem.parallaxTitle }}</h3>
+              </div>
+            </div>
+            } @default {
+            <div class="content-section active">
+              <h3>{{ selectedDesignItem.title }}</h3>
+              <p class="lead">{{ selectedDesignItem.description }}</p>
+              <img
+                  [src]="selectedDesignItem.imageUrl"
+                [alt]="selectedDesignItem.title"
+                onerror="this.onerror=null;this.src='https://placehold.co/1200x800/8e2de2/ffffff?text=Imagem+Indispon%C3%ADvel';"
+              />
+            </div>
+            } }
+          </main>
+        </div>
+      </div>
+      } }
+    </div>
+  </div>
+</section>
