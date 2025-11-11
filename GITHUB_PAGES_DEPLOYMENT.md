@@ -1,63 +1,67 @@
 # GitHub Pages Deployment Guide
 
-## Static Site Generation Setup
+## Static Site Generation (SSG) with CSR Hydration
 
-This project is configured for static site generation and deployment to GitHub Pages without using `baseHref` (since hash routing is enabled).
+This project uses **Static Site Generation** with **Client-Side Rendering (CSR) hydration** for optimal performance and SEO on GitHub Pages.
 
 ### Features
-- ✅ Static prerendering enabled
+- ✅ Pre-rendered static HTML for all routes (SSG)
+- ✅ Client-side hydration for dynamic interactivity
 - ✅ No SSR or platform-server packages required
-- ✅ Hash routing for GitHub Pages compatibility
 - ✅ GitHub Actions automatic deployment
-- ✅ No baseHref configuration needed
+- ✅ Works without baseHref configuration
 
-## Build Configuration
+## How It Works
 
-The project uses Angular's built-in prerendering capabilities:
+1. **Build**: Angular builds the client application (`ng build --configuration production`)
+2. **Prerender**: A Node.js script uses Playwright to visit each route and capture the fully-rendered HTML
+3. **Deploy**: Static HTML files are deployed to GitHub Pages
 
-- **Prerendering**: Enabled (`prerender: true`)
-- **SSR**: Disabled (`ssr: false`)
-- **Output**: `dist/ng-unrender-landing-page/browser`
+### Routes Pre-rendered
+- `/` (root)
+- `/inicio`
+- `/sobre`
+- `/ecossistema`
+
+All routes get static HTML files with full content for SEO and fast initial load, then the Angular app hydrates for interactivity.
 
 ## Deployment Methods
 
-### Method 1: Automatic Deployment (Recommended)
+### Automatic Deployment (Recommended)
 
-The project includes a GitHub Actions workflow that automatically deploys to GitHub Pages on every push to the `main` branch.
+The GitHub Actions workflow automatically deploys to GitHub Pages on every push to `main`:
 
 **Setup Steps:**
 1. Go to your GitHub repository settings
 2. Navigate to **Pages** section
 3. Under **Source**, select **GitHub Actions**
 4. Push your code to the `main` branch
-5. The workflow will automatically build and deploy
+5. The workflow will automatically:
+   - Install dependencies
+   - Install Playwright browsers
+   - Build the Angular app
+   - Prerender all routes to static HTML
+   - Deploy to GitHub Pages
 
-### Method 2: Manual Deployment
-
-Build and deploy manually using npm scripts:
+### Manual Build & Deploy
 
 ```bash
-# Build for GitHub Pages
-npm run build:gh-pages
+# Install dependencies (first time only)
+npm install
 
-# Deploy to GitHub Pages (optional - if you want manual deployment)
-npm run deploy:gh-pages
+# Build and prerender all routes
+npm run build:ssg
+
+# Or use the GitHub Pages specific command
+npm run build:gh-pages
 ```
 
 ## Build Scripts
 
-- `npm run build` - Standard production build
-- `npm run build:gh-pages` - Build optimized for GitHub Pages deployment
-- `npm run deploy:gh-pages` - Build and deploy to GitHub Pages manually
-
-## Routes That Will Be Pre-rendered
-
-The following routes are automatically pre-rendered as static HTML:
-
-- `/` (redirects to `/#/inicio`)
-- `/#/inicio`
-- `/#/sobre`
-- `/#/ecossistema`
+- `npm run build` - Standard production build (client only)
+- `npm run build:ssg` - Build + prerender all routes (SSG)
+- `npm run build:gh-pages` - Same as build:ssg (GitHub Pages optimized)
+- `npm run deploy:gh-pages` - Build, prerender, and deploy to GitHub Pages
 
 ## Testing Locally
 
@@ -75,10 +79,11 @@ Then open `http://localhost:8080` in your browser.
 
 ## Important Notes
 
-1. **Hash Routing**: The app uses hash routing (`useHash: true`), which works perfectly with GitHub Pages without any baseHref configuration
-2. **No baseHref needed**: Since hash routing is used, you don't need to configure baseHref
-3. **.nojekyll file**: Included to prevent GitHub Pages from processing files through Jekyll
-4. **Clean URLs**: While hash routing adds `#` to URLs, it ensures all routes work correctly on GitHub Pages
+1. **No Hash Routing**: The app uses standard Angular routing (no hash) for clean URLs
+2. **No baseHref needed**: Routes work at root level on GitHub Pages
+3. **404.html**: Handles client-side routing on GitHub Pages (SPA fallback)
+4. **.nojekyll file**: Prevents GitHub Pages from processing files through Jekyll
+5. **SSG + CSR Hydration**: Each route has pre-rendered HTML that hydrates on load for full interactivity
 
 ## Troubleshooting
 
@@ -88,9 +93,10 @@ Then open `http://localhost:8080` in your browser.
 3. Verify the workflow has proper permissions
 
 ### If routes don't work:
-1. Verify hash routing is enabled in `app-routing-module.ts`
-2. Check that all routes are properly defined
+1. Verify all routes are listed in `scripts/prerender.js`
+2. Check that the 404.html redirect script is in place
 3. Clear browser cache and try again
+4. Ensure the build completed successfully (check for errors in the prerender step)
 
 ## File Structure
 
@@ -100,9 +106,19 @@ Then open `http://localhost:8080` in your browser.
     deploy-gh-pages.yml  # GitHub Actions workflow
 public/
   .nojekyll              # Prevents Jekyll processing
+  404.html               # SPA fallback for client-side routing
+scripts/
+  prerender.js           # SSG prerender script (uses Playwright)
 dist/
   ng-unrender-landing-page/
-    browser/             # Deployed to GitHub Pages
+    browser/
+      index.html         # Root route (pre-rendered)
+      inicio/
+        index.html       # /inicio route (pre-rendered)
+      sobre/
+        index.html       # /sobre route (pre-rendered)
+      ecossistema/
+        index.html       # /ecossistema route (pre-rendered)
 ```
 
 ## GitHub Pages URL
