@@ -15,6 +15,10 @@ const routes: Routes = [
     path: 'ecossistema ',
     loadComponent: () => import('./pages/ecosistema/ecosistema').then((m) => m.Ecosistema),
   },
+  {
+    path: 'galaga',
+    loadComponent: () => import('./components/galaga-game/galaga-game.component').then((m) => m.GalagaArcadeComponent),
+  },
   { path: '**', redirectTo: 'inicio' },
 ];
 

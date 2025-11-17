@@ -33,6 +33,16 @@ html {
   overflow: hidden;
 }
 
+/* Estilo para a seção do herói estendida (usada na home) */
+.hero-section-extended {
+  position: relative;
+  height: calc(100vh + 80px);
+  width: 100%;
+  // Fundo roxo espacial bem escuro
+  background-color: #0a0311;
+  overflow: hidden;
+}
+
 
 /* Estilo para a seção de conteúdo (cards) */
 .content-section {

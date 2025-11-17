@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'unrender-purple': '#0a0311',
+        'unrender-purple': '#10051c',
         'unrender-accent': '#f5a623',
       },
       fontFamily: {

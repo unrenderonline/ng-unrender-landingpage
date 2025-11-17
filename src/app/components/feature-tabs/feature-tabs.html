@@ -1,498 +1,1219 @@
 <section class="feature-section">
-  <!-- Parte Superior com as Abas Coloridas -->
-  <div class="tabs-container flex flex-col md:flex-row">
-    <div
-      class="tab-item research cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
-      [class.active]="activeTab === 'research'"
-      (click)="selectTab('research')"
-    >
-      <h3 class="text-2xl font-bold mb-3">Desenvolvimento de Software</h3>
-      <p class="text-base">
-        Transformamos suas ideias em realidade digital, desde aplicativos e
-        sistemas web até soluções complexas com IA.
-      </p>
-      <div class="arrow text-3xl mt-4">&#x2192;</div>
+  <!-- Desktop: Tabs Horizontais com Conteúdo Abaixo -->
+  <div class="hidden md:block">
+    <!-- Abas Coloridas -->
+    <div class="tabs-container flex flex-row">
+      <div class="tab-item research cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
+        [class.active]="activeTab === 'development'" (click)="selectTab('development')">
+        <h3 class="text-2xl font-bold mb-3">Desenvolvimento de Software</h3>
+        <p class="text-base">
+          Transformamos suas ideias em realidade digital, desde aplicativos e
+          sistemas web até soluções complexas com IA.
+        </p>
+        <div class="arrow text-3xl mt-4">&#x2192;</div>
+      </div>
+      <div class="tab-item strategy cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
+        [class.active]="activeTab === 'infrastructure'" (click)="selectTab('infrastructure')">
+        <h3 class="text-2xl font-bold mb-3">Infraestrutura On-Premise</h3>
+        <p class="text-base">
+          Garantimos o controle e a segurança dos seus dados com servidores
+          locais, planejados e mantidos por nossa equipe.
+        </p>
+        <div class="arrow text-3xl mt-4">&#x2192;</div>
+      </div>
+      <div class="tab-item design cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
+        [class.active]="activeTab === 'design'" (click)="selectTab('design')">
+        <h3 class="text-2xl font-bold mb-3">Soluções 3D e Games</h3>
+        <p class="text-base">
+          Criamos experiências imersivas com desenvolvimento de games, maquetes
+          virtuais, showrooms e muito mais.
+        </p>
+        <div class="arrow text-3xl mt-4">&#x2192;</div>
+      </div>
     </div>
-    <div
-      class="tab-item strategy cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
-      [class.active]="activeTab === 'strategy'"
-      (click)="selectTab('strategy')"
-    >
-      <h3 class="text-2xl font-bold mb-3">Infraestrutura On-Premise</h3>
-      <p class="text-base">
-        Garantimos o controle e a segurança dos seus dados com servidores
-        locais, planejados e mantidos por nossa equipe.
-      </p>
-      <div class="arrow text-3xl mt-4">&#x2192;</div>
-    </div>
-    <div
-      class="tab-item design cursor-pointer flex-1 p-8 transition-all hover:opacity-90"
-      [class.active]="activeTab === 'design'"
-      (click)="selectTab('design')"
-    >
-      <h3 class="text-2xl font-bold mb-3">Soluções 3D e Games</h3>
-      <p class="text-base">
-        Criamos experiências imersivas com desenvolvimento de games, maquetes
-        virtuais, showrooms e muito mais.
-      </p>
-      <div class="arrow text-3xl mt-4">&#x2192;</div>
+
+    <!-- Conteúdo das Abas (Desktop) -->
+    <div class="content-display">
+      <div class="w-full">
+        <!-- Nova sintaxe de controle de fluxo @switch -->
+        @switch (activeTab) { @case ('development') {
+        <div class="content-pane active">
+          <!-- Menu Horizontal para Mobile (escondido em desktop) -->
+          <div class="mobile-nav-container md:hidden px-4">
+            <ul class="flex flex-row flex-wrap gap-2">
+              @for (item of developmentMenuItems; track item.id) {
+              <li>
+                <a class="inline-block px-4 py-2 rounded-md transition-colors cursor-pointer"
+                  [class.bg-orange-600]="item.id === selectedDevelopmentItem.id"
+                  [class.text-white]="item.id === selectedDevelopmentItem.id"
+                  [class.bg-gray-200]="item.id !== selectedDevelopmentItem.id" (click)="selectDevelopmentContent(item)">
+                  {{ item.title }}
+                </a>
+              </li>
+              }
+            </ul>
+          </div>
+
+          <div
+            class="w-full grid grid-cols-1 md:grid-cols-[200px_1fr] lg:grid-cols-[220px_1fr] gap-4 md:gap-6 main-section">
+            <!-- Menu Lateral (visível em desktop) -->
+            <aside
+              class="hidden md:block md:sticky md:top-5 md:self-start md:max-h-[calc(100vh-2.5rem)] md:overflow-y-auto sidebar">
+              <h2 class="text-2xl font-bold text-purple-700 mb-2"></h2>
+              <p class="subtitle text-xs uppercase text-gray-500 tracking-wider mb-6">Desenvolvimento de Software</p>
+              <ul class="nav nav-pills flex-column space-y-2">
+                @for (item of developmentMenuItems; track item.id) {
+                <li class="nav-item">
+                  <a class="nav-link block px-4 py-3 rounded-lg font-medium transition-all cursor-pointer"
+                    [class.active]="item.id === selectedDevelopmentItem.id" (click)="selectDevelopmentContent(item)">
+                    {{ item.title }}
+                  </a>
+                </li>
+                }
+              </ul>
+            </aside>
+
+            <!-- Área de Conteúdo Dinâmico -->
+            <main class="w-full content-area" #contentArea>
+              <div class="modern-content-wrapper">
+                <!-- Header with carousel banner and GSAP animation -->
+                <div class="content-header">
+                  <!-- Carousel for banner images -->
+                  @if (selectedDevelopmentItem.carouselImages && selectedDevelopmentItem.carouselImages.length > 0) {
+                  <div class="carousel-container relative mb-6 rounded-lg overflow-hidden shadow-xl">
+                    <!-- Carousel slides -->
+                    <div class="carousel-slides relative h-64 md:h-80 lg:h-96">
+                      @for (image of selectedDevelopmentItem.carouselImages; track $index) {
+                      <a [href]="image.link" target="_blank" rel="noopener noreferrer"
+                        class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+                        [class.opacity-100]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [class.opacity-0]="getCurrentSlideIndex(selectedDevelopmentItem.id) !== $index"
+                        [class.pointer-events-none]="getCurrentSlideIndex(selectedDevelopmentItem.id) !== $index">
+                        <img [src]="image.url" [alt]="image.alt"
+                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                      </a>
+                      }
+                    </div>
+
+                    <!-- Carousel navigation buttons -->
+                    <button
+                      (click)="prevSlide(selectedDevelopmentItem.id, selectedDevelopmentItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg transition-all z-10">
+                      <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="nextSlide(selectedDevelopmentItem.id, selectedDevelopmentItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg transition-all z-10">
+                      <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <!-- Carousel indicators -->
+                    <div class="carousel-indicators absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      @for (image of selectedDevelopmentItem.carouselImages; track $index) {
+                      <button
+                        (click)="goToSlide(selectedDevelopmentItem.id, $index, selectedDevelopmentItem.carouselImages.length)"
+                        class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all"
+                        [class.bg-white]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [class.w-6]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [class.md:w-8]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [attr.aria-label]="'Go to slide ' + ($index + 1)">
+                      </button>
+                      }
+                    </div>
+                  </div>
+                  }
+
+                  <!-- Fallback to single image/gif if no carousel -->
+                  @if (!selectedDevelopmentItem.carouselImages && (selectedDevelopmentItem.imageUrl ||
+                  selectedDevelopmentItem.gifUrl)) {
+                  <div class="animated-media mb-6 rounded-lg overflow-hidden shadow-xl">
+                    <img [src]="selectedDevelopmentItem.imageUrl || selectedDevelopmentItem.gifUrl"
+                      [alt]="selectedDevelopmentItem.subtitle" class="w-full h-auto object-cover max-h-80" />
+                  </div>
+                  }
+
+                  <h3 class="text-unrender-purple animated-title text-2xl font-bold mb-2">
+                    {{ selectedDevelopmentItem.subtitle }}
+                  </h3>
+                  <p class="text-lg text-gray-600 mb-6">
+                    {{ selectedDevelopmentItem.description }}
+                  </p>
+                </div>
+
+                <!-- Features as column rows with different layouts -->
+                <div class="features-column space-y-4">
+                  @if (selectedDevelopmentItem.features) {
+                  @for (feature of selectedDevelopmentItem.features; track $index) {
+                  <div class="feature-item animated-card">
+
+                    <!-- Image Layout: Square image on left, name on right (compact row) -->
+                    @if (feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div
+                      class="feature-row feature-row-image flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all group">
+                      <div
+                        class="feature-media-square flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden">
+                        <img [src]="feature.imageUrl" [alt]="feature.name" class="w-full h-full object-cover" />
+                      </div>
+                      <div class="feature-content flex-1">
+                        <span
+                          class="inline-block px-3 py-1.5 md:px-4 md:py-2 text-gray-800 text-sm md:text-base font-medium rounded-full shadow-md"
+                         >
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- GIF Layout: Name centered vertically on left, GIF on right -->
+                    @if (feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-gif flex items-center gap-2 md:gap-3">
+                      <div class="feature-name-container flex-shrink-0">
+                        <span
+                          class="bg-unrender-purple inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg"
+                         >
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                      <div class="feature-media-gif flex items-center justify-center flex-1">
+                        <img [src]="feature.gifUrl" [alt]="feature.name" class="w-auto max-w-full h-auto rounded-lg" />
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Custom HTML Layout: Name on top, custom HTML below (no borders) -->
+                    @if (feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span
+                        class="inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg mb-4 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content" [innerHTML]="feature.customHtml"></div>
+                    </div>
+                    }                    <!-- Custom Component Layout: Name on top, Angular component below -->
+                    @if (feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span
+                        class="inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg mb-4"
+                        style="background-color: #10051c;">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content">
+                        <ng-container *ngComponentOutlet="feature.customComponent; inputs: feature.customComponentInputs || {}"></ng-container>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Iframe Layout: Name on top, iframe below -->
+                    @if (feature.iframeUrl) {
+                    <div class="feature-row feature-row-iframe">
+                      <span
+                        class="inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg mb-4 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-iframe-content">
+                        <iframe 
+                          [src]="sanitizeIframeUrl(feature.iframeUrl)" 
+                          class="w-full border-0"
+                          [style.height]="feature.iframeHeight || '400px'"
+                          [style.width]="feature.iframeWidth || '100%'"
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Text only (no media) -->
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.iframeUrl) {
+                    <div
+                      class="feature-row feature-row-text flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+                      <div
+                        class="feature-icon-placeholder flex-shrink-0 w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-xl">
+                        ✓
+                      </div>
+                      <div class="feature-content flex-1">
+                        <h4 class="text-base md:text-lg font-semibold text-gray-800">{{ feature.name }}</h4>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                  }
+                  }
+                </div>
+
+                <!-- Call to Action - Desenvolvimento de Software -->
+                <div class="bg-unrender-purple w-full cta-section animated-card mt-8">
+                  <div class="w-full flex flex-wrap items-center justify-between gap-4">
+                    <div class="w-full">
+                      <h4 class="text-xl font-bold mb-2 text-white">Pronto para começar?</h4>
+                      <p class="text-white mb-3">
+                        <span
+                          class="inline-flex items-center px-3 py-1 ml-1 rounded-full text-sm font-semibold bg-white text-unrender-purple shadow-md">
+                          {{ selectedDevelopmentItem.title }}
+                        </span>
+                      </p>
+                      <p class="text-sm text-white pt-2">
+                        Vamos construir juntos a solução perfeita para você!
+                      </p>
+                    </div>
+                    <div class="w-full">
+                      <button class="cta-button text-unrender-purple ">Falar com Especialista</button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+        } @case ('infrastructure') {
+        <div class="content-pane active">
+          <!-- Menu Horizontal para Mobile (escondido em desktop) -->
+          <div class="mobile-nav-container md:hidden">
+            <ul class="flex flex-row flex-wrap gap-2">
+              @for (item of infrastructureMenuItems; track item.id) {
+              <li>
+                <a class="inline-block px-4 py-2 rounded-md transition-colors cursor-pointer"
+                  [class.bg-orange-600]="item.id === selectedInfrastructureItem.id"
+                  [class.text-white]="item.id === selectedInfrastructureItem.id"
+                  [class.bg-gray-200]="item.id !== selectedInfrastructureItem.id"
+                  (click)="selectInfrastructureContent(item)">
+                  {{ item.title }}
+                </a>
+              </li>
+              }
+            </ul>
+          </div>
+
+          <div
+            class="w-full grid grid-cols-1 md:grid-cols-[200px_1fr] lg:grid-cols-[220px_1fr] gap-4 md:gap-6 main-section">
+            <!-- Menu Lateral (visível em desktop) -->
+            <aside
+              class="hidden md:block md:sticky md:top-5 md:self-start md:max-h-[calc(100vh-2.5rem)] md:overflow-y-auto sidebar">
+              <p class="subtitle text-xs uppercase text-gray-500 tracking-wider mb-6">Infraestrutura On-Premise</p>
+              <ul class="nav nav-pills flex-column space-y-2">
+                @for (item of infrastructureMenuItems; track item.id) {
+                <li class="nav-item">
+                  <a class="nav-link block px-4 py-3 rounded-lg font-medium transition-all cursor-pointer"
+                    [class.active]="item.id === selectedInfrastructureItem.id"
+                    (click)="selectInfrastructureContent(item)">
+                    {{ item.title }}
+                  </a>
+                </li>
+                }
+              </ul>
+            </aside>
+
+            <!-- Área de Conteúdo Dinâmico -->
+            <main class="w-full content-area" #contentArea>
+              <div class="modern-content-wrapper">
+                <!-- Header with carousel banner and GSAP animation -->
+                <div class="content-header">
+                  <!-- Carousel for banner images -->
+                  @if (selectedInfrastructureItem.carouselImages && selectedInfrastructureItem.carouselImages.length >
+                  0) {
+                  <div class="carousel-container relative mb-6 rounded-lg overflow-hidden shadow-xl">
+                    <!-- Carousel slides -->
+                    <div class="carousel-slides relative h-64 md:h-80 lg:h-96">
+                      @for (image of selectedInfrastructureItem.carouselImages; track $index) {
+                      <a [href]="image.link" target="_blank" rel="noopener noreferrer"
+                        class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+                        [class.opacity-100]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [class.opacity-0]="getCurrentSlideIndex(selectedInfrastructureItem.id) !== $index"
+                        [class.pointer-events-none]="getCurrentSlideIndex(selectedInfrastructureItem.id) !== $index">
+                        <img [src]="image.url" [alt]="image.alt"
+                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                      </a>
+                      }
+                    </div>
+
+                    <!-- Carousel navigation buttons -->
+                    <button
+                      (click)="prevSlide(selectedInfrastructureItem.id, selectedInfrastructureItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg transition-all z-10">
+                      <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="nextSlide(selectedInfrastructureItem.id, selectedInfrastructureItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg transition-all z-10">
+                      <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <!-- Carousel indicators -->
+                    <div class="carousel-indicators absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                      @for (image of selectedInfrastructureItem.carouselImages; track $index) {
+                      <button
+                        (click)="goToSlide(selectedInfrastructureItem.id, $index, selectedInfrastructureItem.carouselImages.length)"
+                        class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all"
+                        [class.bg-white]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [class.w-6]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [class.md:w-8]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [attr.aria-label]="'Go to slide ' + ($index + 1)">
+                      </button>
+                      }
+                    </div>
+                  </div>
+                  }
+
+                  <!-- Fallback to single image/gif if no carousel -->
+                  @if (!selectedInfrastructureItem.carouselImages && (selectedInfrastructureItem.imageUrl ||
+                  selectedInfrastructureItem.gifUrl)) {
+                  <div class="animated-media mb-6 rounded-lg overflow-hidden shadow-xl">
+                    <img [src]="selectedInfrastructureItem.imageUrl || selectedInfrastructureItem.gifUrl"
+                      [alt]="selectedInfrastructureItem.subtitle" class="w-full h-auto object-cover max-h-80" />
+                  </div>
+                  }
+
+                  <h3 class="animated-title text-2xl font-bold text-purple-700 mb-2">
+                    {{ selectedInfrastructureItem.subtitle }}
+                  </h3>
+                  <p class="text-lg text-gray-600 mb-6">
+                    {{ selectedInfrastructureItem.description }}
+                  </p>
+                </div>
+
+                <!-- Features as column rows with different layouts -->
+                <div class="features-column space-y-4">
+                  @if (selectedInfrastructureItem.features) {
+                  @for (feature of selectedInfrastructureItem.features; track $index) {
+                  <div class="feature-item animated-card">
+
+                    <!-- Image Layout: Square image on left, name on right (compact row) -->
+                    @if (feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div
+                      class="feature-row feature-row-image flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all group">
+                      <div
+                        class="feature-media-square flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden">
+                        <img [src]="feature.imageUrl" [alt]="feature.name" class="w-full h-full object-cover" />
+                      </div>
+                      <div class="feature-content flex-1">
+                        <span
+                          class="inline-block px-3 py-1.5 md:px-4 md:py-2 text-gray-800 text-sm md:text-base font-medium rounded-full shadow-md"
+                         >
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- GIF Layout: Name centered vertically on left, GIF on right -->
+                    @if (feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-gif flex items-center gap-2 md:gap-3">
+                      <div class="feature-name-container flex-shrink-0">
+                        <span
+                          class="bg-unrender-purple inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg"
+                         >
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                      <div class="feature-media-gif flex items-center justify-center flex-1">
+                        <img [src]="feature.gifUrl" [alt]="feature.name" class="w-auto max-w-full h-auto rounded-lg" />
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Custom HTML Layout: Name on top, custom HTML below (no borders) -->
+                    @if (feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span
+                        class="inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg mb-4 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content" [innerHTML]="feature.customHtml"></div>
+                    </div>
+                    }
+
+                    <!-- Custom Component Layout: Name on top, Angular component below -->
+                    @if (feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span
+                        class="inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg mb-4 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content">
+                        <ng-container *ngComponentOutlet="feature.customComponent; inputs: feature.customComponentInputs || {}"></ng-container>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Iframe Layout: Name on top, iframe below -->
+                    @if (feature.iframeUrl) {
+                    <div class="feature-row feature-row-iframe">
+                      <span
+                        class="inline-block px-4 py-2 md:px-5 md:py-2.5 text-white text-base md:text-lg font-medium rounded-full shadow-lg mb-4 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-iframe-content">
+                        <iframe 
+                          [src]="sanitizeIframeUrl(feature.iframeUrl)" 
+                          class="w-full border-0"
+                          [style.height]="feature.iframeHeight || '400px'"
+                          [style.width]="feature.iframeWidth || '100%'"
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Text only (no media) -->
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.iframeUrl) {
+                    <div
+                      class="feature-row feature-row-text flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+                      <div
+                        class="feature-icon-placeholder flex-shrink-0 w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-xl">
+                        ✓
+                      </div>
+                      <div class="feature-content flex-1">
+                        <h4 class="text-base md:text-lg font-semibold text-gray-800">{{ feature.name }}</h4>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                  }
+                  }
+                </div>
+
+                <!-- Call to Action - Infraestrutura On-Premise -->
+                <div class="cta-section animated-card mt-8">
+                  <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <h4 class="text-xl font-bold mb-2 text-white">Precisa de equipamentos de TI?</h4>
+                      <p class="text-white mb-3">
+                        Você está interessado em:
+                        <span
+                          class="inline-flex items-center px-3 py-1 ml-1 rounded-full text-sm font-semibold bg-white text-purple-700 shadow-md">
+                          {{ selectedInfrastructureItem.title }}
+                        </span>
+                      </p>
+                      <p class="text-sm text-purple-100">
+                        Usaremos essa informação para personalizar a consultoria e o registro do lead.
+                      </p>
+                    </div>
+                    <div class="flex flex-col items-stretch gap-2 min-w-[220px] text-right">
+                      <button class="cta-button">Solicitar Consultoria</button>
+                      <span class="text-[11px] text-purple-100">
+                        O interesse selecionado será enviado junto com o seu contato.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+        } @case ('design') {
+        <div class="content-pane active">
+          <!-- Full Width Content - No Sidebar/Main Layout -->
+          <div class="w-full max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+            <!-- Carousel Banner -->
+            @if (selectedDesignItem.carouselImages && selectedDesignItem.carouselImages.length > 0) {
+            <div class="carousel-container relative mb-8 rounded-xl overflow-hidden shadow-2xl">
+              <!-- Carousel slides -->
+              <div class="carousel-slides relative h-64 md:h-80 lg:h-96">
+                @for (image of selectedDesignItem.carouselImages; track $index) {
+                <a [href]="image.link" target="_blank" rel="noopener noreferrer"
+                  class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+                  [class.opacity-100]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [class.opacity-0]="getCurrentSlideIndex(selectedDesignItem.id) !== $index"
+                  [class.pointer-events-none]="getCurrentSlideIndex(selectedDesignItem.id) !== $index">
+                  <img [src]="image.url" [alt]="image.alt"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                </a>
+                }
+              </div>
+
+              <!-- Carousel navigation buttons -->
+              <button (click)="prevSlide(selectedDesignItem.id, selectedDesignItem.carouselImages.length)"
+                class="carousel-btn carousel-btn-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg transition-all z-10">
+                <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button (click)="nextSlide(selectedDesignItem.id, selectedDesignItem.carouselImages.length)"
+                class="carousel-btn carousel-btn-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg transition-all z-10">
+                <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <!-- Carousel indicators -->
+              <div class="carousel-indicators absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                @for (image of selectedDesignItem.carouselImages; track $index) {
+                <button (click)="goToSlide(selectedDesignItem.id, $index, selectedDesignItem.carouselImages.length)"
+                  class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all bg-white/60 hover:bg-white"
+                  [class.bg-white]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [class.w-6]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [class.md:w-8]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [attr.aria-label]="'Go to slide ' + ($index + 1)">
+                </button>
+                }
+              </div>
+            </div>
+            }
+
+            <!-- Unrender Games Header - Centered -->
+            <div class="text-center mb-8">
+              <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
+                class="inline-block mb-4 text-5xl md:text-7xl font-black bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105"
+                style="background-image: linear-gradient(to right, #f5a623, #ff8c00); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                UNRENDER.GAMES
+              </a>
+              <p class="text-xl md:text-2xl text-gray-600 mb-6">Nosso Estúdio de Games</p>
+
+              <!-- Social Links -->
+              <div class="flex gap-6 mb-8 justify-center">
+                <a href="https://instagram.com/unrendergames" target="_blank" rel="noopener noreferrer"
+                  class="text-gray-700 hover:text-orange-600 transition-all transform hover:scale-110"
+                  title="Instagram">
+                  <i class="fab fa-instagram text-3xl"></i>
+                </a>
+                <a href="https://linkedin.com/company/unrender-games" target="_blank" rel="noopener noreferrer"
+                  class="text-gray-700 hover:text-orange-600 transition-all transform hover:scale-110" title="LinkedIn">
+                  <i class="fab fa-linkedin text-3xl"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Specialties Section -->
+            <div class="mb-10">
+              <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 text-center">Especialidades</h4>
+              <div class="flex flex-wrap gap-3 justify-center">
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  Modelagem 3D
+                </span>
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  Gamificação
+                </span>
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  Jogos Educacionais
+                </span>
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  VFX
+                </span>
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  Realidade Virtual
+                </span>
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  Web Interativa
+                </span>
+                <span
+                  class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all">
+                  Realidade Aumentada
+                </span>
+              </div>
+            </div>
+
+            <!-- Platform Badges Section -->
+            <div class="mb-8">
+              <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 text-center">Plataformas</h4>
+              <div class="flex flex-wrap gap-3 justify-center">
+                <span
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-android"></i> Android
+                </span>
+                <span
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-apple"></i> iOS
+                </span>
+                <span
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-windows"></i> Windows
+                </span>
+                <span
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-linux"></i> Linux
+                </span>
+                <span
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-apple"></i> Mac
+                </span>
+                <span
+                  class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fa-solid fa-vr-cardboard"></i> Meta Quest
+                </span>
+              </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-12">
+              <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
+                class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                Conheça Nossos Projetos →
+              </a>
+            </div>
+          </div>
+        </div>
+        } }
+      </div>
     </div>
   </div>
 
-  <!-- Parte Inferior com o Conteúdo das Abas -->
-  <div class="content-display">
-    <div class="w-full px-4">
-      <!-- Nova sintaxe de controle de fluxo @switch -->
-      @switch (activeTab) { @case ('research') {
-      <div class="content-pane active">
-        <!-- Menu Horizontal para Mobile (escondido em desktop) -->
-        <div class="mobile-nav-container md:hidden">
-          <h2 class="mobile-title text-2xl font-bold mb-4">Soluções</h2>
-          <ul class="flex flex-row flex-wrap gap-2">
-            @for (item of developmentMenuItems; track item.id) {
-            <li>
-              <a
-                class="inline-block px-4 py-2 rounded-md transition-colors cursor-pointer"
-                [class.bg-blue-600]="item.id === selectedDevelopmentItem.id"
-                [class.text-white]="item.id === selectedDevelopmentItem.id"
-                [class.bg-gray-200]="item.id !== selectedDevelopmentItem.id"
-                (click)="selectDevelopmentContent(item)"
-              >
-                {{ item.title }}
-              </a>
-            </li>
-            }
-          </ul>
-        </div>
+  <!-- Mobile: Accordion Structure -->
+  <div class="md:hidden tabs-accordion">
+    <!-- Tab 1: Desenvolvimento de Software -->
+    <div class="accordion-tab-wrapper">
+      <div class="tab-item research cursor-pointer p-6 transition-all" [class.active]="activeTab === 'development'"
+        (click)="selectTab('development')">
+        <h3 class="text-xl font-bold">Desenvolvimento de Software</h3>
+        <div class="arrow-indicator">{{ activeTab === 'development' ? '&darr;' : '&#x2192;' }}</div>
+      </div>
+      @if (activeTab === 'development') {
+      <div class="content-display">
+        <div class="w-full px-4 py-4">
+          <div class="content-pane active">
+            <!-- Menu Horizontal para Mobile -->
+            <div class="mobile-nav-container">
+              <ul class="flex flex-row flex-wrap gap-2">
+                @for (item of developmentMenuItems; track item.id) {
+                <li>
+                  <a class="inline-block px-3 py-2 text-sm rounded-md transition-colors cursor-pointer"
+                    [class.bg-orange-600]="item.id === selectedDevelopmentItem.id"
+                    [class.text-white]="item.id === selectedDevelopmentItem.id"
+                    [class.bg-gray-200]="item.id !== selectedDevelopmentItem.id"
+                    (click)="selectDevelopmentContent(item)">
+                    {{ item.title }}
+                  </a>
+                </li>
+                }
+              </ul>
+            </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 main-section">
-          <!-- Menu Lateral (visível em desktop) -->
-          <aside class="col-md-3 d-none d-md-block sidebar">
-            <h2>Soluções</h2>
-            <p class="subtitle">Desenvolvimento de Software</p>
-            <ul class="nav nav-pills flex-column">
-              @for (item of developmentMenuItems; track item.id) {
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  [class.active]="item.id === selectedDevelopmentItem.id"
-                  (click)="selectDevelopmentContent(item)"
-                >
-                  {{ item.title }}
-                </a>
-              </li>
-              }
-            </ul>
-          </aside>
+            <!-- Conteúdo -->
+            <div class="mt-4">
+              <div class="modern-content-wrapper">
+                <!-- Header with carousel banner and GSAP animation -->
+                <div class="content-header">
+                  <!-- Carousel for banner images (Mobile) -->
+                  @if (selectedDevelopmentItem.carouselImages && selectedDevelopmentItem.carouselImages.length > 0) {
+                  <div class="carousel-container relative mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <!-- Carousel slides -->
+                    <div class="carousel-slides relative h-48 md:h-60">
+                      @for (image of selectedDevelopmentItem.carouselImages; track $index) {
+                      <a [href]="image.link" target="_blank" rel="noopener noreferrer"
+                        class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+                        [class.opacity-100]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [class.opacity-0]="getCurrentSlideIndex(selectedDevelopmentItem.id) !== $index"
+                        [class.pointer-events-none]="getCurrentSlideIndex(selectedDevelopmentItem.id) !== $index">
+                        <img [src]="image.url" [alt]="image.alt"
+                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                      </a>
+                      }
+                    </div>
 
-          <!-- Área de Conteúdo Dinâmico -->
-          <main class="col-md-9 content-area">
-            @switch (selectedDevelopmentItem.id) { @case ('web-mobile') {
-            <div class="content-section active">
-              <h3>{{ selectedDevelopmentItem.title }}</h3>
-              <p class="lead">{{ selectedDevelopmentItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-6">
-                  <div class="card text-center h-100">
-                    <img
-                      src="webdev.jpg"
-                      class="card-img-top p-4"
-                      alt="Aplicações Web e Mobile"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Aplicações Web e Mobile</h5>
-                      <p class="card-text">
-                        Criamos landing pages, e-commerces, aplicativos e sistemas web
-                        responsivos, focados na experiência do usuário e na conversão.
-                      </p>
+                    <!-- Carousel navigation buttons -->
+                    <button
+                      (click)="prevSlide(selectedDevelopmentItem.id, selectedDevelopmentItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all z-10">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="nextSlide(selectedDevelopmentItem.id, selectedDevelopmentItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all z-10">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <!-- Carousel indicators -->
+                    <div class="carousel-indicators absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                      @for (image of selectedDevelopmentItem.carouselImages; track $index) {
+                      <button
+                        (click)="goToSlide(selectedDevelopmentItem.id, $index, selectedDevelopmentItem.carouselImages.length)"
+                        class="w-2 h-2 rounded-full transition-all"
+                        [class.bg-white]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [class.w-5]="getCurrentSlideIndex(selectedDevelopmentItem.id) === $index"
+                        [attr.aria-label]="'Go to slide ' + ($index + 1)">
+                      </button>
+                      }
                     </div>
                   </div>
+                  }
+
+                  <!-- Fallback to single image/gif if no carousel -->
+                  @if (!selectedDevelopmentItem.carouselImages && (selectedDevelopmentItem.imageUrl ||
+                  selectedDevelopmentItem.gifUrl)) {
+                  <div class="animated-media mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <img [src]="selectedDevelopmentItem.imageUrl || selectedDevelopmentItem.gifUrl"
+                      [alt]="selectedDevelopmentItem.subtitle" class="w-full h-auto object-cover max-h-60" />
+                  </div>
+                  }
+
+                  <h3 class="animated-title text-xl font-bold text-purple-700 mb-2">
+                    {{ selectedDevelopmentItem.subtitle }}
+                  </h3>
+                  <p class="text-base text-gray-600 mb-4">
+                    {{ selectedDevelopmentItem.description }}
+                  </p>
                 </div>
-                <div class="col-md-6">
-                  <div class="card text-center h-100">
-                    <img
-                      src="mvp-dev.jpg"
-                      class="card-img-top p-4"
-                      alt="Sistemas Sob Medida e MVPs"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Sistemas Sob Medida e MVPs</h5>
-                      <p class="card-text">
-                        Desenvolvemos softwares desktop e web customizados para
-                        otimizar seus processos. Lançamos seu MVP (Produto Mínimo
-                        Viável) no mercado.
-                      </p>
+
+                <!-- Features as column rows with images/gifs -->
+                <div class="features-column space-y-3">
+                  @if (selectedDevelopmentItem.features) {
+                  @for (feature of selectedDevelopmentItem.features; track $index) {
+                  <div class="feature-item animated-card">
+                    <!-- Image Layout: Small thumbnail on left -->
+                    @if (feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div
+                      class="feature-row feature-row-image flex items-center gap-3 p-3 bg-white rounded-lg shadow-md">
+                      <div class="feature-media-small flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+                        <img [src]="feature.imageUrl" [alt]="feature.name" class="w-full h-full object-cover" />
+                      </div>
+                      <div class="feature-content flex-1">
+                        <span class="inline-block px-3 py-1 text-white text-xs font-medium rounded-full shadow-md"
+                          style="background-color: #7239ce;">
+                          {{ feature.name }}
+                        </span>
+                      </div>
                     </div>
+                    }
+
+                    <!-- GIF Layout: Name centered vertically on left, GIF on right -->
+                    @if (feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-gif flex items-center gap-2">
+                      <div class="feature-name-container flex-shrink-0">
+                        <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg"
+                          style="background-color: #fe8a2f;">
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                      <div class="feature-media-gif flex-1">
+                        <img [src]="feature.gifUrl" [alt]="feature.name" class="w-full h-auto" />
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Custom HTML Layout: Name on top, HTML below (no borders) -->
+                    @if (feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg mb-2 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content" [innerHTML]="feature.customHtml"></div>
+                    </div>
+                    }
+
+                    <!-- Custom Component Layout: Name on top, Angular component below -->
+                    @if (feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg mb-2 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content">
+                        <ng-container *ngComponentOutlet="feature.customComponent; inputs: feature.customComponentInputs || {}"></ng-container>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Iframe Layout: Name on top, iframe below -->
+                    @if (feature.iframeUrl) {
+                    <div class="feature-row feature-row-iframe">
+                      <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg mb-2 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-iframe-content">
+                        <iframe 
+                          [src]="sanitizeIframeUrl(feature.iframeUrl)" 
+                          class="w-full border-0"
+                          [style.height]="feature.iframeHeight || '300px'"
+                          [style.width]="feature.iframeWidth || '100%'"
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Text only (no image, gif, or custom HTML) -->
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.iframeUrl) {
+                    <div class="feature-row feature-row-text flex items-center gap-3 p-3 bg-white rounded-lg shadow-md">
+                      <div
+                        class="feature-icon-placeholder flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg">
+                        ✓
+                      </div>
+                      <div class="feature-content flex-1">
+                        <h4 class="text-sm font-semibold text-gray-800">{{ feature.name }}</h4>
+                      </div>
+                    </div>
+                    }
                   </div>
+                  }
+                  }
                 </div>
               </div>
             </div>
-            } @case ('ai-solutions') {
-            <div class="content-section active">
-              <h3>{{ selectedDevelopmentItem.title }}</h3>
-              <p class="lead">{{ selectedDevelopmentItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-12">
-                  <div class="card text-center h-100">
-                    <img
-                      src="aiot.jpg"
-                      class="card-img-top p-4"
-                      alt="Soluções de Ponta com IA"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Soluções de Ponta com IA</h5>
-                      <p class="card-text">
-                        Projetamos softwares avançados para controle remoto de
-                        máquinas, veículos autônomos e outras aplicações que utilizam
-                        Inteligência Artificial.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            } @default {
-            <div class="content-section active">
-              <h3>{{ selectedDevelopmentItem.title }}</h3>
-              <p class="lead">{{ selectedDevelopmentItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-4">
-                  <div class="card text-center h-100">
-                    <img
-                      src="webdev.jpg"
-                      class="card-img-top p-4"
-                      alt="Aplicações Web e Mobile"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Aplicações Web e Mobile</h5>
-                      <p class="card-text">
-                        Criamos landing pages, e-commerces, aplicativos e sistemas web
-                        responsivos, focados na experiência do usuário e na conversão.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="card text-center h-100">
-                    <img
-                      src="mvp-dev.jpg"
-                      class="card-img-top p-4"
-                      alt="Sistemas Sob Medida e MVPs"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Sistemas Sob Medida e MVPs</h5>
-                      <p class="card-text">
-                        Desenvolvemos softwares desktop e web customizados para
-                        otimizar seus processos. Lançamos seu MVP (Produto Mínimo
-                        Viável) no mercado.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="card text-center h-100">
-                    <img
-                      src="aiot.jpg"
-                      class="card-img-top p-4"
-                      alt="Soluções de Ponta com IA"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Soluções de Ponta com IA</h5>
-                      <p class="card-text">
-                        Projetamos softwares avançados para controle remoto de
-                        máquinas, veículos autônomos e outras aplicações que utilizam
-                        Inteligência Artificial.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            } }
-          </main>
+          </div>
         </div>
       </div>
-      } @case ('strategy') {
-      <div class="content-pane active">
-        <!-- Menu Horizontal para Mobile (escondido em desktop) -->
-        <div class="mobile-nav-container d-md-none">
-          <h2 class="mobile-title">Soluções</h2>
-          <ul class="nav nav-pills flex-row flex-wrap">
-            @for (item of infrastructureMenuItems; track item.id) {
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                [class.active]="item.id === selectedInfrastructureItem.id"
-                (click)="selectInfrastructureContent(item)"
-              >
-                {{ item.title }}
-              </a>
-            </li>
-            }
-          </ul>
-        </div>
+      }
+    </div>
 
-        <div class="row main-section">
-          <!-- Menu Lateral (visível em desktop) -->
-          <aside class="col-md-3 d-none d-md-block sidebar">
-            <h2>Soluções</h2>
-            <p class="subtitle">Infraestrutura On-Premise</p>
-            <ul class="nav nav-pills flex-column">
-              @for (item of infrastructureMenuItems; track item.id) {
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  [class.active]="item.id === selectedInfrastructureItem.id"
-                  (click)="selectInfrastructureContent(item)"
-                >
-                  {{ item.title }}
-                </a>
-              </li>
-              }
-            </ul>
-          </aside>
+    <!-- Tab 2: Infraestrutura On-Premise -->
+    <div class="accordion-tab-wrapper">
+      <div class="tab-item strategy cursor-pointer p-6 transition-all" [class.active]="activeTab === 'infrastructure'"
+        (click)="selectTab('infrastructure')">
+        <h3 class="text-xl font-bold">Infraestrutura On-Premise</h3>
+        <div class="arrow-indicator">{{ activeTab === 'infrastructure' ? '&darr;' : '&#x2192;' }}</div>
+      </div>
+      @if (activeTab === 'infrastructure') {
+      <div class="content-display">
+        <div class="w-full px-4 py-4">
+          <div class="content-pane active">
+            <!-- Menu Horizontal para Mobile -->
+            <div class="mobile-nav-container">
+              <ul class="flex flex-row flex-wrap gap-2">
+                @for (item of infrastructureMenuItems; track item.id) {
+                <li>
+                  <a class="inline-block px-3 py-2 text-sm rounded-md transition-colors cursor-pointer"
+                    [class.bg-orange-600]="item.id === selectedInfrastructureItem.id"
+                    [class.text-white]="item.id === selectedInfrastructureItem.id"
+                    [class.bg-gray-200]="item.id !== selectedInfrastructureItem.id"
+                    (click)="selectInfrastructureContent(item)">
+                    {{ item.title }}
+                  </a>
+                </li>
+                }
+              </ul>
+            </div>
 
-          <!-- Área de Conteúdo Dinâmico -->
-          <main class="col-md-9 content-area">
-            @switch (selectedInfrastructureItem.id) { @case ('planning') {
-            <div class="content-section active">
-              <h3>{{ selectedInfrastructureItem.title }}</h3>
-              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-12">
-                  <div class="card text-center h-100">
-                    <img
-                      src="consulting.jpg"
-                      class="card-img-top p-4"
-                      alt="Planejamento de Servidores"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Planejamento de Servidores</h5>
-                      <p class="card-text">
-                        Analisamos suas necessidades e levantamos os recursos de
-                        hardware e software para montar servidores robustos e seguros
-                        em seu local.
-                      </p>
+            <!-- Conteúdo -->
+            <div class="mt-4">
+              <div class="modern-content-wrapper">
+                <!-- Header with carousel banner and GSAP animation -->
+                <div class="content-header">
+                  <!-- Carousel for banner images (Mobile) -->
+                  @if (selectedInfrastructureItem.carouselImages && selectedInfrastructureItem.carouselImages.length >
+                  0) {
+                  <div class="carousel-container relative mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <!-- Carousel slides -->
+                    <div class="carousel-slides relative h-48 md:h-60">
+                      @for (image of selectedInfrastructureItem.carouselImages; track $index) {
+                      <a [href]="image.link" target="_blank" rel="noopener noreferrer"
+                        class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+                        [class.opacity-100]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [class.opacity-0]="getCurrentSlideIndex(selectedInfrastructureItem.id) !== $index"
+                        [class.pointer-events-none]="getCurrentSlideIndex(selectedInfrastructureItem.id) !== $index">
+                        <img [src]="image.url" [alt]="image.alt"
+                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                      </a>
+                      }
+                    </div>
+
+                    <!-- Carousel navigation buttons -->
+                    <button
+                      (click)="prevSlide(selectedInfrastructureItem.id, selectedInfrastructureItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all z-10">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="nextSlide(selectedInfrastructureItem.id, selectedInfrastructureItem.carouselImages.length)"
+                      class="carousel-btn carousel-btn-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all z-10">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+
+                    <!-- Carousel indicators -->
+                    <div class="carousel-indicators absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                      @for (image of selectedInfrastructureItem.carouselImages; track $index) {
+                      <button
+                        (click)="goToSlide(selectedInfrastructureItem.id, $index, selectedInfrastructureItem.carouselImages.length)"
+                        class="w-2 h-2 rounded-full transition-all"
+                        [class.bg-white]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [class.w-5]="getCurrentSlideIndex(selectedInfrastructureItem.id) === $index"
+                        [class.bg-white]="getCurrentSlideIndex(selectedInfrastructureItem.id) !== $index"
+                        [attr.aria-label]="'Go to slide ' + ($index + 1)">
+                      </button>
+                      }
                     </div>
                   </div>
+                  }
+
+                  <!-- Fallback to single image/gif if no carousel -->
+                  @if (!selectedInfrastructureItem.carouselImages && (selectedInfrastructureItem.imageUrl ||
+                  selectedInfrastructureItem.gifUrl)) {
+                  <div class="animated-media mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <img [src]="selectedInfrastructureItem.imageUrl || selectedInfrastructureItem.gifUrl"
+                      [alt]="selectedInfrastructureItem.subtitle" class="w-full h-auto object-cover max-h-60" />
+                  </div>
+                  }
+
+                  <h3 class="animated-title text-xl font-bold text-purple-700 mb-2">
+                    {{ selectedInfrastructureItem.subtitle }}
+                  </h3>
+                  <p class="text-base text-gray-600 mb-4">
+                    {{ selectedInfrastructureItem.description }}
+                  </p>
+                </div>
+
+                <!-- Features as column rows with different layouts -->
+                <div class="features-column space-y-3">
+                  @if (selectedInfrastructureItem.features) {
+                  @for (feature of selectedInfrastructureItem.features; track $index) {
+                  <div class="feature-item animated-card">
+
+                    <!-- Image Layout: Square image on left, name on right -->
+                    @if (feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div
+                      class="feature-row feature-row-image flex items-center gap-3 p-3 bg-white rounded-lg shadow-md">
+                      <div class="feature-media-square flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+                        <img [src]="feature.imageUrl" [alt]="feature.name" class="w-full h-full object-cover" />
+                      </div>
+                      <div class="feature-content flex-1">
+                        <span class="inline-block px-3 py-1 text-white text-xs font-medium rounded-full shadow-md"
+                          style="background-color: #7239ce;">
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- GIF Layout: Name centered vertically on left, GIF on right -->
+                    @if (feature.gifUrl && !feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-gif flex items-center gap-2">
+                      <div class="feature-name-container flex-shrink-0">
+                        <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg"
+                          style="background-color: #fe8a2f;">
+                          {{ feature.name }}
+                        </span>
+                      </div>
+                      <div class="feature-media-gif flex-1">
+                        <img [src]="feature.gifUrl" [alt]="feature.name" class="w-full h-auto" />
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Custom HTML Layout: Name on top, HTML below (no borders) -->
+                    @if (feature.customHtml && !feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg mb-2 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content" [innerHTML]="feature.customHtml"></div>
+                    </div>
+                    }
+
+                    <!-- Custom Component Layout: Name on top, Angular component below -->
+                    @if (feature.customComponent) {
+                    <div class="feature-row feature-row-custom">
+                      <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg mb-2 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-custom-content">
+                        <ng-container *ngComponentOutlet="feature.customComponent; inputs: feature.customComponentInputs || {}"></ng-container>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Iframe Layout: Name on top, iframe below -->
+                    @if (feature.iframeUrl) {
+                    <div class="feature-row feature-row-iframe">
+                      <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg mb-2 bg-unrender-accent">
+                        {{ feature.name }}
+                      </span>
+                      <div class="feature-iframe-content">
+                        <iframe 
+                          [src]="sanitizeIframeUrl(feature.iframeUrl)" 
+                          class="w-full border-0"
+                          [style.height]="feature.iframeHeight || '300px'"
+                          [style.width]="feature.iframeWidth || '100%'"
+                          allowfullscreen>
+                        </iframe>
+                      </div>
+                    </div>
+                    }
+
+                    <!-- Text only -->
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.iframeUrl) {
+                    <div class="feature-row feature-row-text flex items-center gap-3 p-3 bg-white rounded-lg shadow-md">
+                      <div
+                        class="feature-icon-placeholder flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-lg">
+                        ✓
+                      </div>
+                      <div class="feature-content flex-1">
+                        <h4 class="text-sm font-semibold text-gray-800">{{ feature.name }}</h4>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                  }
+                  }
                 </div>
               </div>
             </div>
-            } @case ('implementation') {
-            <div class="content-section active">
-              <h3>{{ selectedInfrastructureItem.title }}</h3>
-              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-12">
-                  <div class="card text-center h-100">
-                    <img
-                      src="server.jpg"
-                      class="card-img-top p-4"
-                      alt="Implementação e Deploy"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Implementação e Deploy</h5>
-                      <p class="card-text">
-                        Cuidamos de toda a instalação, configuração e deploy dos seus
-                        softwares, garantindo que tudo funcione perfeitamente desde o
-                        início.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            } @case ('maintenance') {
-            <div class="content-section active">
-              <h3>{{ selectedInfrastructureItem.title }}</h3>
-              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-12">
-                  <div class="card text-center h-100">
-                    <img
-                      src="support.jpg"
-                      class="card-img-top p-4"
-                      alt="Manutenção e Suporte"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Manutenção e Suporte</h5>
-                      <p class="card-text">
-                        Oferecemos contratos de manutenção e suporte contínuo para
-                        garantir a estabilidade, segurança e atualização da sua
-                        infraestrutura.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            } @default {
-            <div class="content-section active">
-              <h3>{{ selectedInfrastructureItem.title }}</h3>
-              <p class="lead">{{ selectedInfrastructureItem.description }}</p>
-              <div class="row g-4">
-                <div class="col-md-4">
-                  <div class="card text-center h-100">
-                    <img
-                      src="consulting.jpg"
-                      class="card-img-top p-4"
-                      alt="Planejamento de Servidores"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Planejamento de Servidores</h5>
-                      <p class="card-text">
-                        Analisamos suas necessidades e levantamos os recursos de
-                        hardware e software para montar servidores robustos e seguros
-                        em seu local.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="card text-center h-100">
-                    <img
-                      src="server.jpg"
-                      class="card-img-top p-4"
-                      alt="Implementação e Deploy"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Implementação e Deploy</h5>
-                      <p class="card-text">
-                        Cuidamos de toda a instalação, configuração e deploy dos seus
-                        softwares, garantindo que tudo funcione perfeitamente desde o
-                        início.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="card text-center h-100">
-                    <img
-                      src="support.jpg"
-                      class="card-img-top p-4"
-                      alt="Manutenção e Suporte"
-                    />
-                    <div class="card-body">
-                      <h5 class="card-title">Manutenção e Suporte</h5>
-                      <p class="card-text">
-                        Oferecemos contratos de manutenção e suporte contínuo para
-                        garantir a estabilidade, segurança e atualização da sua
-                        infraestrutura.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            } }
-          </main>
+          </div>
         </div>
       </div>
-      } @case ('design') {
-      <div class="content-pane active">
-        <!-- Menu Horizontal para Mobile (escondido em desktop) -->
-        <div class="mobile-nav-container d-md-none">
-          <h2 class="mobile-title">Soluções</h2>
-          <ul class="nav nav-pills flex-row flex-wrap">
-            @for (item of designMenuItems; track item.id) {
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                [class.active]="item.id === selectedDesignItem.id"
-                (click)="selectDesignContent(item)"
-              >
-                {{ item.title }}
-              </a>
-            </li>
-            }
-          </ul>
-        </div>
+      }
+    </div>
 
-        <div class="row main-section">
-          <!-- Menu Lateral (visível em desktop) -->
-          <aside class="col-md-3 d-none d-md-block sidebar">
-            <h2>Soluções</h2>
-            <p class="subtitle">Tecnologia e Inovação</p>
-            <ul class="nav nav-pills flex-column">
-              @for (item of designMenuItems; track item.id) {
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  [class.active]="item.id === selectedDesignItem.id"
-                  (click)="selectDesignContent(item)"
-                >
-                  {{ item.title }}
+    <!-- Tab 3: Soluções 3D e Games -->
+    <div class="accordion-tab-wrapper">
+      <div class="tab-item design cursor-pointer p-6 transition-all" [class.active]="activeTab === 'design'"
+        (click)="selectTab('design')">
+        <h3 class="text-xl font-bold">Soluções 3D e Games</h3>
+        <div class="arrow-indicator">{{ activeTab === 'design' ? '&darr;' : '&#x2192;' }}</div>
+      </div>
+      @if (activeTab === 'design') {
+      <div class="content-display">
+        <div class="w-full px-4 py-4">
+          <div class="content-pane active">
+            <!-- Carousel Banner Mobile -->
+            @if (selectedDesignItem.carouselImages && selectedDesignItem.carouselImages.length > 0) {
+            <div class="carousel-container relative mb-6 rounded-lg overflow-hidden shadow-xl">
+              <!-- Carousel slides -->
+              <div class="carousel-slides relative h-48 md:h-60">
+                @for (image of selectedDesignItem.carouselImages; track $index) {
+                <a [href]="image.link" target="_blank" rel="noopener noreferrer"
+                  class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+                  [class.opacity-100]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [class.opacity-0]="getCurrentSlideIndex(selectedDesignItem.id) !== $index"
+                  [class.pointer-events-none]="getCurrentSlideIndex(selectedDesignItem.id) !== $index">
+                  <img [src]="image.url" [alt]="image.alt"
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </a>
-              </li>
-              }
-            </ul>
-          </aside>
+                }
+              </div>
 
-          <!-- Área de Conteúdo Dinâmico -->
-          <main class="col-md-9 content-area">
-            @switch (selectedDesignItem.id) { @case ('3d-modeling') {
-            <div class="content-section active">
-              <h3>{{ selectedDesignItem.title }}</h3>
-              <p class="lead">{{ selectedDesignItem.description }}</p>
-            </div>
-            } @case ('virtual-reality') {
-            <div class="content-section active">
-              <h3>{{ selectedDesignItem.title }}</h3>
-              <p class="lead">{{ selectedDesignItem.description }}</p>
-              <div class="parallax-section mt-3">
-                <h3>{{ selectedDesignItem.parallaxTitle }}</h3>
+              <!-- Carousel navigation buttons -->
+              <button (click)="prevSlide(selectedDesignItem.id, selectedDesignItem.carouselImages.length)"
+                class="carousel-btn carousel-btn-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all z-10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button (click)="nextSlide(selectedDesignItem.id, selectedDesignItem.carouselImages.length)"
+                class="carousel-btn carousel-btn-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all z-10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <!-- Carousel indicators -->
+              <div class="carousel-indicators absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                @for (image of selectedDesignItem.carouselImages; track $index) {
+                <button (click)="goToSlide(selectedDesignItem.id, $index, selectedDesignItem.carouselImages.length)"
+                  class="w-2 h-2 rounded-full transition-all bg-white/60"
+                  [class.bg-white]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [class.w-5]="getCurrentSlideIndex(selectedDesignItem.id) === $index"
+                  [attr.aria-label]="'Go to slide ' + ($index + 1)">
+                </button>
+                }
               </div>
             </div>
-            } @case ('augmented-reality') {
-            <div class="content-section active">
-              <h3>{{ selectedDesignItem.title }}</h3>
-              <p class="lead">{{ selectedDesignItem.description }}</p>
-              <div class="ar-parallax-container"
-                   (mousemove)="onMouseMove($event)"
-                   (touchmove)="onTouchMove($event)">
-                <!-- Base layer: Room background -->
-                <div class="ar-layer ar-room">
-                  <img src="room-alone.png" alt="Room background" class="room-bg" />
-                </div>
-                <!-- Second layer: Hand with phone -->
-                <div class="ar-layer ar-hand"
-                     [style.transform]="handTransform"
-                     [style.left.px]="handPosition.x"
-                     [style.top.px]="handPosition.y">
-                  <img src="hand-alone.png" alt="Hand holding phone" class="hand-phone" />
-                </div>
-                <!-- Third layer: Sofa -->
-                <div class="ar-layer ar-sofa"
-                     [style.transform]="sofaTransform"
-                     [style.left.px]="sofaPosition.x"
-                     [style.top.px]="sofaPosition.y">
-                  <img src="sofa-alone-small.png" alt="Sofa" class="sofa-3d" />
-                </div>
+            }
+
+            <!-- Unrender Games Mobile Header - Centered -->
+            <div class="text-center mb-6">
+              <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
+                class="inline-block mb-3 text-3xl font-black bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                style="background-image: linear-gradient(to right, #f5a623, #ff8c00); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                UNRENDER.GAMES
+              </a>
+              <p class="text-base text-gray-600 mb-4">Nosso Estúdio de Games</p>
+
+              <!-- Social Links -->
+              <div class="flex gap-4 mb-6 justify-center">
+                <a href="https://instagram.com/unrendergames" target="_blank" rel="noopener noreferrer"
+                  class="text-gray-700 hover:text-orange-600 transition-all transform hover:scale-110"
+                  title="Instagram">
+                  <i class="fab fa-instagram text-2xl"></i>
+                </a>
+                <a href="https://linkedin.com/company/unrender-games" target="_blank" rel="noopener noreferrer"
+                  class="text-gray-700 hover:text-orange-600 transition-all transform hover:scale-110" title="LinkedIn">
+                  <i class="fab fa-linkedin text-2xl"></i>
+                </a>
               </div>
             </div>
-            } @case ('productions') {
-            <div class="content-section active">
-              <h3>{{ selectedDesignItem.title }}</h3>
-              <p class="lead">{{ selectedDesignItem.description }}</p>
-              <div class="parallax-section mt-3 parallax-drone">
-                <h3>{{ selectedDesignItem.parallaxTitle }}</h3>
+
+            <!-- Specialties Section Mobile -->
+            <div class="mb-6">
+              <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3 text-center">Especialidades</h4>
+              <div class="flex flex-wrap gap-2 justify-center">
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  Modelagem 3D
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  Gamificação
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  Jogos Educacionais
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  Efeitos Especiais
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  Realidade Virtual
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  Realidade Aumentada
+                </span>
               </div>
             </div>
-            } @default {
-            <div class="content-section active">
-              <h3>{{ selectedDesignItem.title }}</h3>
-              <p class="lead">{{ selectedDesignItem.description }}</p>
-              <img
-                  [src]="selectedDesignItem.imageUrl"
-                [alt]="selectedDesignItem.title"
-                onerror="this.onerror=null;this.src='https://placehold.co/1200x800/8e2de2/ffffff?text=Imagem+Indispon%C3%ADvel';"
-              />
+
+            <!-- Platform Badges Section Mobile -->
+            <div class="mb-6">
+              <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3 text-center">Plataformas</h4>
+              <div class="flex flex-wrap gap-2 justify-center">
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-android"></i> Android
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-apple"></i> iOS
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-windows"></i> Windows
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-linux"></i> Linux
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-apple"></i> Mac
+                </span>
+                <span
+                  class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all">
+                  <i class="fab fa-vr-cardboard"></i> Meta Quest
+                </span>
+              </div>
             </div>
-            } }
-          </main>
+
+            <!-- Call to Action Mobile -->
+            <div class="text-center mt-8">
+              <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
+                class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-base font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                Conheça Nossos Projetos →
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-      } }
+      }
     </div>
   </div>
 </section>

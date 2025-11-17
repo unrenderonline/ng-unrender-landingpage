@@ -12,8 +12,11 @@ export class Navbar {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    // A transição acontece após rolar 50 pixels
-    this.isScrolled = window.scrollY > 50;
+    // A transição acontece quando passa da seção hero-cube estendida
+    // A seção agora vai até o título (100vh + 80px de extensão - 100px do título sobreposto)
+    // Navbar muda quando passa do título branco
+    const heroSectionHeight = window.innerHeight + 80 - 100; // calc(100vh + 80px - 100px)
+    this.isScrolled = window.scrollY > heroSectionHeight;
   }
 
   toggleMobileMenu() {

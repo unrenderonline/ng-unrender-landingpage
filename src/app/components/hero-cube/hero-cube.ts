@@ -100,6 +100,8 @@ export class HeroCube implements AfterViewInit, OnDestroy {
 
     // Inicializa o grupo que seguirá o mouse
     this.mouseFollowGroup = new THREE.Group();
+    // Move o grupo para baixo na tela
+    this.mouseFollowGroup.position.y = -3;
     this.scene.add(this.mouseFollowGroup);
 
     this.createClusteredCube();
@@ -172,9 +174,35 @@ export class HeroCube implements AfterViewInit, OnDestroy {
           );
           cube.position.copy(originalPosition);
           cube.userData['originalPosition'] = originalPosition;
-          cube.userData['explosionVector'] = new THREE.Vector3(
-            (Math.random() - 0.5), (Math.random() - 0.5), (Math.random() - 0.5)
-          ).normalize();
+          
+          // Direção diagonal: direita (x+), cima (y+), levemente para frente (z+)
+          // Cada voxel tem sua própria direção randomizada mantendo a tendência diagonal
+          const baseDirection = new THREE.Vector3(1.0, 1.2, 0.3);
+          const randomVariation = new THREE.Vector3(
+            Math.random() * 0.6 - 0.2, // Mais variação em X (mantém tendência à direita)
+            Math.random() * 0.5 - 0.1, // Variação em Y (mantém tendência para cima)
+            Math.random() * 0.6 - 0.3  // Variação em Z
+          );
+          cube.userData['explosionVector'] = baseDirection.clone()
+            .add(randomVariation)
+            .normalize();
+          
+          // Calcula o delay baseado principalmente na altura (Y) e posição à direita (X)
+          // Prioriza voxels do TOPO (j alto) e DIREITA (i alto)
+          const heightFactor = (gridSize - 1 - j) / (gridSize - 1); // 0 no topo, 1 na base
+          const rightFactor = (gridSize - 1 - i) / (gridSize - 1);  // 0 à direita, 1 à esquerda
+          const depthFactor = (gridSize - 1 - k) / (gridSize - 1);  // 0 na frente, 1 atrás
+          
+          // Peso maior para altura (base fica por último)
+          const baseDelay = (heightFactor * 0.6) + (rightFactor * 0.25) + (depthFactor * 0.15);
+          
+          // Adiciona randomização significativa para que cada voxel comece em momento diferente
+          const randomDelay = Math.random() * 0.3;
+          cube.userData['explosionDelay'] = baseDelay + randomDelay;
+          
+          // Adiciona um offset de início aleatório individual para cada voxel
+          cube.userData['randomStartOffset'] = Math.random() * 0.15;
+          
           this.mainCube.add(cube);
         }
       }
@@ -234,14 +262,42 @@ export class HeroCube implements AfterViewInit, OnDestroy {
       this.constellationLines.rotation.copy(this.constellationPoints.rotation);
     }
 
-    const explosionFactor = this.scrollPercent * 35;
     this.mainCube.children.forEach(cube => {
+      const delay = cube.userData['explosionDelay'];
+      const randomOffset = cube.userData['randomStartOffset'];
+      
+      // Calcula quando este voxel específico deve começar a se mover
+      // scrollPercent vai de 0 a 1 conforme o usuário rola
+      const adjustedScroll = this.scrollPercent + randomOffset;
+      
+      // O voxel só começa a se mover quando o scroll atinge seu delay
+      // Isso cria o efeito de desintegração progressiva
+      let individualProgress = 0;
+      if (adjustedScroll > delay) {
+        // Progresso individual deste voxel (0 a 1)
+        individualProgress = Math.min(1, (adjustedScroll - delay) / (1 - delay + 0.3));
+      }
+      
+      // Aplica uma curva de aceleração para movimento mais natural
+      const easedProgress = individualProgress * individualProgress * (3 - 2 * individualProgress);
+      
+      // Distância que o voxel vai voar
+      const explosionDistance = 50 + Math.random() * 20; // Varia a distância para cada voxel
+      
       const targetPosition = new THREE.Vector3()
         .copy(cube.userData['explosionVector'])
-        .multiplyScalar(explosionFactor * (1 + Math.random() * 0.2))
+        .multiplyScalar(easedProgress * explosionDistance)
         .add(cube.userData['originalPosition']);
       
-      cube.position.lerp(targetPosition, 0.07);
+      // Movimento suave com interpolação
+      cube.position.lerp(targetPosition, 0.1);
+      
+      // Opcional: Faz os voxels rotacionarem levemente enquanto voam
+      if (individualProgress > 0) {
+        cube.rotation.x += 0.02 * individualProgress;
+        cube.rotation.y += 0.03 * individualProgress;
+        cube.rotation.z += 0.015 * individualProgress;
+      }
     });
 
     this.renderer.render(this.scene, this.camera);

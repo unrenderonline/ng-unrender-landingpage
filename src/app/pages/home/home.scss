@@ -11,6 +11,75 @@ main {
 }
 
 /*
+ * Hero Section Estendida - vai até o título
+ */
+.hero-section-extended {
+  position: relative;
+  height: calc(100vh + 80px); // Reduzida para ficar mais no topo
+  width: 100%;
+  background-color: #0a0311;
+  overflow: hidden;
+}
+
+.bg-unrender-purple{
+  background-color: #130220; // Exemplo de cor roxa
+}
+
+/*
+ * Seção do Título com fundo branco - seamless com o conteúdo
+ */
+.title-section {
+  position: relative;
+  z-index: 10;
+  margin-top: -100px; // Menos sobreposição para ficar mais no topo
+  padding-bottom: 0; // Remove padding para conexão seamless
+  background-color: #ffffff; // Fundo branco para continuidade
+  border-top-left-radius: 2rem; // Cantos arredondados no topo
+  border-top-right-radius: 2rem; // Cantos arredondados no topo
+}
+
+.title-container {
+  border-radius: 0; // Remove bordas arredondadas para look seamless
+  padding: 3rem 2rem 2rem 2rem; // Mantém padding interno
+  box-shadow: none; // Remove sombra para visual seamless
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Responsividade para a seção de título */
+@media (max-width: 992px) {
+  .hero-section-extended {
+    height: calc(100vh + 60px);
+  }
+  
+  .title-section {
+    margin-top: -80px;
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+  }
+  
+  .title-container {
+    padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section-extended {
+    height: calc(100vh + 50px);
+  }
+  
+  .title-section {
+    margin-top: -70px;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+  }
+  
+  .title-container {
+    padding: 2rem 1rem 1rem 1rem;
+  }
+}
+
+/*
  * Seção de Conteúdo (Branca, sobrepõe o Herói)
  */
 .content-section {
@@ -104,7 +173,7 @@ main {
 
 /* A face da frente permanece no fluxo normal do documento. */
 .flip-card-front {
-  /* Nenhuma posição necessária aqui. */
+  position: relative; /* Mantém no fluxo normal */
 }
 
 /* A face de trás é posicionada absolutamente para ficar atrás da frente. */
