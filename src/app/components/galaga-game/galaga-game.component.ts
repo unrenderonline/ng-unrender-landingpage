@@ -610,12 +610,12 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     
     // Create two voxel text enemies - split into multiple lines on mobile
     if (isMobile) {
-      this.createVoxelTextEnemy("CHAME ATENÇÃO", xOffset, 2.2);
+      this.createVoxelTextEnemy("CHAME A ATENÇÃO", xOffset, 2.2);
       this.createVoxelTextEnemy("E ENCANTE", xOffset, 1.4);
       this.createVoxelTextEnemy("COM INTERAÇÕES", xOffset, 0.6);
       this.createVoxelTextEnemy("UNICAS", xOffset, -0.2);
     } else {
-      this.createVoxelTextEnemy("CHAME ATENÇÃO E ENCANTE", xOffset, 1.8);
+      this.createVoxelTextEnemy("CHAME A ATENÇÃO E ENCANTE", xOffset, 1.8);
       this.createVoxelTextEnemy("COM INTERAÇÕES UNICAS", xOffset, 0.3);
     }
   }

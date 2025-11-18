@@ -1,6 +1,6 @@
 <nav
   class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-  [ngClass]="{ 'bg-white shadow-lg': isScrolled, 'bg-transparent': !isScrolled }"
+  [ngClass]="{ 'bg-white shadow-lg': isScrolled, 'backdrop-blur-sm': !isScrolled }"
 >
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16 lg:h-20">
@@ -15,7 +15,8 @@
       </a>
 
       <button
-        class="lg:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
+        class="lg:hidden p-2 rounded-md transition-colors"
+        [ngClass]="{ 'hover:bg-gray-100': isScrolled, 'hover:bg-white/10': !isScrolled }"
         type="button"
         (click)="toggleMobileMenu()"
         aria-label="Toggle navigation"

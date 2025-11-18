@@ -95,9 +95,9 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
 
     .device-btn {
       padding: 8px 16px;
-      border: 2px solid #333;
+      border: 2px solid #10051c;
       background-color: transparent;
-      color: #333;
+      color: #10051c;
       border-radius: 20px;
       cursor: pointer;
       font-size: 14px;
@@ -106,13 +106,14 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
     }
 
     .device-btn:hover {
-      background-color: #333;
+      background-color: #10051c;
       color: white;
     }
 
     .device-btn.active {
-      background-color: #333;
+      background-color: #f5a623;
       color: white;
+      border-color: #f5a623;
     }
 
     .scale-wrapper {
@@ -133,15 +134,14 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       transform-origin: top center;
       /* Scale is handled via inline style from @Input */
       /* Prevent the container from taking layout space */
-      width: 100%;
+      min-width: 100%!important;
       position: absolute;
       top: 0;
-      left: 50%;
     }
 
     /* --- DEVICE FRAME --- */
     .device-frame {
-      background-color: #333;
+      background-color: #10051c;
       border-radius: 30px;
       padding: 15px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -164,7 +164,7 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       transform: translateX(-50%);
       width: 80px;
       height: 10px;
-      background-color: #444;
+      background-color: #f5a623;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
       z-index: 2;
@@ -181,10 +181,10 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       transform: translateX(-50%);
       width: 40px;
       height: 40px;
-      border: 2px solid #555;
+      border: 2px solid #f5a623;
       border-radius: 50%;
       z-index: 2;
-      background-color: #333;
+      background-color: #10051c;
       transition: opacity 0.3s ease-out;
       opacity: 1;
     }
@@ -229,7 +229,7 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       height: 600px;
       border-radius: 10px;
       padding: 5px;
-      background-color: #222;
+      background-color: #10051c;
     }
     .device-frame.desktop .viewport {
       width: 890px;
@@ -270,14 +270,14 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
     .monitor-stand .stand-neck {
       width: 60px;
       height: 40px;
-      background-color: #333;
+      background-color: #10051c;
       margin-top: -5px;
       z-index: 0;
     }
     .monitor-stand .stand-base {
       width: 250px;
       height: 15px;
-      background-color: #444;
+      background-color: #f5a623;
       border-radius: 5px 5px 0 0;
       box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
     }
@@ -405,6 +405,7 @@ export class ResponsiveDemoComponent implements OnInit, OnDestroy {
   private deviceOrder: DeviceType[] = ['phone', 'tablet', 'desktop'];
   private currentIndex = 0;
   private intervalId: any;
+  private manualSwitchDelay: number = 5000; // 5 seconds delay after manual switch
 
   ngOnInit(): void {
     this.startAnimation();
@@ -436,15 +437,23 @@ export class ResponsiveDemoComponent implements OnInit, OnDestroy {
     return Math.max(280, calculatedHeight);
   }
 
-  private startAnimation() {
-    this.intervalId = setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.deviceOrder.length;
-      this.currentDevice = this.deviceOrder[this.currentIndex];
-    }, this.intervalSpeed);
+  private startAnimation(delay: number = 0) {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    
+    setTimeout(() => {
+      this.intervalId = setInterval(() => {
+        this.currentIndex = (this.currentIndex + 1) % this.deviceOrder.length;
+        this.currentDevice = this.deviceOrder[this.currentIndex];
+      }, this.intervalSpeed);
+    }, delay);
   }
 
   switchToDevice(device: DeviceType): void {
     this.currentDevice = device;
     this.currentIndex = this.deviceOrder.indexOf(device);
+    // Add 5 seconds delay before resuming autoplay
+    this.startAnimation(this.manualSwitchDelay);
   }
 }

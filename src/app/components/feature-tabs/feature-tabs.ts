@@ -1,10 +1,11 @@
-import { NgSwitch, NgComponentOutlet } from '@angular/common';
+import { NgSwitch, NgComponentOutlet, NgClass } from '@angular/common';
 import { Component, OnInit, HostListener, AfterViewInit, ElementRef, ViewChild, OnDestroy, Type } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { gsap } from 'gsap';
 import { ResponsiveDemoComponent } from '../responsiveDemo/responsive-demo.component';
 import { ThreeDAnimationDemoComponent } from '../3d-animation/3d-animation.component';
 import { GalagaArcadeComponent } from '../galaga-game/galaga-game.component';
+import { ChatWidgetComponent } from '../chat-widget/chat-widget.component';
 
 // Interface para definir a estrutura de uma feature
 interface Feature {
@@ -42,7 +43,7 @@ interface MenuItem {
 @Component({
   selector: 'app-feature-tabs',
   standalone: true,
-  imports: [NgComponentOutlet],
+  imports: [NgComponentOutlet, NgClass],
   templateUrl: './feature-tabs.html',
   styleUrls: ['./feature-tabs.scss'],
 })
@@ -185,7 +186,11 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       ],
       features: [
         {
-          name: 'Sistemas movidos por IA',
+          name: 'Chatbot e Assistentes Virtuais com IA. Inteligente de verdade!',
+          customComponent: ChatWidgetComponent,
+        },
+        {
+          name: 'Sistemas com ferramentas integradas com IA, de forma útil.',
           imageUrl: '/controlb-png.png'
         },
         {
@@ -999,5 +1004,28 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
     const sofaOffsetX = this.mouseX * 15 + this.deviceOrientation.x * 8;
     const sofaOffsetY = this.mouseY * 15 + this.deviceOrientation.y * 8;
     this.sofaTransform = `translate(${sofaOffsetX}px, ${sofaOffsetY}px)`;
+  }
+
+  // Method to get background class for custom component features
+  getCustomComponentBackgroundClass(menuItemId: string, featureIndex: number): string {
+    // Find the menu item and count custom components before this one
+    let customComponentCount = 0;
+    const menuItems = [
+      ...this.developmentMenuItems,
+      ...this.infrastructureMenuItems,
+      ...this.designMenuItems
+    ];
+
+    const menuItem = menuItems.find(item => item.id === menuItemId);
+    if (menuItem && menuItem.features) {
+      for (let i = 0; i <= featureIndex; i++) {
+        if (menuItem.features[i] && (menuItem.features[i].customComponent || menuItem.features[i].customHtml)) {
+          customComponentCount++;
+        }
+      }
+    }
+
+    // Alternate between orange and purple based on count
+    return customComponentCount % 2 === 1 ? 'bg-unrender-accent' : 'bg-unrender-purple';
   }
 }

@@ -21,12 +21,14 @@ export class HeroCube implements AfterViewInit, OnDestroy {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
-  private mainCube!: THREE.Group;
   private mouseFollowGroup!: THREE.Group; // Grupo para a rotação do mouse
 
   private constellationPoints!: THREE.Points;
   private constellationLines!: THREE.LineSegments;
   private constellationVertices: THREE.Vector3[] = [];
+
+  private instancedCube!: THREE.InstancedMesh;
+  private instanceData: any[] = [];
 
   private animationFrameId: number | undefined;
   private scrollPercent = 0;
@@ -59,10 +61,15 @@ export class HeroCube implements AfterViewInit, OnDestroy {
   @HostListener('window:resize', [])
   onWindowResize(): void {
     if (this.camera && this.renderer) {
-      this.camera.aspect = window.innerWidth / window.innerHeight;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const container = this.canvasRef.nativeElement.parentElement;
+      if (container) {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(width, height);
+        this.renderer.setPixelRatio(1);
+      }
     }
   }
 
@@ -81,17 +88,21 @@ export class HeroCube implements AfterViewInit, OnDestroy {
   }
 
   private initThree(): void {
+    const container = this.canvasRef.nativeElement.parentElement;
+    const width = container ? container.clientWidth : window.innerWidth;
+    const height = container ? container.clientHeight : window.innerHeight;
+
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     this.camera.position.z = 20;
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvasRef.nativeElement,
       alpha: true,
-      antialias: true
+      antialias: false
     });
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setSize(width, height);
+    this.renderer.setPixelRatio(1);
 
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
     const pointLight = new THREE.PointLight(0xffa500, 3.0, 150);
@@ -101,7 +112,7 @@ export class HeroCube implements AfterViewInit, OnDestroy {
     // Inicializa o grupo que seguirá o mouse
     this.mouseFollowGroup = new THREE.Group();
     // Move o grupo para baixo na tela
-    this.mouseFollowGroup.position.y = -3;
+    this.mouseFollowGroup.position.y = -4.5;
     this.scene.add(this.mouseFollowGroup);
 
     this.createClusteredCube();
@@ -110,7 +121,7 @@ export class HeroCube implements AfterViewInit, OnDestroy {
 
   private createConstellationBackground(): void {
     const pointsGeometry = new THREE.BufferGeometry();
-    const numPoints = 150;
+    const numPoints = 100;
     const areaSize = 250;
 
     for (let i = 0; i < numPoints; i++) {
@@ -152,8 +163,7 @@ export class HeroCube implements AfterViewInit, OnDestroy {
   }
 
   private createClusteredCube(): void {
-    this.mainCube = new THREE.Group();
-    const gridSize = 7;
+    const gridSize = 5;
     const spacing = 1.2;
     const cubeSize = 1;
     const halfGrid = (gridSize - 1) / 2;
@@ -165,15 +175,17 @@ export class HeroCube implements AfterViewInit, OnDestroy {
         roughness: 0.3,
     });
 
+    const totalCubes = gridSize * gridSize * gridSize;
+    this.instancedCube = new THREE.InstancedMesh(geometry, material, totalCubes);
+    this.instancedCube.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
     for (let i = 0; i < gridSize; i++) {
       for (let j = 0; j < gridSize; j++) {
         for (let k = 0; k < gridSize; k++) {
-          const cube = new THREE.Mesh(geometry, material);
+          const index = i * gridSize * gridSize + j * gridSize + k;
           const originalPosition = new THREE.Vector3(
             (i - halfGrid) * spacing, (j - halfGrid) * spacing, (k - halfGrid) * spacing
           );
-          cube.position.copy(originalPosition);
-          cube.userData['originalPosition'] = originalPosition;
           
           // Direção diagonal: direita (x+), cima (y+), levemente para frente (z+)
           // Cada voxel tem sua própria direção randomizada mantendo a tendência diagonal
@@ -183,7 +195,7 @@ export class HeroCube implements AfterViewInit, OnDestroy {
             Math.random() * 0.5 - 0.1, // Variação em Y (mantém tendência para cima)
             Math.random() * 0.6 - 0.3  // Variação em Z
           );
-          cube.userData['explosionVector'] = baseDirection.clone()
+          const explosionVector = baseDirection.clone()
             .add(randomVariation)
             .normalize();
           
@@ -198,17 +210,29 @@ export class HeroCube implements AfterViewInit, OnDestroy {
           
           // Adiciona randomização significativa para que cada voxel comece em momento diferente
           const randomDelay = Math.random() * 0.3;
-          cube.userData['explosionDelay'] = baseDelay + randomDelay;
+          const explosionDelay = baseDelay + randomDelay;
           
           // Adiciona um offset de início aleatório individual para cada voxel
-          cube.userData['randomStartOffset'] = Math.random() * 0.15;
+          const randomStartOffset = Math.random() * 0.15;
           
-          this.mainCube.add(cube);
+          const instanceData = {
+            originalPosition: originalPosition.clone(),
+            explosionVector,
+            explosionDelay,
+            randomStartOffset,
+            currentPosition: originalPosition.clone(),
+            rotation: new THREE.Euler(0, 0, 0)
+          };
+          this.instanceData[index] = instanceData;
+
+          const matrix = new THREE.Matrix4();
+          matrix.setPosition(originalPosition);
+          this.instancedCube.setMatrixAt(index, matrix);
         }
       }
     }
     // Adiciona o cubo ao grupo que segue o mouse
-    this.mouseFollowGroup.add(this.mainCube);
+    this.mouseFollowGroup.add(this.instancedCube);
   }
 
   private updateConstellation(): void {
@@ -236,16 +260,33 @@ export class HeroCube implements AfterViewInit, OnDestroy {
         }
     }
     
+    // Update points geometry (this should be stable since vertices count doesn't change)
     (this.constellationPoints.geometry as THREE.BufferGeometry).setFromPoints(this.constellationVertices);
-    (this.constellationLines.geometry as THREE.BufferGeometry).setFromPoints(lineSegments);
+    
+    // Update lines geometry - dispose and recreate if line count changed
+    if (this.constellationLines) {
+      const newLineCount = lineSegments.length;
+      const currentLineCount = (this.constellationLines.geometry as THREE.BufferGeometry).attributes['position']?.count || 0;
+      
+      if (newLineCount !== currentLineCount) {
+        // Dispose old geometry and create new one
+        this.constellationLines.geometry.dispose();
+        const lineGeometry = new THREE.BufferGeometry();
+        lineGeometry.setFromPoints(lineSegments);
+        this.constellationLines.geometry = lineGeometry;
+      } else if (newLineCount > 0) {
+        // Update existing geometry
+        (this.constellationLines.geometry as THREE.BufferGeometry).setFromPoints(lineSegments);
+      }
+    }
   }
 
   private animate(): void {
     this.animationFrameId = requestAnimationFrame(() => this.animate());
 
     // Rotação constante do cubo dentro do seu grupo
-    this.mainCube.rotation.y += 0.002;
-    this.mainCube.rotation.x += 0.001;
+    this.instancedCube.rotation.y += 0.002;
+    this.instancedCube.rotation.x += 0.001;
 
     // O grupo pai (mouseFollowGroup) segue o mouse suavemente
     if (this.mouseFollowGroup) {
@@ -262,9 +303,10 @@ export class HeroCube implements AfterViewInit, OnDestroy {
       this.constellationLines.rotation.copy(this.constellationPoints.rotation);
     }
 
-    this.mainCube.children.forEach(cube => {
-      const delay = cube.userData['explosionDelay'];
-      const randomOffset = cube.userData['randomStartOffset'];
+    for (let i = 0; i < this.instanceData.length; i++) {
+      const data = this.instanceData[i];
+      const delay = data.explosionDelay;
+      const randomOffset = data.randomStartOffset;
       
       // Calcula quando este voxel específico deve começar a se mover
       // scrollPercent vai de 0 a 1 conforme o usuário rola
@@ -285,20 +327,28 @@ export class HeroCube implements AfterViewInit, OnDestroy {
       const explosionDistance = 50 + Math.random() * 20; // Varia a distância para cada voxel
       
       const targetPosition = new THREE.Vector3()
-        .copy(cube.userData['explosionVector'])
+        .copy(data.explosionVector)
         .multiplyScalar(easedProgress * explosionDistance)
-        .add(cube.userData['originalPosition']);
+        .add(data.originalPosition);
       
       // Movimento suave com interpolação
-      cube.position.lerp(targetPosition, 0.1);
+      data.currentPosition.lerp(targetPosition, 0.1);
       
       // Opcional: Faz os voxels rotacionarem levemente enquanto voam
       if (individualProgress > 0) {
-        cube.rotation.x += 0.02 * individualProgress;
-        cube.rotation.y += 0.03 * individualProgress;
-        cube.rotation.z += 0.015 * individualProgress;
+        data.rotation.x += 0.02 * individualProgress;
+        data.rotation.y += 0.03 * individualProgress;
+        data.rotation.z += 0.015 * individualProgress;
       }
-    });
+
+      // Update the matrix
+      const matrix = new THREE.Matrix4();
+      matrix.makeRotationFromEuler(data.rotation);
+      matrix.setPosition(data.currentPosition);
+      this.instancedCube.setMatrixAt(i, matrix);
+    }
+
+    this.instancedCube.instanceMatrix.needsUpdate = true;
 
     this.renderer.render(this.scene, this.camera);
   }
