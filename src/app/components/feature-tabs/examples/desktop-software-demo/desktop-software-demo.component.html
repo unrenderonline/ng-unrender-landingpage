@@ -1,0 +1,214 @@
+<div class="monitor-container" #monitorContainer [style.height.px]="containerHeight">
+  <div class="monitor-bezel" [style.transform]="'scale(' + scaleFactor + ')'">
+    <div class="monitor-screen" [ngClass]="os">
+
+      <!-- Desktop Area -->
+      <div class="desktop-area">
+        <!-- Desktop Icons -->
+        <div class="desktop-icon" (click)="openWindow()">
+          <div class="icon-bg">
+            <img src="controlb-png.png" alt="Ctrl+B" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <span class="icon-label">Ctrl+B</span>
+        </div>
+      </div>
+
+      <div class="ctrl-b-overlay" *ngIf="showCtrlBImage" (click)="showCtrlBImage = false">
+        <img src="controlb-png.png" alt="Ctrl+B">
+      </div>
+
+      <!-- Draggable Software Window -->
+      <div class="software-window" [ngClass]="{
+             'maximized': isMaximized, 
+             'minimized': isMinimized
+           }" [style.left.px]="!isMaximized ? windowPosition.x : 0"
+        [style.top.px]="!isMaximized ? windowPosition.y : 0" [style.width.px]="!isMaximized ? windowSize.width : null"
+        [style.height.px]="!isMaximized ? windowSize.height : null" *ngIf="isWindowOpen">
+
+        <!-- Window Title Bar -->
+        <div class="title-bar" (mousedown)="startDrag($event)">
+          <!-- Windows Controls (Right) -->
+          <div class="window-title" *ngIf="os === 'windows'">
+            <img src="controlb-png.png" alt="Icon" style="width: 16px; height: 16px;" *ngIf="os === 'windows'">
+            <span>Ctrl+B</span>
+          </div>
+
+          <!-- macOS Controls (Left) -->
+          <div class="window-controls left" *ngIf="os === 'macos'">
+            <div class="control close" (click)="closeWindow()"></div>
+            <div class="control minimize" (click)="minimizeWindow()"></div>
+            <div class="control maximize" (click)="toggleMaximize()"></div>
+          </div>
+
+          <!-- Linux Title -->
+          <div class="window-title" *ngIf="os === 'linux'">
+            Ctrl+B
+          </div>
+
+          <!-- Windows Controls -->
+          <div class="window-controls right" *ngIf="os === 'windows'">
+            <div class="control minimize" (click)="minimizeWindow()">
+              <img src="desktop/minimize-w11.png" alt="Minimize" style="width: 12px;">
+            </div>
+            <div class="control maximize" (click)="toggleMaximize()">
+              <img src="desktop/maximizew11.png" alt="Maximize" style="width: 12px;">
+            </div>
+            <div class="control close" (click)="closeWindow()">
+              <img src="desktop/close-w11.png" alt="Close" style="width: 12px;">
+            </div>
+          </div>
+
+          <!-- Linux Controls -->
+          <div class="window-controls right" *ngIf="os === 'linux'">
+            <div class="control minimize" (click)="minimizeWindow()"><fa-icon [icon]="faWindowMinimize"></fa-icon></div>
+            <div class="control maximize" (click)="toggleMaximize()"><fa-icon [icon]="faWindowMaximize"></fa-icon></div>
+            <div class="control close" (click)="closeWindow()"><fa-icon [icon]="faTimes"></fa-icon></div>
+          </div>
+        </div>
+
+        <!-- Window Content -->
+        <div class="window-content">
+          <!-- Sidebar -->
+          <div class="sidebar">
+            <div class="sidebar-item active">
+              <fa-icon [icon]="faThLarge"></fa-icon>
+              <span>Dashboard</span>
+            </div>
+            <div class="sidebar-item">
+              <fa-icon [icon]="faFolder"></fa-icon>
+              <span>Arquivos</span>
+            </div>
+            <div class="sidebar-item">
+              <fa-icon [icon]="faTerminal"></fa-icon>
+              <span>Terminal</span>
+            </div>
+            <div class="sidebar-item">
+              <fa-icon [icon]="faCog"></fa-icon>
+              <span>Config</span>
+            </div>
+          </div>
+
+          <!-- Main View -->
+          <div class="main-view">
+            <h1>Bem-vindo, Admin</h1>
+            <p>Sistema operacional: {{ os | titlecase }}</p>
+            <p>{{ currentDate }} - {{ currentTime }}</p>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <h3>Usuários</h3>
+                <div class="value">1,204</div>
+              </div>
+              <div class="stat-card">
+                <h3>Vendas</h3>
+                <div class="value">$45k</div>
+              </div>
+              <div class="stat-card">
+                <h3>Ativos</h3>
+                <div class="value">85%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Taskbar / Dock -->
+
+      <!-- Windows Taskbar -->
+      <div class="taskbar windows" *ngIf="os === 'windows'">
+        <div class="start-button">
+          <fa-icon [icon]="faWindowsBrand"></fa-icon>
+        </div>
+        <div class="taskbar-icons">
+          <div class="task-icon"><fa-icon [icon]="faSearch"></fa-icon></div>
+          <div class="task-icon">
+            <img src="desktop/edge.png" alt="Edge" style="width: 24px; height: 24px;">
+          </div>
+          <div class="task-icon">
+            <img src="desktop/files.png" alt="Files" style="width: 24px; height: 24px;">
+          </div>
+          <div class="task-icon active" [class.open]="isWindowOpen" (click)="restoreWindow()">
+            <img src="controlb-png.png" alt="Ctrl+B" style="width: 24px; height: 24px;">
+            <div class="indicator" *ngIf="isWindowOpen"></div>
+          </div>
+        </div>
+        <div class="system-tray">
+          <fa-icon [icon]="faWifi"></fa-icon>
+          <fa-icon [icon]="faVolumeUp"></fa-icon>
+          <div class="clock">
+            <span class="time">{{ currentTime }}</span>
+            <span class="date">{{ currentDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- macOS Dock & Top Bar -->
+      <ng-container *ngIf="os === 'macos'">
+        <div class="macos-topbar" *ngIf="!isMaximized">
+          <div class="left">
+            <img src="controlb-png.png" alt="Logo" style="height: 16px;">
+            <span class="bold">Ctrl+B</span>
+            <span>Arquivo</span>
+            <span>Editar</span>
+            <span>Visualizar</span>
+            <span>Janela</span>
+            <span>Ajuda</span>
+          </div>
+          <div class="right">
+            <fa-icon [icon]="faWifi"></fa-icon>
+            <fa-icon [icon]="faSearch"></fa-icon>
+            <span class="clock">{{ currentTime }}</span>
+          </div>
+        </div>
+        <div class="dock-container" *ngIf="!isMaximized">
+          <div class="dock">
+            <div class="dock-icon">
+              <img src="desktop/finder.png" alt="Finder" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div class="dock-icon">
+              <img src="desktop/email.png" alt="Mail" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div class="dock-icon active" (click)="restoreWindow()">
+              <img src="controlb-png.png" alt="Ctrl+B" style="width: 100%; height: 100%; object-fit: contain;">
+              <div class="dot" *ngIf="isWindowOpen"></div>
+            </div>
+            <div class="dock-icon">
+              <img src="desktop/facetime.png" alt="FaceTime" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div class="dock-separator"></div>
+            <div class="dock-icon">
+              <img src="desktop/files.png" alt="Bin" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Linux (Ubuntu style) Top Bar & Side Dock -->
+      <ng-container *ngIf="os === 'linux'">
+        <div class="linux-topbar">
+          <div class="left">Atividades</div>
+          <div class="center">{{ currentDate }} {{ currentTime }}</div>
+          <div class="right">
+            <fa-icon [icon]="faWifi"></fa-icon>
+            <fa-icon [icon]="faVolumeUp"></fa-icon>
+            <fa-icon [icon]="faBatteryFull"></fa-icon>
+          </div>
+        </div>
+        <div class="linux-dock">
+          <div class="dock-icon"><fa-icon [icon]="faThLarge"></fa-icon></div>
+          <div class="dock-icon active" (click)="restoreWindow()">
+            <img src="controlb-png.png" alt="Ctrl+B" style="width: 24px; height: 24px;">
+            <div class="dot" *ngIf="isWindowOpen"></div>
+          </div>
+          <div class="dock-icon"><fa-icon [icon]="faFolder"></fa-icon></div>
+          <div class="dock-icon"><fa-icon [icon]="faTerminal"></fa-icon></div>
+          <div class="dock-icon"><fa-icon [icon]="faGlobe"></fa-icon></div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+  <div class="monitor-stand"></div>
+  <div class="monitor-base"></div>
+</div>

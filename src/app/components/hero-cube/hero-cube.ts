@@ -6,17 +6,21 @@ import {
   NgZone,
   OnDestroy,
   ViewChild,
+  inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import * as THREE from 'three';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-hero-cube',
   standalone: true,
   templateUrl: './hero-cube.html',
   styleUrl: './hero-cube.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroCube implements AfterViewInit, OnDestroy {
- @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
@@ -33,13 +37,23 @@ export class HeroCube implements AfterViewInit, OnDestroy {
   private animationFrameId: number | undefined;
   private scrollPercent = 0;
   private mouse = new THREE.Vector2();
+  private loadingService = inject(LoadingService);
+  private intersectionObserver: IntersectionObserver | undefined;
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) {
+    this.loadingService.show();
+  }
 
   ngAfterViewInit(): void {
     this.ngZone.runOutsideAngular(() => {
-      this.initThree();
-      this.animate();
+      try {
+        this.initThree();
+        this.setupIntersectionObserver();
+      } finally {
+        this.ngZone.run(() => {
+          this.loadingService.hide();
+        });
+      }
     });
   }
 
@@ -47,13 +61,58 @@ export class HeroCube implements AfterViewInit, OnDestroy {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
+    this.disposeThree();
+  }
+
+  private setupIntersectionObserver() {
+    if (!this.canvasRef?.nativeElement) return;
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!this.animationFrameId) {
+            this.animate();
+          }
+        } else {
+          if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = undefined;
+          }
+        }
+      });
+    });
+
+    this.intersectionObserver.observe(this.canvasRef.nativeElement);
+  }
+
+  private disposeThree() {
     if (this.renderer) {
       this.renderer.dispose();
+    }
+    if (this.scene) {
+      this.scene.traverse((object) => {
+        if (object instanceof THREE.Mesh || object instanceof THREE.Points || object instanceof THREE.LineSegments) {
+          if (object.geometry) {
+            object.geometry.dispose();
+          }
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach((m) => m.dispose());
+            } else {
+              object.material.dispose();
+            }
+          }
+        }
+      });
     }
   }
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
+    if (!this.canvasRef?.nativeElement) return;
     const heroHeight = this.canvasRef.nativeElement.parentElement?.clientHeight || window.innerHeight;
     this.scrollPercent = Math.min(window.scrollY / (heroHeight * 0.8), 1);
   }
@@ -121,7 +180,7 @@ export class HeroCube implements AfterViewInit, OnDestroy {
 
   private createConstellationBackground(): void {
     const pointsGeometry = new THREE.BufferGeometry();
-    const numPoints = 100;
+    const numPoints = 200;
     const areaSize = 250;
 
     for (let i = 0; i < numPoints; i++) {
@@ -237,11 +296,29 @@ export class HeroCube implements AfterViewInit, OnDestroy {
 
   private updateConstellation(): void {
     const lineSegments = [];
-    const connectionDistance = 25;
+    const connectionDistance = 35;
     const areaSize = 250;
     const halfArea = areaSize / 2;
 
+    // Mouse interaction
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(this.mouse, this.camera);
+    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const mouseTarget = new THREE.Vector3();
+    raycaster.ray.intersectPlane(plane, mouseTarget);
+    const interactionRadius = 40;
+
     for (const vertex of this.constellationVertices) {
+      // Repulsion logic
+      if (mouseTarget) {
+        const dist = vertex.distanceTo(mouseTarget);
+        if (dist < interactionRadius) {
+          const repulsionDir = new THREE.Vector3().subVectors(vertex, mouseTarget).normalize();
+          const force = (interactionRadius - dist) / interactionRadius;
+          vertex.add(repulsionDir.multiplyScalar(force * 1.5));
+        }
+      }
+
       vertex.add((vertex as any).velocity);
 
       if (vertex.x < -halfArea) vertex.x = halfArea;

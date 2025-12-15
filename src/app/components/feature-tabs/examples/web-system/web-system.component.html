@@ -1,0 +1,243 @@
+<div
+  class="flex flex-col-reverse md:flex-row w-full h-full min-h-[600px] bg-slate-50 font-sans text-slate-800 overflow-hidden rounded-xl shadow-2xl relative">
+  <!-- Sidebar -->
+  <div
+    class="w-full h-auto md:h-full md:w-64 min-w-[16rem] bg-white border-t md:border-t-0 md:border-r border-slate-200 flex flex-row md:!flex-col justify-around md:justify-start items-center md:items-stretch p-2 md:p-6 z-30 shrink-0 transition-all duration-300 md:overflow-y-auto">
+    <div class="hidden md:flex items-center gap-3 mb-10 px-2">
+      <div class="w-8 h-8 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold text-sm">BI
+      </div>
+      <span class="text-xl font-bold text-slate-800">DashBoard</span>
+    </div>
+
+    <nav class="flex flex-row md:!flex-col w-full justify-around md:justify-start gap-1 md:gap-2">
+      <div
+        class="flex flex-col md:flex-row items-center md:gap-3 p-2 md:px-4 md:py-3 rounded-xl cursor-pointer transition-colors text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+        [class.bg-slate-50]="true" [class.text-slate-900]="true" [class.font-semibold]="true">
+        <fa-icon [icon]="faHome" class="text-lg md:text-base"></fa-icon>
+        <span class="text-[10px] md:text-sm">Visão Geral</span>
+      </div>
+      <div
+        class="flex flex-col md:flex-row items-center md:gap-3 p-2 md:px-4 md:py-3 rounded-xl cursor-pointer transition-colors text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <fa-icon [icon]="faChartLine" class="text-lg md:text-base"></fa-icon>
+        <span class="text-[10px] md:text-sm">Analíticos</span>
+      </div>
+      <div
+        class="flex flex-col md:flex-row items-center md:gap-3 p-2 md:px-4 md:py-3 rounded-xl cursor-pointer transition-colors text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <fa-icon [icon]="faBox" class="text-lg md:text-base"></fa-icon>
+        <span class="text-[10px] md:text-sm">Produtos</span>
+      </div>
+      <div
+        class="flex flex-col md:flex-row items-center md:gap-3 p-2 md:px-4 md:py-3 rounded-xl cursor-pointer transition-colors text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <fa-icon [icon]="faUsers" class="text-lg md:text-base"></fa-icon>
+        <span class="text-[10px] md:text-sm">Clientes</span>
+      </div>
+      <div
+        class="flex flex-col md:flex-row items-center md:gap-3 p-2 md:px-4 md:py-3 rounded-xl cursor-pointer transition-colors text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+        <fa-icon [icon]="faCog" class="text-lg md:text-base"></fa-icon>
+        <span class="text-[10px] md:text-sm">Configurações</span>
+      </div>
+    </nav>
+
+    <div class="hidden md:flex mt-auto pt-6 border-t border-slate-100">
+      <div
+        class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-red-500 hover:bg-red-50 w-full transition-colors">
+        <fa-icon [icon]="faSignOutAlt"></fa-icon>
+        <span class="text-sm font-medium">Sair</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <!-- Topbar -->
+    <header
+      class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 shrink-0 z-10">
+      <div class="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-lg w-40 md:w-64">
+        <fa-icon [icon]="faSearch" class="text-slate-400"></fa-icon>
+        <input type="text" placeholder="Pesquisar..."
+          class="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400 text-slate-700" />
+      </div>
+
+      <div class="flex items-center gap-3 md:gap-6">
+        <div class="relative cursor-pointer text-slate-500 hover:text-slate-700">
+          <fa-icon [icon]="faBell" class="text-lg"></fa-icon>
+          <span
+            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">3</span>
+        </div>
+        <div class="relative cursor-pointer text-slate-500 hover:text-slate-700 hidden sm:block">
+          <fa-icon [icon]="faEnvelope" class="text-lg"></fa-icon>
+          <span
+            class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">5</span>
+        </div>
+        <div class="flex items-center gap-3 pl-3 md:pl-6 border-l border-slate-200">
+          <div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+            <img src="https://i.pravatar.cc/150?img=12" alt="User" class="w-full h-full object-cover">
+          </div>
+          <div class="hidden md:flex flex-col">
+            <span class="text-sm font-bold text-slate-800 leading-tight">Admin User</span>
+            <span class="text-xs text-slate-500">Administrador</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-slate-50/50">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 class="text-2xl font-bold text-slate-800">Dashboard</h2>
+        <div
+          class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-600 cursor-pointer hover:bg-slate-50">
+          <span>Últimos 30 dias</span>
+          <fa-icon [icon]="faArrowDown" class="text-xs"></fa-icon>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+          *ngFor="let stat of stats">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg" [ngClass]="{
+                   'bg-green-100 text-green-600': stat.color === 'green',
+                   'bg-blue-100 text-blue-600': stat.color === 'blue',
+                   'bg-orange-100 text-orange-600': stat.color === 'orange',
+                   'bg-purple-100 text-purple-600': stat.color === 'purple'
+                 }">
+              <fa-icon [icon]="stat.icon"></fa-icon>
+            </div>
+            <span class="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1"
+              [ngClass]="stat.isPositive ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'">
+              <fa-icon [icon]="stat.isPositive ? faArrowUp : faArrowDown" class="text-[10px]"></fa-icon>
+              {{ stat.change }}
+            </span>
+          </div>
+          <div>
+            <span class="text-slate-500 text-sm font-medium block mb-1">{{ stat.label }}</span>
+            <span class="text-2xl font-bold text-slate-800">{{ stat.value }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Main Chart Area -->
+        <div class="lg:col-span-3 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="font-bold text-slate-800">Receita Anual</h3>
+            <fa-icon [icon]="faEllipsisV" class="text-slate-400 cursor-pointer hover:text-slate-600"></fa-icon>
+          </div>
+
+          <div class="w-full overflow-x-auto pb-2">
+            <div class="h-64 min-w-[600px] flex items-end justify-between gap-2 sm:gap-4 px-2">
+              <div class="flex-1 h-full flex flex-col justify-end items-center group"
+                *ngFor="let height of chartBars; let i = index">
+                <!-- Bar Container -->
+                <div class="w-full flex-1 flex items-end justify-center relative rounded-t-lg">
+                  <!-- The Bar -->
+                  <div
+                    class="w-full max-w-[40px] bg-unrender-purple rounded-t-sm relative group-hover:bg-indigo-500 transition-all duration-500"
+                    [style.height.%]="height">
+                    <!-- Tooltip -->
+                    <div
+                      class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
+                      R$ {{ height * 100 }}</div>
+                  </div>
+                </div>
+                <!-- Label -->
+                <div class="text-[10px] sm:text-xs text-slate-400 mt-3 font-medium text-center w-full">{{
+                  ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][i] }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Widget -->
+        <div class="lg:col-span-1 w-full bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+          <div class="mb-6">
+            <h3 class="font-bold text-slate-800">Tráfego por Dispositivo</h3>
+          </div>
+          <div class="flex-1 flex flex-col items-center justify-center gap-6">
+            <div
+              class="relative w-48 h-48 rounded-full border-[16px] border-slate-100 flex items-center justify-center">
+              <!-- Simple CSS Donut representation -->
+              <svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none"
+                  stroke="#6366f1" stroke-width="4" stroke-dasharray="85, 100" />
+              </svg>
+              <div class="text-center">
+                <span class="block text-3xl font-bold text-slate-800">85%</span>
+                <span class="text-xs text-slate-500 uppercase tracking-wider">Mobile</span>
+              </div>
+            </div>
+            <div class="w-full space-y-3">
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Mobile
+                </div>
+                <span class="font-bold text-slate-700">65%</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Desktop
+                </div>
+                <span class="font-bold text-slate-700">25%</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-200"></span> Tablet
+                </div>
+                <span class="font-bold text-slate-700">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders Table -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="flex flex-col sm:flex-row justify-between items-center p-6 border-b border-slate-200 gap-4">
+          <h3 class="font-bold text-slate-800 text-lg">Pedidos Recentes</h3>
+          <button
+            class="px-4 py-2 bg-indigo-50 text-indigo-600 text-sm font-medium rounded-lg hover:bg-indigo-100 transition-colors w-full sm:w-auto">Ver
+            Todos</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[600px]">
+            <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold">
+              <tr>
+                <th class="p-4 border-b border-slate-200">ID Pedido</th>
+                <th class="p-4 border-b border-slate-200">Cliente</th>
+                <th class="p-4 border-b border-slate-200">Produto</th>
+                <th class="p-4 border-b border-slate-200">Data</th>
+                <th class="p-4 border-b border-slate-200">Valor</th>
+                <th class="p-4 border-b border-slate-200">Status</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm text-slate-700">
+              <tr *ngFor="let order of recentOrders"
+                class="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                <td class="p-4 font-mono text-slate-500">{{ order.id }}</td>
+                <td class="p-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                      {{ order.customer.charAt(0) }}</div>
+                    <span class="font-medium">{{ order.customer }}</span>
+                  </div>
+                </td>
+                <td class="p-4">{{ order.product }}</td>
+                <td class="p-4 text-slate-500">{{ order.date }}</td>
+                <td class="p-4 font-medium">{{ order.amount }}</td>
+                <td class="p-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium border" [ngClass]="{
+                    'bg-green-50 text-green-600 border-green-100': order.status === 'Concluído',
+                    'bg-yellow-50 text-yellow-600 border-yellow-100': order.status === 'Pendente',
+                    'bg-blue-50 text-blue-600 border-blue-100': order.status === 'Processando',
+                    'bg-red-50 text-red-600 border-red-100': order.status === 'Cancelado'
+                  }">{{ order.status }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -20,10 +20,8 @@ class Particle {
 
   // Método para desenhar a partícula no canvas
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
     ctx.fillStyle = this.color;
-    ctx.fill();
+    ctx.fillRect(this.x - this.size, this.y - this.size, this.size * 2, this.size * 2);
   }
 }
 
@@ -111,12 +109,13 @@ export class Sobre implements AfterViewInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
     const numberOfParticles = (canvas.height * canvas.width) / 9000;
     for (let i = 0; i < numberOfParticles; i++) {
-      const size = (Math.random() * 2) + 1;
+      const size = (Math.random() * 3) + 2;
       const x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
       const y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
       const directionX = (Math.random() * 0.4) - 0.2;
       const directionY = (Math.random() * 0.4) - 0.2;
-      const color = 'rgba(245, 166, 35, 0.3)';
+      // Cor dos pontos da constelação do Hero Cube: #4f607b (rgb(79, 96, 123))
+      const color = 'rgba(79, 96, 123, 1)';
       this.particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
     }
   }
@@ -158,7 +157,8 @@ export class Sobre implements AfterViewInit, OnDestroy {
         const distance = ((this.particlesArray[a].x - this.particlesArray[b].x) ** 2) + ((this.particlesArray[a].y - this.particlesArray[b].y) ** 2);
         if (distance < (canvas.width / 7) * (canvas.height / 7)) {
           const opacityValue = 1 - (distance / 20000);
-          this.ctx.strokeStyle = `rgba(140, 85, 31, ${opacityValue})`;
+          // Cor das linhas da constelação do Hero Cube: #2a3a52 (rgb(42, 58, 82))
+          this.ctx.strokeStyle = `rgba(42, 58, 82, ${opacityValue})`;
           this.ctx.lineWidth = 1;
           this.ctx.beginPath();
           this.ctx.moveTo(this.particlesArray[a].x, this.particlesArray[a].y);

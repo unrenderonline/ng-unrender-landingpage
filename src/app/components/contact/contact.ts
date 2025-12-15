@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 // Importações do Leaflet e OpenRouteService
 import * as L from 'leaflet';
@@ -9,10 +11,66 @@ import 'leaflet-routing-machine';
 @Component({
   selector: 'app-contact',
   standalone: true,
+  imports: [FormsModule, CommonModule],
   templateUrl: './contact.html',
   styleUrl: './contact.scss',
 })
 export class Contact implements AfterViewInit, OnDestroy {
+  contactName: string = '';
+  contactInfo: string = '';
+  contactMessage: string = '';
+
+  detectAndFormatContactInfo(event: any) {
+    let value = event.target.value;
+    // Remove non-numeric characters to check if it's a phone number
+    const numericValue = value.replace(/\D/g, '');
+
+    // Simple heuristic: if it starts with a number or '(', treat as phone
+    if (value.length > 0 && (/^\d/.test(value) || value.startsWith('('))) {
+      
+      // Format as (XX) XXXXX-XXXX
+      let formatted = numericValue;
+      if (numericValue.length > 0) {
+        formatted = `(${numericValue.substring(0, 2)}`;
+      }
+      if (numericValue.length > 2) {
+        formatted = `(${numericValue.substring(0, 2)}) ${numericValue.substring(2)}`;
+      }
+      if (numericValue.length > 7) {
+         // Check if it is 8 or 9 digits
+         if (numericValue.length > 10) { // 11 digits (mobile)
+             formatted = `(${numericValue.substring(0, 2)}) ${numericValue.substring(2, 7)}-${numericValue.substring(7, 11)}`;
+         } else { // 10 digits (landline)
+             formatted = `(${numericValue.substring(0, 2)}) ${numericValue.substring(2, 6)}-${numericValue.substring(6, 10)}`;
+         }
+      }
+      
+      // Update the model directly if needed, but ngModel handles it. 
+      // However, for formatting on type, we need to update the bound variable.
+      this.contactInfo = formatted;
+    } else {
+      // It's likely an email, just update the value
+      this.contactInfo = value;
+    }
+  }
+
+  sendMessage() {
+    if (this.contactName && this.contactInfo && this.contactMessage) {
+      console.log('Sending message:', {
+        name: this.contactName,
+        contact: this.contactInfo,
+        message: this.contactMessage
+      });
+      alert('Mensagem enviada com sucesso!');
+      // Reset form
+      this.contactName = '';
+      this.contactInfo = '';
+      this.contactMessage = '';
+    } else {
+      alert('Por favor, preencha todos os campos.');
+    }
+  }
+
   private map: L.Map | undefined;
   private destinationCoords: L.LatLngTuple = [-15.587887, -56.080988];
   private locationRetryCount = 0;

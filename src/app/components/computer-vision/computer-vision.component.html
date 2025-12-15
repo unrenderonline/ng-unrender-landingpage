@@ -1,0 +1,25 @@
+<div class="cv-container">
+  <div class="viewport">
+    <video #videoElement playsinline muted></video>
+    <canvas #canvasElement></canvas>
+    
+    <div class="overlay-controls" [class.camera-active]="isCameraActive">
+      <div *ngIf="loadingStatus" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <div *ngIf="error" class="status-glass error">
+        {{ error }}
+      </div>
+
+      <div class="actions" *ngIf="!loadingStatus">
+        <button *ngIf="!isCameraActive" (click)="startCamera()" class="btn-glass">
+          Iniciar Câmera
+        </button>
+        <button *ngIf="isCameraActive" (click)="stopCamera()" class="btn-glass stop">
+          Parar Câmera
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

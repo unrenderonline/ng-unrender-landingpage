@@ -1,0 +1,22 @@
+/* Physical Network Topology Styles */
+:host {
+    display: block;
+    width: 100%;
+}
+
+/* Custom scrollbar for the log */
+.overflow-y-auto {
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        background: rgba(30, 41, 59, 0.5);
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(71, 85, 105, 0.8);
+        border-radius: 2px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 1);
+    }
+}

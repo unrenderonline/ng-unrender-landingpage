@@ -6,13 +6,12 @@
 /* Estilos globais para a aplicação */
 body {
   font-family: Montserrat, Roboto, Inter, sans-serif;
-  background-color: #f8f9fa; /* Um cinza claro para o fundo geral */
-  overflow-x: hidden;
+  background-color: #f8f9fa;
+  /* Um cinza claro para o fundo geral */
 }
 
 html {
   width: 100%;
-  overflow-x: hidden;
 }
 
 /* Prevent horizontal scroll on all elements */
@@ -30,7 +29,6 @@ html {
   width: 100%;
   // Fundo roxo espacial bem escuro
   background-color: #0a0311;
-  overflow: hidden;
 }
 
 /* Estilo para a seção do herói estendida (usada na home) */
@@ -40,7 +38,6 @@ html {
   width: 100%;
   // Fundo roxo espacial bem escuro
   background-color: #0a0311;
-  overflow: hidden;
 }
 
 

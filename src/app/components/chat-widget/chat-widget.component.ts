@@ -1,5 +1,5 @@
-import { 
-  Component, 
+import {
+  Component,
   Input,
   OnInit,
   AfterViewInit,
@@ -41,22 +41,33 @@ interface Message {
       <!-- Chat bubbles floating above the input -->
       <div class="flex flex-col space-y-4 p-4">
         
+        @if (!latestUserMessage && !latestAssistantMessage && !isLoading) {
+        <div class="text-center text-gray-500 p-4">
+          <p>Olá! Sou a IA da Unrender. Me pergunte algo!</p>
+        </div>
+        }
+
         <!-- User bubble on right corner, a bit upper -->
-        <div *ngIf="latestUserMessage" class="flex justify-end" style="margin-top: -20px;">
+        @if (latestUserMessage) {
+        <div class="flex justify-end" style="margin-top: -20px;">
           <div #userBubble class="max-w-[80%] rounded-lg p-3 text-white bg-unrender-accent shadow-md">
             {{ latestUserMessage }}
           </div>
         </div>
+        }
         
         <!-- Assistant bubble on left -->
-        <div *ngIf="latestAssistantMessage" class="flex justify-start">
+        @if (latestAssistantMessage) {
+        <div class="flex justify-start">
           <div #assistantBubble class="chat-bubble max-w-[80%] rounded-lg p-3 text-white bg-unrender-purple shadow-md">
             <div [innerHTML]="parseMarkdown(latestAssistantMessage)"></div>
           </div>
         </div>
+        }
 
         <!-- Loading bubble -->
-        <div *ngIf="isLoading" class="flex justify-start">
+        @if (isLoading) {
+        <div class="flex justify-start">
           <div #loadingBubble class="chat-bubble max-w-[80%] rounded-lg p-3 text-white bg-unrender-purple shadow-md">
             <div class="loading-dots">
               <span></span>
@@ -65,6 +76,7 @@ interface Message {
             </div>
           </div>
         </div>
+        }
       </div>
 
       <!-- Full width input at bottom -->
@@ -77,7 +89,8 @@ interface Message {
             (focus)="onInputFocus()"
             (blur)="onInputBlur()"
             placeholder="Como posso ajudar?"
-            class="flex-1 bg-white/10 text-unrender-purple rounded-lg p-3 outline-none focus:ring-2 focus:ring-unrender-accent resize-vertical border border-unrender-purple/30 placeholder-unrender-purple"
+            class="flex-1 bg-white/10 text-unrender-purple rounded-lg p-3 outline-none focus:ring-2 focus:ring-unrender-accent resize-none border border-unrender-purple/30 placeholder-unrender-purple"
+            style="max-height: 120px; overflow-y: auto;"
             rows="3"
             [disabled]="isLoading"
           ></textarea>
@@ -86,7 +99,7 @@ interface Message {
             #sendButton
             (click)="sendMessage()" 
             [disabled]="isLoading || currentMessage.trim() === ''"
-            class="p-3 bg-unrender-accent text-white rounded-full h-12 w-12 flex items-center justify-center
+            class="p-3 bg-unrender-accent text-white rounded-full h-12 w-12 flex items-center justify-center flex-shrink-0
                    hover:bg-unrender-accent/80
                    focus:outline-none focus:ring-2 focus:ring-unrender-accent
                    disabled:bg-unrender-purple disabled:cursor-not-allowed">
@@ -245,7 +258,7 @@ export class ChatWidgetComponent implements OnInit, AfterViewInit {
 
   /**
    * The API key for Gemini.
-   * This must be se\\t for the chat to work.
+   * This must be set for the chat to work.
    * e.g: <app-chat-widget [apiKey]="'your-api-key'"></app-chat-widget>
    */
   @Input() apiKey: string = '';
@@ -303,7 +316,7 @@ export class ChatWidgetComponent implements OnInit, AfterViewInit {
 
     // Animate bubbles when they appear
     this.animateBubbles();
-    
+
     // Subscribe to changes in bubble queries
     this.userBubbles.changes.subscribe(() => this.animateBubbles());
     this.assistantBubbles.changes.subscribe(() => this.animateBubbles());
@@ -368,23 +381,11 @@ export class ChatWidgetComponent implements OnInit, AfterViewInit {
   }
 
   onInputFocus(): void {
-    this.messageInputs.forEach(input => {
-      gsap.to(input.nativeElement, {
-        scale: 1.02,
-        duration: 0.3,
-        ease: 'power2.out'
-      });
-    });
+    // Focus animation removed to prevent overflow over send button
   }
 
   onInputBlur(): void {
-    this.messageInputs.forEach(input => {
-      gsap.to(input.nativeElement, {
-        scale: 1,
-        duration: 0.3,
-        ease: 'power2.out'
-      });
-    });
+    // Blur animation removed to prevent overflow over send button
   }
 
   onEnterKey(event: Event): void {

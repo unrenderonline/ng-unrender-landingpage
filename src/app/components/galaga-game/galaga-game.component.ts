@@ -1,11 +1,13 @@
-import { 
-  Component, 
-  ElementRef, 
-  ViewChild, 
-  AfterViewInit, 
-  OnDestroy, 
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
   HostListener,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  NgZone
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -195,12 +197,13 @@ type EnemyShip = THREE.Object3D & {
         font-size: 12px;
       }
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
   // --- DOM Element References ---
   @ViewChild('gameContainer') private gameContainer!: ElementRef<HTMLDivElement>;
-  
+
   // --- Game State Properties ---
   public score = 0;
   public lives = 3;
@@ -219,27 +222,37 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
   private camera!: THREE.OrthographicCamera;
   private renderer!: THREE.WebGLRenderer;
   private raycaster = new THREE.Raycaster();
-  
+
   // --- Game Object Collections ---
   private player!: PlayerShip;
   private enemies: EnemyShip[] = [];
   private projectiles: GameObject[] = [];
   private particles: GameObject[] = [];
   private buttonHitboxes: GameObject[] = [];
-  
+
   // --- Button Animation ---
   private buttonShakeTimers: number[] = [0, 0, 0, 0]; // For 4 buttons
   private buttonOriginalPositions: THREE.Vector3[] = [];
   private buttonScreenPositions: { x: number; y: number; width: number; height: number }[] = [];
-  
+
   // --- Timers & Controls ---
   private targetPlayerX = 0;
   private enemyMoveTimer = 0;
   private diveAttackTimer = 0;
   private animationFrameId: number = 0;
   private isMobile = false;
+  private isGameWon = false;
 
-  constructor(private cdr: ChangeDetectorRef) {
+  // --- Audio ---
+  private hitSound: HTMLAudioElement | undefined;
+  private shootSound: HTMLAudioElement | undefined;
+  private startSound: HTMLAudioElement | undefined;
+  private winSound: HTMLAudioElement | undefined;
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {
     this.initTranslations();
   }
 
@@ -301,13 +314,44 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
   // --- Angular Lifecycle Hooks ---
 
   ngAfterViewInit(): void {
-    this.initScene();
-    this.createPlayer();
-    this.setupLighting();
-    this.startGame();
-    this.animate();
-    // Call resize once to set correct aspect ratio
-    this.onResize(); 
+    this.initAudio();
+    this.ngZone.runOutsideAngular(() => {
+      this.initScene();
+      this.createPlayer();
+      this.setupLighting();
+      this.startGame();
+      this.setupIntersectionObserver();
+      // Call resize once to set correct aspect ratio
+      this.onResize();
+    });
+  }
+
+  private initAudio(): void {
+    if (typeof Audio !== 'undefined') {
+      this.hitSound = new Audio('hit.m4a');
+      this.shootSound = new Audio('shoot.m4a');
+      this.startSound = new Audio('game%20start.m4a');
+      this.winSound = new Audio('game%20win.m4a');
+
+      // Set volumes (Low standard, shoot lower than hit)
+      this.hitSound.volume = 0.2;
+      this.shootSound.volume = 0.05;
+      this.startSound.volume = 0.1;
+      this.winSound.volume = 0.1;
+
+      // Preload
+      this.hitSound.load();
+      this.shootSound.load();
+      this.startSound.load();
+      this.winSound.load();
+    }
+  }
+
+  private playAudio(audio: HTMLAudioElement | undefined): void {
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(e => console.warn('Audio play failed', e));
+    }
   }
 
   ngOnDestroy(): void {
@@ -315,7 +359,11 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
-    
+
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
+
     // Dispose of Three.js objects
     try {
       this.scene.traverse((object) => {
@@ -337,7 +385,30 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
       console.error("Error during Three.js cleanup:", e);
     }
   }
-  
+
+  private intersectionObserver: IntersectionObserver | undefined;
+
+  private setupIntersectionObserver() {
+    if (!this.gameContainer?.nativeElement) return;
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!this.animationFrameId) {
+            this.animate();
+          }
+        } else {
+          if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = 0;
+          }
+        }
+      });
+    });
+
+    this.intersectionObserver.observe(this.gameContainer.nativeElement);
+  }
+
   // --- HostListeners for Window Events ---
   // (Replaces all document/window.addEventListener calls)
 
@@ -347,18 +418,18 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     const width = rect.width;
     const height = rect.height;
     const aspect = width / height;
-    if (!this.camera) return; // Guard clause
+    if (!this.camera) return;
 
-    // Adjust camera bounds with padding for mobile
-    const isMobile = width < 768;
-    const padding = isMobile ? 0.5 : 0; // Add padding on mobile to prevent text cutoff
-    
-    if (aspect > 1) { // Wider
+    // Adjust camera bounds with padding for mobile/tablet
+    const isCompact = width < 1024;
+    const padding = isCompact ? 0.5 : 0;
+
+    if (aspect > 1) {
       this.camera.left = -4 * aspect + padding;
       this.camera.right = 4 * aspect - padding;
       this.camera.top = 3;
       this.camera.bottom = -3;
-    } else { // Taller
+    } else {
       this.camera.left = -4 + padding;
       this.camera.right = 4 - padding;
       this.camera.top = 3 / aspect;
@@ -366,74 +437,100 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     }
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
-    
-    // Recreate enemy formation if it exists to adjust for responsive text
+
     if (this.enemies.length > 0) {
       this.createEnemyFormation();
     }
   }
-  
+
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(e: MouseEvent): void {
-    // Don't move player if mouse is over buttons
     const target = e.target as HTMLElement;
     if (target && target.tagName === 'BUTTON') return;
-    
-    this.targetPlayerX = (e.clientX / window.innerWidth) * 8 - 4; // map to -4..4
+    if (!this.camera || !this.gameContainer) return;
+
+    const rect = this.gameContainer.nativeElement.getBoundingClientRect();
+    const relativeX = e.clientX - rect.left;
+    const normalizedX = relativeX / rect.width;
+    const worldWidth = this.camera.right - this.camera.left;
+
+    this.targetPlayerX = normalizedX * worldWidth + this.camera.left;
     this.targetPlayerX = Math.max(this.camera.left, Math.min(this.camera.right, this.targetPlayerX));
   }
 
   @HostListener('document:click', ['$event'])
   onClick(e: MouseEvent): void {
-    // Don't shoot/move if clicking on buttons
     const target = e.target as HTMLElement;
     if (target && target.tagName === 'BUTTON') return;
-    
-    const clickX = (e.clientX / window.innerWidth) * 8 - 4;
+    if (!this.camera || !this.gameContainer) return;
+
+    const rect = this.gameContainer.nativeElement.getBoundingClientRect();
+    const relativeX = e.clientX - rect.left;
+    const normalizedX = relativeX / rect.width;
+    const worldWidth = this.camera.right - this.camera.left;
+
+    const clickX = normalizedX * worldWidth + this.camera.left;
     const clamped = Math.max(this.camera.left, Math.min(this.camera.right, clickX));
     this.targetPlayerX = clamped;
-    this.player.position.x = clamped; // Snap
+    this.player.position.x = clamped;
     this.shoot();
   }
 
   @HostListener('document:touchstart', ['$event'])
   onTouchStart(e: TouchEvent): void {
-    // Don't shoot/move if touching buttons
     const target = e.target as HTMLElement;
     if (target && target.tagName === 'BUTTON') return;
-    
+    if (!this.camera || !this.gameContainer) return;
+
     e.preventDefault();
     const touch = e.touches[0];
-    const touchX = (touch.clientX / window.innerWidth) * 8 - 4;
+    const rect = this.gameContainer.nativeElement.getBoundingClientRect();
+    const relativeX = touch.clientX - rect.left;
+    const normalizedX = relativeX / rect.width;
+    const worldWidth = this.camera.right - this.camera.left;
+
+    const touchX = normalizedX * worldWidth + this.camera.left;
     const clamped = Math.max(this.camera.left, Math.min(this.camera.right, touchX));
     this.targetPlayerX = clamped;
-    this.player.position.x = clamped; // Snap
+    this.player.position.x = clamped;
     this.shoot();
   }
 
   @HostListener('document:touchmove', ['$event'])
   onTouchMove(e: TouchEvent): void {
-    // Don't move player if touching buttons
     const target = e.target as HTMLElement;
     if (target && target.tagName === 'BUTTON') return;
-    
+    if (!this.camera || !this.gameContainer) return;
+
     e.preventDefault();
     const touch = e.touches[0];
-    this.targetPlayerX = (touch.clientX / window.innerWidth) * 8 - 4;
+    const rect = this.gameContainer.nativeElement.getBoundingClientRect();
+    const relativeX = touch.clientX - rect.left;
+    const normalizedX = relativeX / rect.width;
+    const worldWidth = this.camera.right - this.camera.left;
+
+    this.targetPlayerX = normalizedX * worldWidth + this.camera.left;
     this.targetPlayerX = Math.max(this.camera.left, Math.min(this.camera.right, this.targetPlayerX));
   }
-  
+
   @HostListener('window:deviceorientation', ['$event'])
   onDeviceOrientation(event: DeviceOrientationEvent): void {
-    if (!this.isMobile) return;
-    const gamma = event.gamma || 0; // left/right tilt (-90 to 90)
-    this.targetPlayerX = (gamma / 90) * 4; // Map tilt to game range
+    if (!this.isMobile || !this.camera) return;
+    const gamma = event.gamma || 0;
+    const halfWidth = (this.camera.right - this.camera.left) / 2;
+    const center = (this.camera.right + this.camera.left) / 2;
+    this.targetPlayerX = (gamma / 90) * halfWidth + center;
     this.targetPlayerX = Math.max(this.camera.left, Math.min(this.camera.right, this.targetPlayerX));
   }
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(e: KeyboardEvent): void {
-    // Prevent default behavior for game keys
+    // Ignore if typing in an input or textarea
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+      return;
+    }
+
     const gameKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyA', 'KeyD', 'KeyW', 'KeyS'];
     if (gameKeys.includes(e.code)) {
       e.preventDefault();
@@ -457,8 +554,6 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // --- Game Logic Methods (from GalagaArcade class) ---
-
   private initScene(): void {
     this.scene = new THREE.Scene();
     this.scene.background = null;
@@ -472,7 +567,7 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     this.renderer.setSize(width, height);
     this.gameContainer.nativeElement.appendChild(this.renderer.domElement);
   }
-  
+
   public startGame(): void {
     this.wave = 1;
     this.score = 0;
@@ -482,60 +577,47 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
   }
 
   public restartGame(): void {
-    // Clear all game objects
+    this.playAudio(this.startSound);
     [...this.enemies, ...this.projectiles, ...this.particles].forEach(obj => {
       this.scene.remove(obj);
     });
-    
+
     this.enemies = [];
     this.projectiles = [];
     this.particles = [];
-    
+
     this.startGame();
   }
-  
-  // --- Voxel Model Creation ---
+
   private createButtonHitboxes(): void {
-    // Clear existing hitboxes
     this.buttonHitboxes.forEach(hitbox => this.scene.remove(hitbox));
     this.buttonHitboxes = [];
     this.buttonOriginalPositions = [];
-    
-    // Button positions in screen coordinates (pixels from top-left of canvas)
-    // These correspond to the CSS positioning of the actual DOM buttons
+
     const buttonScreenPositions = [
-      { x: 16, y: 16, width: 48, height: 48 },     // Left button (top-4 left-4, 48x48px)
-      { x: 80, y: 16, width: 48, height: 48 },     // Shoot button (next to left)
-      { x: 144, y: 16, width: 48, height: 48 },    // Right button (next to shoot)
-      { x: 16, y: 80, width: 48, height: 48 }      // Restart button (top-20 left-4)
+      { x: 16, y: 16, width: 48, height: 48 },
+      { x: 80, y: 16, width: 48, height: 48 },
+      { x: 144, y: 16, width: 48, height: 48 },
+      { x: 16, y: 80, width: 48, height: 48 }
     ];
-    
-    // Store screen positions for collision detection
+
     this.buttonScreenPositions = buttonScreenPositions;
   }
 
   private shakeButton(buttonIndex: number): void {
-    // For DOM button shaking, we need to add CSS animation classes
-    // Since we can't directly animate DOM elements from here, we'll use a different approach
-    // Let's add a visual effect by creating a temporary particle effect at the button position
-    
-    // Get the button's screen position and convert to world coordinates
     const button = this.buttonScreenPositions[buttonIndex];
     const canvas = this.renderer.domElement;
-    
-    // Convert screen coordinates back to world coordinates (approximate)
-    const worldX = ((button.x + button.width / 2) / canvas.clientWidth - 0.5) * 2 * 4; // Assuming camera width of 8
-    const worldY = -((button.y + button.height / 2) / canvas.clientHeight - 0.5) * 2 * 3; // Assuming camera height of 6
-    
-    // Create a small explosion effect at the button position
+
+    const worldX = ((button.x + button.width / 2) / canvas.clientWidth - 0.5) * 2 * 4;
+    const worldY = -((button.y + button.height / 2) / canvas.clientHeight - 0.5) * 2 * 3;
+
     this.createButtonHitEffect(new THREE.Vector3(worldX, worldY, 0));
   }
 
   private createButtonHitEffect(position: THREE.Vector3): void {
-    // Create spark particles around the button hit position
     const particleCount = 6;
     const size = 0.03;
-    const color = 0xffaa00; // Orange sparks
+    const color = 0xffaa00;
     const velocityMag = 0.2;
     const life = 20;
 
@@ -573,11 +655,11 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
   }
 
   private createPlayer(): void {
-    const playerPositions = [[0,0,0], [-1,0,0], [1,0,0], [0,1,0]];
+    const playerPositions = [[0, 0, 0], [-1, 0, 0], [1, 0, 0], [0, 1, 0]];
     const ship = this.createVoxelModel(playerPositions, 0x10051c, 0.1);
     ship.userData = { radius: 0.28 };
     this.player = ship as unknown as PlayerShip;
-    this.player.position.y = -2.2; // Position player at bottom of viewport
+    this.player.position.y = -2.2;
     this.scene.add(this.player);
   }
 
@@ -593,30 +675,24 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     const pl2 = new THREE.PointLight(0x0040ff, 0.12, 30);
     pl2.position.set(5, 5, 5);
     this.scene.add(pl2);
-    
-    // Initialize button screen positions
+
     this.createButtonHitboxes();
   }
-  
+
   private createEnemyFormation(): void {
     this.enemies.forEach(e => this.scene.remove(e));
     this.enemies = [];
 
-    // Determine if we're on mobile based on screen width
-    const isMobile = window.innerWidth < 768;
-    
-    // Offset text slightly to the left on mobile
-    const xOffset = isMobile ? -0.5 : -0.3;
-    
-    // Create two voxel text enemies - split into multiple lines on mobile
-    if (isMobile) {
-      this.createVoxelTextEnemy("CHAME A ATENÇÃO", xOffset, 2.2);
-      this.createVoxelTextEnemy("E ENCANTE", xOffset, 1.4);
-      this.createVoxelTextEnemy("COM INTERAÇÕES", xOffset, 0.6);
-      this.createVoxelTextEnemy("UNICAS", xOffset, -0.2);
+    const isCompact = window.innerWidth < 1024;
+
+    if (isCompact) {
+      this.createVoxelTextEnemy("CHAME A ATENÇÃO", 0, 2.2);
+      this.createVoxelTextEnemy("E ENCANTE", 0, 1.4);
+      this.createVoxelTextEnemy("COM INTERAÇÕES", 0, 0.6);
+      this.createVoxelTextEnemy("UNICAS", 0, -0.2);
     } else {
-      this.createVoxelTextEnemy("CHAME A ATENÇÃO E ENCANTE", xOffset, 1.8);
-      this.createVoxelTextEnemy("COM INTERAÇÕES UNICAS", xOffset, 0.3);
+      this.createVoxelTextEnemy("CHAME A ATENÇÃO E ENCANTE", 0, 1.8);
+      this.createVoxelTextEnemy("COM INTERAÇÕES UNICAS", 0, 0.3);
     }
   }
 
@@ -624,25 +700,33 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     const group = new THREE.Group();
     let currentX = 0;
     let totalWidth = 0;
-    
-    // Adjust scale based on screen size
-    const isMobile = window.innerWidth < 768;
-    const isVerySmall = window.innerWidth < 480;
-    const scale = isVerySmall ? 0.06 : (isMobile ? 0.07 : 0.1); // Even smaller blocks on very small screens
-    const spacing = isVerySmall ? 0.06 : (isMobile ? 0.07 : 0.1); // Tighter spacing on mobile
-    
-    // First pass: calculate total width
+
+    // Calculate total units (letter width + spacing)
+    let totalUnits = 0;
     for (let i = 0; i < text.length; i++) {
       const char = text[i].toUpperCase();
-      totalWidth += this.getLetterWidth(char) * scale;
-      if (i < text.length - 1) totalWidth += spacing; // spacing
+      totalUnits += this.getLetterWidth(char);
+      if (i < text.length - 1) totalUnits += 1; // 1 unit spacing
     }
-    
-    // Second pass: create blocks
+
+    // Determine scale based on available width
+    const worldWidth = this.camera.right - this.camera.left;
+    const maxContentWidth = worldWidth * 0.9;
+    let scale = maxContentWidth / totalUnits;
+
+    // Clamp scale
+    const isCompact = window.innerWidth < 1024;
+    const isVerySmall = window.innerWidth < 480;
+    const maxScale = isVerySmall ? 0.06 : (isCompact ? 0.08 : 0.12);
+    scale = Math.min(scale, maxScale);
+
+    const spacing = scale;
+    totalWidth = totalUnits * scale;
+
     for (let i = 0; i < text.length; i++) {
       const char = text[i].toUpperCase();
       const letterBlocks = this.getLetterBlocks(char);
-      
+
       letterBlocks.forEach(block => {
         const cube = new THREE.Mesh(
           new THREE.BoxGeometry(scale, scale, scale),
@@ -656,48 +740,47 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
         cube.userData = { isBlock: true, parentText: text, radius: scale * 0.5 };
         group.add(cube);
       });
-      
-      currentX += this.getLetterWidth(char) * scale + spacing; // spacing
+
+      currentX += this.getLetterWidth(char) * scale + spacing;
     }
-    
-    // Center the group with slight left bias on mobile
-    const isMobileDevice = window.innerWidth < 768;
-    const centerOffset = isMobileDevice ? -0.2 : 0; // Additional left offset for mobile
-    group.position.set(x - totalWidth / 2 + centerOffset, y, 0);
-    group.userData = { 
-      type: 'voxelText', 
+
+    const baseX = x - totalWidth / 2;
+    group.position.set(baseX, y, 0);
+    group.userData = {
+      type: 'voxelText',
       text: text,
       blocks: group.children.length,
       destroyedBlocks: 0,
       radius: Math.sqrt(group.children.length) * scale,
       movementOffset: Math.random() * Math.PI * 2,
+      baseX: baseX,
       baseY: y,
-      totalWidth: totalWidth // Store for boundary checking
+      totalWidth: totalWidth
     };
-    
+
     this.scene.add(group);
     this.enemies.push(group as unknown as EnemyShip);
   }
 
   private getLetterBlocks(char: string): number[][] {
     const letters: { [key: string]: number[][] } = {
-      'A': [[1,4,0],[2,4,0],[0,3,0],[3,3,0],[0,2,0],[1,2,0],[2,2,0],[3,2,0],[0,1,0],[3,1,0],[0,0,0],[3,0,0]],
-      'C': [[1,4,0],[2,4,0],[3,4,0],[0,3,0],[0,2,0],[0,1,0],[1,0,0],[2,0,0],[3,0,0]],
-      'Ç': [[1,4,0],[2,4,0],[3,4,0],[0,3,0],[0,2,0],[0,1,0],[1,0,0],[2,0,0],[3,0,0],[1,-1,0],[2,-1,0]],
-      'E': [[0,4,0],[1,4,0],[2,4,0],[3,4,0],[0,3,0],[0,2,0],[1,2,0],[2,2,0],[0,1,0],[0,0,0],[1,0,0],[2,0,0],[3,0,0]],
-      'H': [[0,4,0],[3,4,0],[0,3,0],[3,3,0],[0,2,0],[1,2,0],[2,2,0],[3,2,0],[0,1,0],[3,1,0],[0,0,0],[3,0,0]],
-      'I': [[0,4,0],[1,4,0],[2,4,0],[1,3,0],[1,2,0],[1,1,0],[0,0,0],[1,0,0],[2,0,0]],
-      'M': [[0,4,0],[4,4,0],[0,3,0],[1,3,0],[3,3,0],[4,3,0],[0,2,0],[2,2,0],[4,2,0],[0,1,0],[4,1,0],[0,0,0],[4,0,0]],
-      'N': [[0,4,0],[4,4,0],[0,3,0],[1,3,0],[4,3,0],[0,2,0],[2,2,0],[4,2,0],[0,1,0],[3,1,0],[4,1,0],[0,0,0],[4,0,0]],
-      'O': [[1,4,0],[2,4,0],[0,3,0],[3,3,0],[0,2,0],[3,2,0],[0,1,0],[3,1,0],[1,0,0],[2,0,0]],
-      'R': [[0,4,0],[1,4,0],[2,4,0],[3,4,0],[0,3,0],[3,3,0],[0,2,0],[1,2,0],[2,2,0],[3,2,0],[0,1,0],[3,1,0],[0,0,0],[3,0,0],[4,0,0]],
-      'S': [[1,4,0],[2,4,0],[3,4,0],[0,3,0],[0,2,0],[1,2,0],[2,2,0],[3,2,0],[3,1,0],[0,0,0],[1,0,0],[2,0,0]],
-      'T': [[0,4,0],[1,4,0],[2,4,0],[3,4,0],[4,4,0],[2,3,0],[2,2,0],[2,1,0],[2,0,0]],
-      'U': [[0,4,0],[3,4,0],[0,3,0],[3,3,0],[0,2,0],[3,2,0],[0,1,0],[3,1,0],[1,0,0],[2,0,0]],
-      'Ú': [[0,4,0],[3,4,0],[0,3,0],[3,3,0],[0,2,0],[3,2,0],[0,1,0],[3,1,0],[1,0,0],[2,0,0],[1,5,0],[2,5,0]],
-      'Ã': [[1,4,0],[2,4,0],[0,3,0],[3,3,0],[0,2,0],[1,2,0],[2,2,0],[3,2,0],[0,1,0],[3,1,0],[0,0,0],[3,0,0],[1,5,0],[2,5,0]],
-      'Õ': [[1,4,0],[2,4,0],[0,3,0],[3,3,0],[0,2,0],[3,2,0],[0,1,0],[3,1,0],[1,0,0],[2,0,0],[1,5,0],[2,5,0]],
-      ' ': [] // space
+      'A': [[1, 4, 0], [2, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [1, 2, 0], [2, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [0, 0, 0], [3, 0, 0]],
+      'C': [[1, 4, 0], [2, 4, 0], [3, 4, 0], [0, 3, 0], [0, 2, 0], [0, 1, 0], [1, 0, 0], [2, 0, 0], [3, 0, 0]],
+      'Ç': [[1, 4, 0], [2, 4, 0], [3, 4, 0], [0, 3, 0], [0, 2, 0], [0, 1, 0], [1, 0, 0], [2, 0, 0], [3, 0, 0], [1, -1, 0], [2, -1, 0]],
+      'E': [[0, 4, 0], [1, 4, 0], [2, 4, 0], [3, 4, 0], [0, 3, 0], [0, 2, 0], [1, 2, 0], [2, 2, 0], [0, 1, 0], [0, 0, 0], [1, 0, 0], [2, 0, 0], [3, 0, 0]],
+      'H': [[0, 4, 0], [3, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [1, 2, 0], [2, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [0, 0, 0], [3, 0, 0]],
+      'I': [[0, 4, 0], [1, 4, 0], [2, 4, 0], [1, 3, 0], [1, 2, 0], [1, 1, 0], [0, 0, 0], [1, 0, 0], [2, 0, 0]],
+      'M': [[0, 4, 0], [4, 4, 0], [0, 3, 0], [1, 3, 0], [3, 3, 0], [4, 3, 0], [0, 2, 0], [2, 2, 0], [4, 2, 0], [0, 1, 0], [4, 1, 0], [0, 0, 0], [4, 0, 0]],
+      'N': [[0, 4, 0], [4, 4, 0], [0, 3, 0], [1, 3, 0], [4, 3, 0], [0, 2, 0], [2, 2, 0], [4, 2, 0], [0, 1, 0], [3, 1, 0], [4, 1, 0], [0, 0, 0], [4, 0, 0]],
+      'O': [[1, 4, 0], [2, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [1, 0, 0], [2, 0, 0]],
+      'R': [[0, 4, 0], [1, 4, 0], [2, 4, 0], [3, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [1, 2, 0], [2, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [0, 0, 0], [3, 0, 0], [4, 0, 0]],
+      'S': [[1, 4, 0], [2, 4, 0], [3, 4, 0], [0, 3, 0], [0, 2, 0], [1, 2, 0], [2, 2, 0], [3, 2, 0], [3, 1, 0], [0, 0, 0], [1, 0, 0], [2, 0, 0]],
+      'T': [[0, 4, 0], [1, 4, 0], [2, 4, 0], [3, 4, 0], [4, 4, 0], [2, 3, 0], [2, 2, 0], [2, 1, 0], [2, 0, 0]],
+      'U': [[0, 4, 0], [3, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [1, 0, 0], [2, 0, 0]],
+      'Ú': [[0, 4, 0], [3, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [1, 0, 0], [2, 0, 0], [1, 5, 0], [2, 5, 0]],
+      'Ã': [[1, 4, 0], [2, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [1, 2, 0], [2, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [0, 0, 0], [3, 0, 0], [1, 5, 0], [2, 5, 0]],
+      'Õ': [[1, 4, 0], [2, 4, 0], [0, 3, 0], [3, 3, 0], [0, 2, 0], [3, 2, 0], [0, 1, 0], [3, 1, 0], [1, 0, 0], [2, 0, 0], [1, 5, 0], [2, 5, 0]],
+      ' ': []
     };
     return letters[char] || [];
   }
@@ -709,8 +792,6 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     return widths[char] || 4;
   }
 
-
-  
   public moveLeft(): void {
     this.targetPlayerX = Math.max(this.camera.left, this.targetPlayerX - 0.8);
   }
@@ -723,6 +804,7 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     const now = Date.now();
     if (this.player.userData.lastShot && now - this.player.userData.lastShot < 400) return;
     this.player.userData.lastShot = now;
+    this.playAudio(this.shootSound);
 
     const geo = new THREE.BoxGeometry(0.15, 0.15, 0.15);
     const mat = new THREE.MeshLambertMaterial({ color: 0xffff00, emissive: 0xaaaa00 });
@@ -736,7 +818,6 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
 
   private updatePlayer(): void {
     this.player.position.x = THREE.MathUtils.lerp(this.player.position.x, this.targetPlayerX, 0.25);
-    // Use camera boundaries to allow movement to the full visible area
     this.player.position.x = Math.max(this.camera.left, Math.min(this.camera.right, this.player.position.x));
   }
 
@@ -749,42 +830,36 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
       const { type, movementOffset, totalWidth } = enemy.userData;
 
       if (type === 'voxelText') {
-        // Reduced movement for voxel text to keep within safe bounds
         const time = Date.now() * 0.001;
-        const maxMovement = totalWidth ? Math.max(0.2, 0.5 - totalWidth / 8) : 0.3; // Reduce movement for longer text
-        enemy.position.x = Math.sin(time + movementOffset) * maxMovement;
+        const maxMovement = totalWidth ? Math.max(0.2, 0.5 - totalWidth / 8) : 0.3;
+        enemy.position.x = enemy.userData['baseX'] + Math.sin(time + movementOffset) * maxMovement;
         enemy.position.y = enemy.userData['baseY'] + Math.cos(time * 0.7 + movementOffset) * 0.2;
 
-        // Check collision with projectiles on individual blocks
         for (let j = this.projectiles.length - 1; j >= 0; j--) {
           const proj = this.projectiles[j];
-          
-          // Check each block in the text
+
           for (let k = enemy.children.length - 1; k >= 0; k--) {
             const block = enemy.children[k] as THREE.Mesh;
             const blockWorldPos = new THREE.Vector3();
             block.getWorldPosition(blockWorldPos);
             const dist = blockWorldPos.distanceTo(proj.position);
             if (dist < (block.userData['radius'] + proj.userData.radius)) {
-              // Block hit - create particles and remove block
               this.createBlockParticles(blockWorldPos);
               enemy.remove(block);
               enemy.userData['destroyedBlocks']++;
-              
-              // Score for hitting blocks
+              this.playAudio(this.hitSound);
+
               this.score += 10;
               this.hasDoneDamage = true;
               this.cdr.detectChanges();
-              
-              // Remove projectile
+
               this.scene.remove(proj);
               this.projectiles.splice(j, 1);
-              break; // Only one block per projectile
+              break;
             }
           }
         }
 
-        // If all blocks destroyed, remove the text enemy
         if (enemy.children.length === 0) {
           this.scene.remove(enemy);
           this.enemies.splice(i, 1);
@@ -792,7 +867,6 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
         }
       }
 
-      // Check if enemy collides with player
       if (this.checkCollision(enemy, this.player)) {
         this.lives--;
         this.createExplosion(enemy.position);
@@ -802,43 +876,57 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    // Check projectile collisions with button screen positions
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const proj = this.projectiles[i];
-      
-      // Convert 3D projectile position to screen coordinates
+
       const screenPos = proj.position.clone();
       screenPos.project(this.camera);
-      
-      // Convert to pixel coordinates
+
       const canvas = this.renderer.domElement;
       const x = (screenPos.x * 0.5 + 0.5) * canvas.clientWidth;
       const y = (-screenPos.y * 0.5 + 0.5) * canvas.clientHeight;
-      
-      // Check collision with each button's screen rectangle
+
       for (let j = 0; j < this.buttonScreenPositions.length; j++) {
         const button = this.buttonScreenPositions[j];
-        
+
         if (x >= button.x && x <= button.x + button.width &&
-            y >= button.y && y <= button.y + button.height) {
-          // Button hit - trigger shake animation
+          y >= button.y && y <= button.y + button.height) {
           this.shakeButton(j);
-          
-          // Remove projectile
+
           this.scene.remove(proj);
           this.projectiles.splice(i, 1);
-          break; // Only one button per projectile
+          break;
         }
       }
     }
 
-    if (this.enemies.length === 0) { 
-      this.wave++; 
-      this.createEnemyFormation(); 
+    if (this.enemies.length === 0) {
+      if (!this.isGameWon) {
+        this.handleWin();
+      }
     }
   }
 
-  // Helper to remove enemy
+  private handleWin(): void {
+    this.isGameWon = true;
+    this.playAudio(this.winSound);
+
+    if (this.winSound) {
+      this.winSound.onended = () => {
+        this.winSound!.onended = null;
+        setTimeout(() => {
+          this.restartGame();
+          this.isGameWon = false;
+        }, 5000);
+      };
+    } else {
+      setTimeout(() => {
+        this.restartGame();
+        this.isGameWon = false;
+      }, 5000);
+    }
+  }
+
   private destroyEnemy(enemy: EnemyShip, index: number, giveScore: boolean = true): void {
     this.scene.remove(enemy);
     this.enemies.splice(index, 1);
@@ -851,11 +939,11 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
       if (p.position.y > 6) { this.scene.remove(p); this.projectiles.splice(i, 1); }
     }
   }
-  
+
   private playerHit(): void {
     this.lives--;
-    if (this.lives <= 0) { 
-      this.restartGame(); 
+    if (this.lives <= 0) {
+      this.restartGame();
     }
   }
 
@@ -875,7 +963,7 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
   private createBombExplosion(position: THREE.Vector3): void {
     this.createParticleEffect(position, 20, 0.06, 0xff6600, 0.8, 40);
   }
-  
+
   private createBlockParticles(position: THREE.Vector3): void {
     const particleCount = 8;
     const size = 0.05;
@@ -912,7 +1000,7 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
       particle.userData = {
         velocity: new THREE.Vector3((Math.random() - 0.5) * velocityMag, (Math.random() - 0.2) * velocityMag, (Math.random() - 0.5) * velocityMag * 0.5),
         life: life,
-        radius: 0.01 // negligible
+        radius: 0.01
       };
       this.scene.add(particle);
       this.particles.push(particle as unknown as GameObject);
@@ -924,7 +1012,7 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
       const p = this.particles[i];
       p.position.add(p.userData.velocity!);
       p.userData.life!--;
-      
+
       (p as unknown as THREE.Mesh<any, THREE.MeshBasicMaterial>).material.opacity = Math.max(0, p.userData.life! / 30);
       (p as unknown as THREE.Mesh<any, THREE.MeshBasicMaterial>).material.transparent = true;
       if (p.userData.life! <= 0) {
@@ -934,15 +1022,14 @@ export class GalagaArcadeComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // --- Main Animation Loop ---
   private animate(): void {
     this.animationFrameId = requestAnimationFrame(() => this.animate());
-    
+
     this.updatePlayer();
     this.updateEnemies();
     this.updateProjectiles();
     this.updateParticles();
-    
+
     this.renderer.render(this.scene, this.camera);
   }
 }

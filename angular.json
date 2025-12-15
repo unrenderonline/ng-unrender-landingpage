@@ -27,7 +27,9 @@
             "outputPath": "dist/ng-unrender-landing-page",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -35,6 +37,15 @@
                 "glob": "**/*",
                 "input": "public"
               }
+            ],
+            "allowedCommonJsDependencies": [
+              "@tensorflow-models/coco-ssd",
+              "leaflet",
+              "leaflet-routing-machine",
+              "seedrandom",
+              "node-fetch",
+              "string_decoder",
+              "long"
             ],
             "styles": [
               "src/styles.scss",
@@ -48,13 +59,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "4MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "15kB",
-                  "maximumError": "25kB"
+                  "maximumWarning": "30kB",
+                  "maximumError": "50kB"
                 }
               ],
               "outputHashing": "all"
@@ -85,7 +96,10 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [

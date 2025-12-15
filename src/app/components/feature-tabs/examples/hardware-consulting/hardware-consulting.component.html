@@ -1,0 +1,95 @@
+<div class="w-full h-full bg-slate-50 rounded-2xl overflow-y-auto font-sans text-slate-800 p-5 md:p-8">
+  <!-- Header Section -->
+  <div class="flex flex-col gap-5 mb-8 md:flex-row md:justify-between md:items-center">
+    <div class="title-area">
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Consultoria de Hardware</h2>
+      <p class="text-slate-500 text-sm">Encontramos e entregamos a solução de hardware perfeita para o seu projeto.</p>
+    </div>
+    <div class="flex items-center gap-3 self-center md:self-auto">
+      <div class="flex flex-col items-center gap-1">
+        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-unrender-purple shadow-sm text-base">
+            <fa-icon [icon]="faSearch"></fa-icon>
+        </div>
+        <span class="text-[10px] font-semibold text-slate-500">Análise</span>
+      </div>
+      <div class="w-8 h-0.5 bg-slate-200 mb-4"></div>
+      <div class="flex flex-col items-center gap-1">
+        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-unrender-purple shadow-sm text-base">
+            <fa-icon [icon]="faTools"></fa-icon>
+        </div>
+        <span class="text-[10px] font-semibold text-slate-500">Configuração</span>
+      </div>
+      <div class="w-8 h-0.5 bg-slate-200 mb-4"></div>
+      <div class="flex flex-col items-center gap-1">
+        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-unrender-purple shadow-sm text-base">
+            <fa-icon [icon]="faCheck"></fa-icon>
+        </div>
+        <span class="text-[10px] font-semibold text-slate-500">Entrega</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Section -->
+  <div class="flex flex-col gap-5 mb-8">
+    <div class="flex items-center bg-white p-3 rounded-xl shadow-sm gap-3 text-slate-400">
+      <fa-icon [icon]="faSearch"></fa-icon>
+      <input type="text" placeholder="Busque por servidores, workstations, componentes..." (input)="onSearch($event)" class="border-none outline-none w-full text-sm text-slate-800 placeholder-slate-400 bg-transparent">
+    </div>
+    
+    <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <button *ngFor="let cat of categories" 
+              [class.bg-unrender-purple]="selectedCategory === cat.id"
+              [class.text-white]="selectedCategory === cat.id"
+              [class.border-unrender-purple]="selectedCategory === cat.id"
+              [class.bg-white]="selectedCategory !== cat.id"
+              [class.text-slate-500]="selectedCategory !== cat.id"
+              class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 text-xs font-medium cursor-pointer whitespace-nowrap transition-all hover:bg-slate-100 hover:text-unrender-purple"
+              (click)="selectCategory(cat.id)">
+        <fa-icon [icon]="cat.icon"></fa-icon>
+        {{ cat.name }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Hardware Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm transition-all hover:-translate-y-1 hover:shadow-md flex flex-col" *ngFor="let item of filteredList">
+      <div class="h-40 relative overflow-hidden">
+        <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover">
+        <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-bold uppercase text-white"
+             [class.bg-emerald-500]="item.readyToUse"
+             [class.bg-unrender-purple]="!item.readyToUse">
+             {{ item.readyToUse ? 'Pronto para Uso' : 'Customizável' }}
+        </div>
+      </div>
+      <div class="p-5 flex-1 flex flex-col">
+        <div class="text-[10px] font-semibold text-unrender-purple uppercase tracking-wide mb-1">{{ item.category | titlecase }}</div>
+        <h3 class="text-base font-bold mb-2 text-slate-900">{{ item.name }}</h3>
+        <p class="text-xs text-slate-500 mb-4 leading-relaxed line-clamp-3">{{ item.description }}</p>
+        
+        <div class="flex flex-col gap-1.5 mb-5">
+          <div class="text-xs text-slate-600 flex items-center gap-2" *ngFor="let spec of item.specs">
+            <fa-icon [icon]="faCheck" class="text-emerald-500 text-[10px]"></fa-icon> {{ spec }}
+          </div>
+        </div>
+        
+        <div class="mt-auto flex justify-between items-center pt-4 border-t border-slate-100">
+          <div class="flex flex-col">
+            <span class="text-[10px] text-slate-400">Estimativa:</span>
+            <span class="text-sm font-bold text-slate-900">{{ item.priceRange }}</span>
+          </div>
+          <button class="bg-unrender-purple text-white border-none px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer flex items-center gap-2 transition-colors hover:bg-slate-800">
+            <fa-icon [icon]="faHeadset"></fa-icon> Consultar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="flex flex-col items-center justify-center py-12 text-center text-slate-400" *ngIf="filteredList.length === 0">
+    <fa-icon [icon]="faSearch" class="text-4xl mb-4 opacity-50"></fa-icon>
+    <h3 class="text-lg font-semibold mb-1 text-slate-500">Nenhum hardware encontrado</h3>
+    <p class="text-sm max-w-xs">Tente ajustar sua busca ou entre em contato para uma consultoria personalizada.</p>
+  </div>
+</div>

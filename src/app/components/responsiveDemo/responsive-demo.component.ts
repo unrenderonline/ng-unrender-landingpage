@@ -29,39 +29,79 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       </button>
     </div>
     <div class="scale-wrapper" [style.height.px]="getScaledHeight()">
-      <div class="animation-container" [style.transform]="'scale(' + scale + ') translateX(-50%)'">
+      <div class="animation-container" [style.transform]="'translateX(-50%) scale(' + scale + ')'">
         <div class="device-frame" [ngClass]="currentDevice">
           <div class="viewport">
             
-            <div class="page-content" [ngClass]="'layout-' + currentDevice">
-              <div class="header-section">
-                <div class="menu-icon">
-                  <span></span><span></span><span></span>
+            <!-- Page Content with Tailwind Classes -->
+            <!-- Using arbitrary variants [.layout-device_&] to style based on parent class -->
+            <div class="page-content bg-yellow-400 p-4 min-h-full h-full flex flex-col gap-4 w-full box-border 
+                        [.layout-tablet_&]:p-5 
+                        [.layout-desktop_&]:p-6" 
+                 [ngClass]="'layout-' + currentDevice">
+              
+              <!-- Header -->
+              <div class="header-section bg-purple-600 h-5 rounded flex justify-end items-center pr-1 
+                          [.layout-desktop_&]:pr-4 [.layout-desktop_&]:h-8">
+                <div class="menu-icon w-4 h-2.5 flex flex-col justify-around 
+                            [.layout-desktop_&]:w-6 [.layout-desktop_&]:h-4">
+                  <span class="block h-0.5 bg-white rounded-sm"></span>
+                  <span class="block h-0.5 bg-white rounded-sm"></span>
+                  <span class="block h-0.5 bg-white rounded-sm"></span>
                 </div>
               </div>
               
-              <div class="content-grid">
-                <div class="main-content">
-                  <div class="top-blocks">
-                    <div class="block"></div>
-                    <div class="block"></div>
+              <!-- Content Grid -->
+              <div class="content-grid flex flex-col gap-4 w-full 
+                          [.layout-tablet_&]:gap-5 
+                          [.layout-desktop_&]:grid [.layout-desktop_&]:grid-cols-[2fr_1fr] [.layout-desktop_&]:gap-5">
+                
+                <!-- Main Content -->
+                <div class="main-content flex flex-col gap-4 
+                            [.layout-tablet_&]:gap-5 
+                            [.layout-desktop_&]:gap-5">
+                  
+                  <!-- Top Blocks -->
+                  <div class="top-blocks flex flex-col gap-2.5 
+                              [.layout-tablet_&]:flex-row">
+                    <div class="block bg-green-500 h-[60px] rounded 
+                                [.layout-tablet_&]:flex-1"></div>
+                    <div class="block bg-green-500 h-[60px] rounded 
+                                [.layout-tablet_&]:flex-1"></div>
                   </div>
-                  <div class="color-blocks">
-                    <div class="block"></div>
-                    <div class="block"></div>
-                    <div class="block"></div>
+                  
+                  <!-- Color Blocks -->
+                  <div class="color-blocks flex flex-col gap-2.5 
+                              [.layout-tablet_&]:flex-row">
+                    <div class="block bg-red-500 h-20 rounded 
+                                [.layout-tablet_&]:flex-1"></div>
+                    <div class="block bg-orange-400 h-20 rounded 
+                                [.layout-tablet_&]:flex-1"></div>
+                    <div class="block bg-blue-500 h-20 rounded 
+                                [.layout-tablet_&]:flex-1"></div>
                   </div>
-                  <div class="text-section">
-                    <p></p><p></p><p></p><p></p>
+                  
+                  <!-- Text Section -->
+                  <div class="text-section bg-white p-2.5 rounded">
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-full [.layout-desktop_&]:h-3"></p>
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-[95%] [.layout-desktop_&]:h-3"></p>
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-[90%] [.layout-desktop_&]:h-3"></p>
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-full [.layout-desktop_&]:h-3"></p>
                   </div>
                 </div>
                 
-                <div class="sidebar">
-                  <div class="text-section">
-                    <p></p><p></p>
+                <!-- Sidebar -->
+                <div class="sidebar flex flex-col gap-4 
+                            [.layout-tablet_&]:gap-5 
+                            [.layout-desktop_&]:gap-5">
+                  <div class="text-section bg-white p-2.5 rounded">
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-full [.layout-desktop_&]:h-3"></p>
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-[95%] [.layout-desktop_&]:h-3"></p>
                   </div>
-                  <div class="text-section">
-                    <p></p><p></p><p></p>
+                  <div class="text-section bg-white p-2.5 rounded">
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-[90%] [.layout-desktop_&]:h-3"></p>
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-full [.layout-desktop_&]:h-3"></p>
+                    <p class="mb-1.5 bg-gray-200 h-2.5 rounded-sm w-[95%] [.layout-desktop_&]:h-3"></p>
                   </div>
                 </div>
               </div>
@@ -84,7 +124,15 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       width: 100%;
       overflow: hidden;
     }
+    
+    * {
+      box-sizing: border-box;
+    }
 
+    .page-content {
+   min-width: 100%!important;
+      width: 100%!important;
+    }
     .controls {
       display: flex;
       justify-content: center;
@@ -123,10 +171,11 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       position: relative;
       width: 100%;
       /* Height is set dynamically via binding */
-      overflow: hidden;
+      overflow: visible;
+      transition: height 0.5s ease-in-out;
     }
 
-    .animation-container {
+  .animation-container {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -134,9 +183,12 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       transform-origin: top center;
       /* Scale is handled via inline style from @Input */
       /* Prevent the container from taking layout space */
-      min-width: 100%!important;
       position: absolute;
       top: 0;
+      left: 50%;
+  /* ensure container takes available width so children fill the device frame */
+  width: 100%;
+      max-width: none;
     }
 
     /* --- DEVICE FRAME --- */
@@ -147,12 +199,13 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       position: relative;
       overflow: hidden;
-      transition: all 0.8s ease-in-out;
+      transition: all 0.5s ease-in-out;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-shrink: 0;
       z-index: 2;
+      max-width: none;
     }
 
     /* Camera/Notch */
@@ -194,11 +247,7 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       width: 320px;
       height: 570px;
       border-radius: 30px;
-      padding: 15px;
-    }
-    .device-frame.phone .viewport {
-      width: 290px;
-      height: 510px;
+      padding: 15px 15px 45px 15px; /* Increased bottom padding for home button area */
     }
     .device-frame.phone::after {
       width: 30px;
@@ -214,10 +263,6 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       border-radius: 20px;
       padding: 10px;
     }
-    .device-frame.tablet .viewport {
-      width: 580px;
-      height: 780px;
-    }
     .device-frame.tablet::before,
     .device-frame.tablet::after {
       opacity: 0;
@@ -230,10 +275,6 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       border-radius: 10px;
       padding: 5px;
       background-color: #10051c;
-    }
-    .device-frame.desktop .viewport {
-      width: 890px;
-      height: 590px;
     }
     .device-frame.desktop::before,
     .device-frame.desktop::after {
@@ -249,7 +290,19 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       position: relative;
       flex-shrink: 0;
       z-index: 1;
-      transition: all 0.8s ease-in-out;
+      transition: all 0.5s ease-in-out;
+      min-width: 100%!important;
+      width: 100%!important;
+      height: 100%;
+    }    /* Ensure every child inside viewport and page-content expands to the full width
+       when the device layout changes. This forces the Tailwind variants that toggle
+       parent classes to still allow content to occupy the full device width. */
+    .viewport > *,
+    .page-content > *,
+    .viewport *,
+    .page-content * {
+      min-width: 100% !important;
+      width: 100% !important;
     }
 
     /* --- MONITOR STAND --- */
@@ -281,130 +334,18 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       border-radius: 5px 5px 0 0;
       box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
     }
-
-    /* --- PAGE CONTENT STYLING --- */
-    .page-content {
-      background-color: #ffeb3b;
-      padding: 15px;
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    
-    .header-section {
-      background-color: #9b59b6;
-      height: 20px;
-      border-radius: 3px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding-right: 5px;
-    }
-    .header-section .menu-icon {
-      width: 15px;
-      height: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-    }
-    .header-section .menu-icon span {
-      display: block;
-      height: 2px;
-      background-color: white;
-      border-radius: 1px;
-    }
-
-    .top-blocks, .color-blocks {
-      display: flex;
-      gap: 10px;
-      flex-direction: column;
-    }
-    .block { border-radius: 3px; }
-    .top-blocks .block { background-color: #2ecc71; height: 60px; }
-    .color-blocks .block { height: 80px; }
-    .color-blocks .block:nth-child(1) { background-color: #e74c3c; }
-    .color-blocks .block:nth-child(2) { background-color: #f39c12; }
-    .color-blocks .block:nth-child(3) { background-color: #3498db; }
-
-    .text-section {
-      background-color: white;
-      padding: 10px;
-      border-radius: 3px;
-    }
-    .text-section p {
-      margin-bottom: 5px;
-      background-color: #ecf0f1;
-      height: 10px;
-      border-radius: 2px;
-      width: 100%;
-    }
-    .text-section p:nth-child(even) { width: 95%; }
-    .text-section p:nth-child(odd) { width: 90%; }
-
-    /* --- LAYOUT LOGIC --- */
-    
-    /* Phone Layout */
-    .page-content.layout-phone {
-      padding: 15px;
-      flex-direction: column;
-    }
-    .page-content.layout-phone .content-grid,
-    .page-content.layout-phone .top-blocks,
-    .page-content.layout-phone .color-blocks,
-    .page-content.layout-phone .sidebar {
-       display: flex; flex-direction: column; gap: 15px;
-    }
-
-    /* Tablet Layout */
-    .page-content.layout-tablet {
-      padding: 20px;
-    }
-    .page-content.layout-tablet .top-blocks,
-    .page-content.layout-tablet .color-blocks {
-      flex-direction: row;
-    }
-    .page-content.layout-tablet .block { flex: 1; }
-    .page-content.layout-tablet .content-grid,
-    .page-content.layout-tablet .sidebar {
-       display: flex; flex-direction: column; gap: 20px;
-    }
-
-    /* Desktop Layout */
-    .page-content.layout-desktop {
-      padding: 25px;
-    }
-    .page-content.layout-desktop .content-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-    }
-    .page-content.layout-desktop .main-content,
-    .page-content.layout-desktop .sidebar {
-      display: flex; flex-direction: column; gap: 20px;
-    }
-    .page-content.layout-desktop .header-section {
-      padding-right: 15px;
-      height: 30px;
-    }
-    .page-content.layout-desktop .header-section .menu-icon {
-      width: 25px;
-      height: 15px;
-    }
-    .page-content.layout-desktop .text-section p {
-      height: 12px;
-    }
   `]
 })
 export class ResponsiveDemoComponent implements OnInit, OnDestroy {
   // Use a smaller default scale now
-  @Input() scale: number = 0.3; 
-  @Input() intervalSpeed: number = 3000;
+  @Input() scale: number = 0.3;
+  @Input() intervalSpeed: number = 5000;
 
   currentDevice: DeviceType = 'phone';
   private deviceOrder: DeviceType[] = ['phone', 'tablet', 'desktop'];
   private currentIndex = 0;
   private intervalId: any;
+  private timeoutId: any;
   private manualSwitchDelay: number = 5000; // 5 seconds delay after manual switch
 
   ngOnInit(): void {
@@ -412,15 +353,24 @@ export class ResponsiveDemoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.clearTimers();
+  }
+
+  private clearTimers() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
     }
   }
 
   getScaledHeight(): number {
     // Calculate the actual height based on current device and scale
     let baseHeight = 0;
-    
+
     switch (this.currentDevice) {
       case 'phone':
         baseHeight = 570; // phone height
@@ -432,22 +382,28 @@ export class ResponsiveDemoComponent implements OnInit, OnDestroy {
         baseHeight = 600 + 55; // desktop height + monitor stand
         break;
     }
-    
+
     const calculatedHeight = baseHeight * this.scale;
     return Math.max(280, calculatedHeight);
   }
 
   private startAnimation(delay: number = 0) {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
+    this.clearTimers();
+
+    if (delay > 0) {
+      this.timeoutId = setTimeout(() => {
+        this.startInterval();
+      }, delay);
+    } else {
+      this.startInterval();
     }
-    
-    setTimeout(() => {
-      this.intervalId = setInterval(() => {
-        this.currentIndex = (this.currentIndex + 1) % this.deviceOrder.length;
-        this.currentDevice = this.deviceOrder[this.currentIndex];
-      }, this.intervalSpeed);
-    }, delay);
+  }
+
+  private startInterval() {
+    this.intervalId = setInterval(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.deviceOrder.length;
+      this.currentDevice = this.deviceOrder[this.currentIndex];
+    }, this.intervalSpeed);
   }
 
   switchToDevice(device: DeviceType): void {

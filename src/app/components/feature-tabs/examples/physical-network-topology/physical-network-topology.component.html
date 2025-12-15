@@ -1,0 +1,164 @@
+<div class="relative w-full h-[600px] bg-white rounded-xl overflow-hidden border border-slate-200 shadow-lg font-sans select-none">
+  
+  <!-- Background Grid -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none" 
+       style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px;">
+  </div>
+
+  <!-- SVG Layer for Cables & Packets -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+    <defs>
+      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+
+    <!-- Cables -->
+    <g *ngFor="let cable of cables">
+      <line 
+        [attr.x1]="getDevice(cable.sourceId)?.x + '%'" 
+        [attr.y1]="getDevice(cable.sourceId)?.y + '%'" 
+        [attr.x2]="getDevice(cable.targetId)?.x + '%'" 
+        [attr.y2]="getDevice(cable.targetId)?.y + '%'" 
+        [attr.stroke]="cable.active ? '#10051c' : '#cbd5e1'"
+        [attr.stroke-width]="cable.active ? 3 : 1"
+        [attr.stroke-dasharray]="cable.type === 'wireless' ? '5,5' : 'none'"
+        class="transition-colors duration-200"
+      />
+    </g>
+
+    <!-- Packets -->
+    <g *ngFor="let packet of packets">
+      <circle 
+        [attr.cx]="packet.x + '%'" 
+        [attr.cy]="packet.y + '%'" 
+        r="4" 
+        [attr.fill]="packet.color"
+        filter="url(#glow)"
+      />
+    </g>
+  </svg>
+
+  <!-- Devices Layer -->
+  <div class="absolute inset-0 z-10">
+    <div *ngFor="let device of devices"
+         class="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+         [style.left.%]="device.x"
+         [style.top.%]="device.y"
+         (click)="selectDevice(device)">
+      
+      <!-- Device Icon Container -->
+      <div class="relative flex flex-col items-center justify-center">
+        <div class="w-12 h-12 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-md group-hover:border-unrender-purple group-hover:shadow-indigo-500/20 transition-all duration-300"
+             [ngClass]="{'border-unrender-purple shadow-indigo-500/30': selectedDevice?.id === device.id}">
+          <fa-icon [icon]="device.icon" 
+                   [class.text-unrender-purple]="device.status === 'online'"
+                   [class.text-slate-400]="device.status === 'offline'"
+                   class="text-xl"></fa-icon>
+        </div>
+        
+        <!-- Label -->
+        <div class="mt-2 px-2 py-1 bg-white/90 rounded text-xs text-slate-700 whitespace-nowrap border border-slate-200 backdrop-blur-sm shadow-sm">
+          {{ device.name }}
+        </div>
+
+        <!-- Status Dot -->
+        <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white"
+             [ngClass]="{'bg-green-500': device.status === 'online', 'bg-red-500': device.status === 'offline'}">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Overlay -->
+  <div class="absolute top-4 left-4 z-20 flex flex-col gap-4">
+    <!-- Controls -->
+    <div class="bg-white/90 backdrop-blur p-4 rounded-lg border border-slate-200 shadow-lg w-64">
+      <h3 class="text-slate-800 font-bold mb-3 flex items-center gap-2">
+        <fa-icon [icon]="faNetworkWired" class="text-unrender-purple"></fa-icon>
+        Network Controls
+      </h3>
+      
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-slate-500 text-sm">VPN Tunnel</span>
+        <button (click)="toggleVpn()" 
+                class="w-12 h-6 rounded-full transition-colors duration-300 relative"
+                [ngClass]="vpnEnabled ? 'bg-unrender-purple' : 'bg-gray-300'">
+          <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300"
+               [ngClass]="vpnEnabled ? 'translate-x-6' : 'translate-x-0'"></div>
+        </button>
+      </div>
+      <div class="text-xs text-slate-500">
+        {{ vpnEnabled ? 'Secure Tunnel Active (Encrypted)' : 'Standard Routing (Cleartext)' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend (Right Side) -->
+  <div class="absolute top-4 right-4 z-20">
+    <div class="bg-white/90 backdrop-blur p-4 rounded-lg border border-slate-200 shadow-lg w-64">
+      <h4 class="text-slate-700 text-sm font-semibold mb-2">Traffic Types</h4>
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+          <span class="text-slate-500">Standard Data (HTTP/TCP)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full bg-green-500"></div>
+          <span class="text-slate-500">VoIP / Real-time (UDP)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+          <span class="text-slate-500">Encrypted / VPN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Device Details Panel -->
+  <div *ngIf="selectedDevice" 
+       class="absolute top-48 right-4 z-20 w-72 bg-white/95 backdrop-blur p-5 rounded-lg border border-slate-200 shadow-2xl transform transition-all duration-300">
+    <div class="flex justify-between items-start mb-4">
+      <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+        <fa-icon [icon]="selectedDevice.icon" class="text-unrender-purple"></fa-icon>
+        {{ selectedDevice.name }}
+      </h3>
+      <button (click)="selectedDevice = null" class="text-slate-400 hover:text-slate-600">×</button>
+    </div>
+    
+    <div class="space-y-3 text-sm">
+      <div class="flex justify-between border-b border-slate-200 pb-2">
+        <span class="text-slate-500">Type</span>
+        <span class="text-slate-700 capitalize">{{ selectedDevice.type }}</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-200 pb-2">
+        <span class="text-slate-500">IP Address</span>
+        <span class="text-mono text-unrender-purple">{{ selectedDevice.ip }}</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-200 pb-2">
+        <span class="text-slate-500">MAC Address</span>
+        <span class="text-mono text-slate-600">{{ selectedDevice.mac }}</span>
+      </div>
+      <div class="flex justify-between items-center pt-1">
+        <span class="text-slate-500">Status</span>
+        <span class="px-2 py-0.5 rounded-full text-xs font-medium"
+              [ngClass]="selectedDevice.status === 'online' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+          {{ selectedDevice.status | uppercase }}
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-4 pt-4 border-t border-slate-200">
+      <div class="text-xs text-slate-500 mb-2">Activity Log</div>
+      <div class="h-24 overflow-y-auto space-y-1 font-mono text-xs">
+        <div class="text-green-600">> System initialized</div>
+        <div class="text-slate-500">> Link up (GigabitEthernet0/1)</div>
+        <div class="text-slate-500">> DHCP request sent</div>
+        <div class="text-unrender-purple">> IP assigned: {{ selectedDevice.ip }}</div>
+        <div *ngIf="vpnEnabled && ['pc','laptop','phone'].includes(selectedDevice.type)" class="text-amber-600">> VPN Tunnel Established</div>
+      </div>
+    </div>
+  </div>
+
+</div>

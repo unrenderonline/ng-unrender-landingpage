@@ -1,12 +1,14 @@
-import { 
-  Component, 
-  ElementRef, 
-  ViewChild, 
-  AfterViewInit, 
-  OnDestroy, 
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
   HostListener,
   PLATFORM_ID,
-  Inject
+  Inject,
+  ChangeDetectionStrategy,
+  NgZone
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 
@@ -109,7 +111,8 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
         min-height: 300px;
       }
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
   // --- DOM Element References ---
@@ -173,7 +176,10 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
   private t: { desktop: string, mobile: string };
   private readonly isMobile: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private ngZone: NgZone
+  ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.isMobile = this.isBrowser && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const userLang = this.isBrowser ? (navigator.language || (navigator as any).userLanguage || 'pt-BR') : 'pt-BR';
@@ -188,26 +194,28 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       console.log('3D Animation: Not in browser, skipping initialization');
       return;
     }
-    
+
     console.log('3D Animation: Component initialized, starting Three.js setup');
-    
-    try {
-      this.initThree();
-      this.initInteraction();
-      this.animate();
-    } catch (error) {
-      console.error('3D Animation: Error during initialization:', error);
-    }
+
+    this.ngZone.runOutsideAngular(() => {
+      try {
+        this.initThree();
+        this.initInteraction();
+        this.setupIntersectionObserver();
+      } catch (error) {
+        console.error('3D Animation: Error during initialization:', error);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if (!this.isBrowser) return;
-    
+
     // Stop animation loop
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
-    
+
     // Clean up event listeners
     if (typeof document !== 'undefined') {
       document.removeEventListener('click', this.requestPermission);
@@ -218,6 +226,35 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       this.intersectionObserver.disconnect();
     }
 
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+
+    this.disposeThree();
+  }
+
+  private setupIntersectionObserver() {
+    if (!this.canvasRef?.nativeElement) return;
+
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!this.animationFrameId) {
+            this.animate();
+          }
+        } else {
+          if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = 0;
+          }
+        }
+      });
+    });
+
+    this.intersectionObserver.observe(this.canvasRef.nativeElement);
+  }
+
+  private disposeThree() {
     // Dispose of all Three.js objects
     try {
       if (this.planetGeometries) {
@@ -245,19 +282,29 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
           }
         });
       }
-      
+
       if (this.renderer) {
         this.renderer.dispose();
       }
+
       if (this.composer) {
-        (this.composer as any).dispose();
-      }
-      if (this.scene) {
-        this.scene.clear();
+        this.composer.dispose();
       }
     } catch (e) {
-      console.error("Error during Three.js cleanup:", e);
+      console.warn('Error disposing Three.js resources', e);
     }
+
+    if (this.renderer) {
+      this.renderer.dispose();
+    }
+    if (this.composer) {
+      (this.composer as any).dispose();
+    }
+    if (this.scene) {
+      this.scene.clear();
+    }
+  } catch(e: any) {
+    console.error("Error during Three.js cleanup:", e);
   }
 
   // --- HostListeners for Window Events ---
@@ -267,7 +314,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     clearTimeout(this.resizeTimeout);
     this.resizeTimeout = setTimeout(() => {
       if (!this.canvasRef) return;
-      
+
       const canvas = this.canvasRef.nativeElement;
       const width = canvas.parentElement?.clientWidth || window.innerWidth;
       const height = canvas.parentElement?.clientHeight || 500;
@@ -276,7 +323,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(width, height);
       this.composer.setSize(width, height);
-      
+
       (this.bokehPass.uniforms as any)['aspect'].value = width / height;
       this.lensDistortionPass.uniforms['aspectRatio'].value = width / height;
       this.bloomPass.resolution.set(width, height);
@@ -307,14 +354,14 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     if (event.touches.length === 1 && this.isInteracting) {
       const touchX = event.touches[0].clientX;
       const touchY = event.touches[0].clientY;
-      
+
       const deltaX = (touchX - this.touchStartX) / window.innerWidth;
       const deltaY = (touchY - this.touchStartY) / window.innerHeight;
-      
+
       this.targetRotation.y += deltaX * 2;
       this.targetRotation.x -= deltaY * 2;
       this.targetRotation.x = Math.max(-1, Math.min(1, this.targetRotation.x));
-      
+
       this.touchStartX = touchX;
       this.touchStartY = touchY;
     }
@@ -399,11 +446,11 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     const directionalLight = new THREE.DirectionalLight(0xffa500, 1.5);
     directionalLight.position.set(10, 20, 10);
     this.scene.add(directionalLight);
-    
+
     this.pointLight1 = new THREE.PointLight(0xff00ff, 2, 50);
     this.pointLight1.position.set(-15, 10, -15);
     this.scene.add(this.pointLight1);
-    
+
     this.pointLight2 = new THREE.PointLight(0x00ffff, 2, 50);
     this.pointLight2.position.set(15, 10, 15);
     this.scene.add(this.pointLight2);
@@ -440,7 +487,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     this.composer.addPass(this.bokehPass);
 
     this.initLensDistortionPass();
-    
+
     console.log('Three.js initialization complete');
   }
 
@@ -492,7 +539,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     this.showHintTemporarily(4000);
 
     // iOS 13+ Gyroscope permission
-    if (this.isBrowser && typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+    if (this.isBrowser && typeof DeviceOrientationEvent !== 'undefined' && typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
       document.addEventListener('click', this.requestPermission, { once: true });
     }
 
@@ -515,8 +562,8 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
   }
 
   private requestPermission = (): void => {
-    if (!this.isBrowser) return;
-    
+    if (!this.isBrowser || typeof DeviceOrientationEvent === 'undefined') return;
+
     (DeviceOrientationEvent as any).requestPermission()
       .then((permissionState: string) => {
         if (permissionState === 'granted') {
@@ -530,7 +577,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
 
   private createCelestialObjects(): void {
     if (!this.planetGeometries) return;
-    
+
     const planetColors = [
       { color: 0xff6b35, emissive: 0xff4400 }, { color: 0x4a90e2, emissive: 0x2266cc },
       { color: 0xffd700, emissive: 0xffaa00 }, { color: 0x9b59b6, emissive: 0x7733aa },
@@ -548,11 +595,11 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       });
       const planet = new THREE.Mesh(this.planetGeometries.large, material);
       planet.scale.setScalar(radius);
-      
+
       const angle = (i / 8) * Math.PI * 2;
       const distance = Math.random() * 25 + 15;
       planet.position.set(Math.cos(angle) * distance, Math.random() * 20 - 10, Math.sin(angle) * distance);
-      
+
       planet.userData = {
         rotationSpeed: Math.random() * 0.01 + 0.002,
         orbitSpeed: Math.random() * 0.001 + 0.0005,
@@ -561,7 +608,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       this.scene.add(planet);
       this.celestialObjects.push(planet);
     }
-    
+
     // Asteroids/Moons
     for (let i = 0; i < 15; i++) {
       const radius = Math.random() * 0.8 + 0.3;
@@ -583,7 +630,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       this.scene.add(asteroid);
       this.celestialObjects.push(asteroid);
     }
-    
+
     // Stars
     for (let i = 0; i < 50; i++) {
       const starRadius = Math.random() * 0.3 + 0.1;
@@ -606,7 +653,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
 
   private createConfetti(): void {
     if (!this.particleGeometry) return;
-    
+
     const confettiColors = [0xff006e, 0xffbe0b, 0xfb5607, 0x8338ec, 0x3a86ff, 0x06ffa5, 0xff69b4, 0x00ffff];
     for (let i = 0; i < 200; i++) {
       const size = Math.random() * 0.3 + 0.1;
@@ -635,10 +682,10 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     const sinTime = Math.sin(time * 0.7);
     const cosTime = Math.cos(time * 0.5);
     const lerpFactor = 0.1;
-    
+
     this.currentRotation.x += (this.targetRotation.x - this.currentRotation.x) * lerpFactor;
     this.currentRotation.y += (this.targetRotation.y - this.currentRotation.y) * lerpFactor;
-    
+
     // Camera
     this.bobbleTime += 0.01;
     this.cameraAngle += 0.003 + this.currentRotation.y * 0.01;
@@ -646,7 +693,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
     this.camera.position.z = Math.sin(this.cameraAngle) * this.cameraRadius;
     this.camera.position.y = (this.cameraHeight + Math.sin(this.bobbleTime) * 2 + Math.cos(this.bobbleTime * 0.7) * 1) + this.currentRotation.x * 10;
     this.camera.lookAt(this.currentRotation.y * 5, 5 + this.currentRotation.x * 5, 0);
-    
+
     // Animate Objects
     for (const obj of this.celestialObjects) {
       const userData = obj.userData;
@@ -665,7 +712,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
         (obj.material as THREE.MeshBasicMaterial).opacity = userData['baseOpacity'] + Math.sin(userData['twinklePhase']) * 0.3;
       }
     }
-    
+
     // Animate Particles
     for (const particle of this.confettiParticles) {
       const pos = particle.position;
@@ -675,7 +722,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       if (pos.y > 30) pos.y = -30; else if (pos.y < -30) pos.y = 30;
       if (pos.z > 40) pos.z = -40; else if (pos.z < -40) pos.z = 40;
     }
-    
+
     // Animate Lights
     if (this.pointLight1) {
       this.pointLight1.position.x = sinTime * 20;
@@ -685,7 +732,7 @@ export class ThreeDAnimationDemoComponent implements AfterViewInit, OnDestroy {
       this.pointLight2.position.x = Math.cos(time * 0.6) * 20;
       this.pointLight2.position.z = Math.sin(time * 0.8) * 20;
     }
-    
+
     // Render
     this.composer.render();
   }

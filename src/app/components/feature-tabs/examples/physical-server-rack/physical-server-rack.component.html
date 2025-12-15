@@ -1,0 +1,106 @@
+<div #rackContainer class="w-full min-h-full bg-white p-2 sm:p-4 rounded-xl overflow-hidden relative flex flex-col items-center border border-slate-200 shadow-lg">
+  
+  <!-- Background Grid/Decorations -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none" 
+       style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px;">
+  </div>
+
+  <!-- Network Switch (Top) -->
+  <div #switchElement class="relative z-10 w-full max-w-xs sm:w-64 h-12 bg-white border border-slate-200 rounded-lg shadow-md flex items-center justify-between px-4 mb-8 shrink-0">
+    <div class="flex gap-1">
+      <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gray-300 animate-pulse" 
+           [style.animation-delay]="i * 100 + 'ms'"></div>
+    </div>
+    <div class="text-[10px] sm:text-xs font-mono text-unrender-purple font-bold">CORE-SWITCH-01</div>
+  </div>
+
+  <!-- Connection Lines Layer (SVG) -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none z-0">
+    <!-- Static Lines -->
+    <g *ngFor="let server of servers; let sIdx = index">
+      <g *ngFor="let gpu of server.gpus; let gIdx = index">
+        <line *ngIf="gpu.x && gpu.y"
+              [attr.x1]="switchPos.x + '%'" 
+              [attr.y1]="switchPos.y + '%'" 
+              [attr.x2]="gpu.x + '%'" 
+              [attr.y2]="gpu.y + '%'" 
+              stroke="#cbd5e1" 
+              stroke-width="1" 
+              stroke-dasharray="4 4"
+              opacity="0.5" />
+      </g>
+    </g>
+
+    <!-- Active Packets -->
+    <circle *ngFor="let packet of packets" 
+            r="3" 
+            fill="#818cf8"
+            filter="url(#glow)">
+      <!-- Removed animateMotion for performance/complexity reasons in this context -->
+    </circle>
+    
+    <!-- Using simple circle positioning -->
+    <circle *ngFor="let packet of packets" 
+            r="3" 
+            fill="#6366f1"
+            [attr.cx]="packet.startX + ((packet.targetX - packet.startX) * (packet.progress / 100)) + '%'"
+            [attr.cy]="packet.startY + ((packet.targetY - packet.startY) * (packet.progress / 100)) + '%'">
+    </circle>
+  </svg>
+
+  <!-- Server Rack -->
+  <div class="relative z-10 w-full max-w-4xl flex-1 flex flex-col gap-4 p-2 sm:p-4 bg-gray-50 border border-slate-200 rounded-xl backdrop-blur-sm shadow-sm overflow-y-auto">
+    
+    <!-- Server Units -->
+    <div *ngFor="let server of servers" class="w-full bg-white border border-slate-200 rounded-lg p-2 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 shadow-sm">
+      
+      <!-- Server Info -->
+      <div class="w-full sm:w-24 flex sm:flex-col items-center justify-between sm:justify-center border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0 sm:pr-2">
+        <div class="flex items-center gap-2 sm:flex-col">
+          <fa-icon [icon]="faServer" class="text-slate-400 text-lg sm:text-xl mb-0 sm:mb-1"></fa-icon>
+          <span class="text-[10px] font-mono text-slate-500">{{ server.id }}</span>
+        </div>
+        <div class="sm:hidden text-[10px] text-slate-400">ONLINE</div>
+      </div>
+
+      <!-- GPUs Container -->
+      <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+        <div *ngFor="let gpu of server.gpus" #gpuElement
+             class="relative rounded border border-slate-200 p-2 flex flex-col items-center justify-between transition-colors duration-300 min-h-[100px]"
+             [style.background-color]="gpu.color"
+             [style.box-shadow]="gpu.active ? '0 0 15px ' + gpu.color : 'none'">
+          
+          <!-- GPU Label -->
+          <div class="w-full flex justify-between items-center text-[9px] font-mono text-slate-600 mb-1">
+            <span class="truncate max-w-[80px]">{{ gpu.name }}</span>
+            <span>{{ gpu.load | number:'1.0-0' }}%</span>
+          </div>
+
+          <!-- Fans -->
+          <div class="flex gap-1 sm:gap-2 items-center justify-center flex-1 w-full py-1">
+            <div *ngFor="let fan of [1,2,3]" 
+                 class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-slate-200 flex items-center justify-center relative overflow-hidden bg-gray-100 shrink-0">
+              <!-- Fan Blades -->
+              <fa-icon [icon]="faWind" 
+                       class="text-slate-400 text-[10px] sm:text-sm transition-transform"
+                       [style.animation]="'spin ' + (2000 / (gpu.fansSpeed + 10)) + 'ms linear infinite'"
+                       [style.opacity]="0.5 + (gpu.fansSpeed / 200)"></fa-icon>
+            </div>
+          </div>
+
+          <!-- Heat/Load Bar -->
+          <div class="w-full h-1 bg-gray-200 rounded-full mt-1 overflow-hidden">
+            <div class="h-full transition-all duration-300"
+                 [style.width.%]="gpu.load"
+                 [style.background-color]="gpu.load > 80 ? '#ef4444' : (gpu.load > 50 ? '#eab308' : '#22c55e')">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

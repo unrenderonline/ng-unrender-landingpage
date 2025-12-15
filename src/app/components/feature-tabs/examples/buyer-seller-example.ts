@@ -41,10 +41,10 @@ export class BuyerSellerExampleComponent {
   @Input() sellerLabel: string = 'Vendedor';
   @Input() arrow: string = '⟷';
   
-  @Input() buyerGradient: string = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-  @Input() sellerGradient: string = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+  @Input() buyerGradient: string = 'linear-gradient(135deg, #10051c 0%, #6366f1 100%)';
+  @Input() sellerGradient: string = 'linear-gradient(135deg, #f5a623 0%, #fbbf24 100%)';
   
-  @Input() buyerColor: string = '#667eea';
-  @Input() sellerColor: string = '#f5576c';
-  @Input() arrowColor: string = '#f97316';
+  @Input() buyerColor: string = '#10051c';
+  @Input() sellerColor: string = '#f5a623';
+  @Input() arrowColor: string = '#94a3b8';
 }

@@ -55,9 +55,9 @@ export class ResponsiveDevicesExampleComponent {
   @Input() desktopWidth: number = 180;
   @Input() desktopHeight: number = 120;
   
-  @Input() mobileGradient: string = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-  @Input() tabletGradient: string = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
-  @Input() desktopGradient: string = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)';
+  @Input() mobileGradient: string = 'linear-gradient(135deg, #10051c 0%, #6366f1 100%)';
+  @Input() tabletGradient: string = 'linear-gradient(135deg, #f5a623 0%, #fbbf24 100%)';
+  @Input() desktopGradient: string = 'linear-gradient(135deg, #10051c 0%, #f5a623 100%)';
   
   @Input() borderRadius: number = 0.5;
   @Input() boxShadow: string = '0 4px 6px rgba(0,0,0,0.1)';

@@ -2,18 +2,17 @@ import { NgSwitch, NgComponentOutlet, NgClass } from '@angular/common';
 import { Component, OnInit, HostListener, AfterViewInit, ElementRef, ViewChild, OnDestroy, Type } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { gsap } from 'gsap';
-import { ResponsiveDemoComponent } from '../responsiveDemo/responsive-demo.component';
-import { ThreeDAnimationDemoComponent } from '../3d-animation/3d-animation.component';
-import { GalagaArcadeComponent } from '../galaga-game/galaga-game.component';
-import { ChatWidgetComponent } from '../chat-widget/chat-widget.component';
+import { LazyRendererComponent } from '../lazy-renderer/lazy-renderer.component';
 
 // Interface para definir a estrutura de uma feature
 interface Feature {
   name: string;
   imageUrl?: string; // Square image
   gifUrl?: string; // Widescreen GIF
+  isReloading?: boolean; // State for reloading animation
   customHtml?: string; // Custom HTML content (pure HTML string)
   customComponent?: Type<any>; // Custom Angular component
+  loadComponent?: () => Promise<Type<any>>; // Lazy loaded component
   customComponentInputs?: Record<string, any>; // Inputs to pass to the custom component
   iframeUrl?: string; // URL for iframe display
   iframeHeight?: string; // Height for iframe (e.g., '400px', '50vh')
@@ -43,18 +42,23 @@ interface MenuItem {
 @Component({
   selector: 'app-feature-tabs',
   standalone: true,
-  imports: [NgComponentOutlet, NgClass],
+  imports: [NgComponentOutlet, NgClass, LazyRendererComponent],
   templateUrl: './feature-tabs.html',
   styleUrls: ['./feature-tabs.scss'],
 })
 export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('contentArea') contentArea!: ElementRef;
+  @ViewChild('developmentSidebar') developmentSidebar!: ElementRef;
+  @ViewChild('infrastructureSidebar') infrastructureSidebar!: ElementRef;
+  @ViewChild('featureSection') featureSection!: ElementRef;
 
   constructor(private sanitizer: DomSanitizer) { }
 
   // Carousel state management
   currentSlideIndex: { [key: string]: number } = {};
   carouselIntervals: { [key: string]: any } = {};
+
+  // Sticky sidebar state
 
   ngOnInit(): void {
     // Initialize carousel for all menu items
@@ -121,24 +125,24 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/webdev.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Desenvolvimento Web e Mobile'
         },
         {
           url: '/mvp-dev.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'MVP Development'
         },
         {
           url: '/aqui-shopping-f.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Aqui Shopping - E-commerce Solution'
         }
       ],
       features: [
         {
           name: 'Gamificação',
-          customComponent: GalagaArcadeComponent,
+          loadComponent: () => import('../galaga-game/galaga-game.component').then(m => m.GalagaArcadeComponent),
         },
         {
           name: 'Tecnologias de Alta Performance',
@@ -146,11 +150,11 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
         },
         {
           name: 'Responsividade',
-          customComponent: ResponsiveDemoComponent,
+          loadComponent: () => import('../responsiveDemo/responsive-demo.component').then(m => m.ResponsiveDemoComponent),
         },
         {
           name: 'WebGL & 3D',
-        customComponent:  ThreeDAnimationDemoComponent,
+          loadComponent: () => import('../3d-animation/3d-animation.component').then(m => m.ThreeDAnimationDemoComponent),
         },
         {
           name: 'E-commerce & Landing Pages',
@@ -170,24 +174,28 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/sobreAI.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Soluções de IA'
         },
         {
           url: '/aiot.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'AIoT - AI + Internet of Things'
         },
         {
           url: '/comma4.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Veículos Autônomos'
         }
       ],
       features: [
         {
+          name: 'Visão Computacional',
+          loadComponent: () => import('../computer-vision/computer-vision.component').then(m => m.ComputerVisionComponent)
+        },
+        {
           name: 'Chatbot e Assistentes Virtuais com IA. Inteligente de verdade!',
-          customComponent: ChatWidgetComponent,
+          loadComponent: () => import('../chat-widget/chat-widget.component').then(m => m.ChatWidgetComponent),
         },
         {
           name: 'Sistemas com ferramentas integradas com IA, de forma útil.',
@@ -202,10 +210,9 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
           imageUrl: '/mimir-png.png'
         },
         {
-          name: 'Visão Computacional',
-          gifUrl: '/opencv.gif'
+          name: 'Captura de Movimento',
+          loadComponent: () => import('../mocap/mocap.component').then(m => m.MocapComponent)
         },
-
         {
           name: 'Veículos Autônomos',
           gifUrl: '/commai1.gif'
@@ -224,28 +231,33 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/sobreERP.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Sistemas ERP'
         },
         {
           url: '/cronos-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Cronos - Sistema Customizado'
         },
         {
           url: '/billdog-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Billdog - Sistema de Gestão'
         }
       ],
       features: [
         {
-          name: 'Progressive Web Apps (PWA)',
-          imageUrl: '/controlb-png.png'
+          name: 'Dashboards & BI',
+          loadComponent: () => import('./examples/web-system/web-system.component').then(m => m.WebSystemComponent)
         },
         {
+          name: 'Integração de APIs',
+          loadComponent: () => import('./examples/api-integration/api-integration.component').then(m => m.ApiIntegrationComponent)
+        },
+
+        {
           name: 'Responsividade',
-          customComponent: ResponsiveDemoComponent,
+          loadComponent: () => import('../responsiveDemo/responsive-demo.component').then(m => m.ResponsiveDemoComponent),
         },
         {
           name: 'Progressive Web Apps (PWA)',
@@ -265,28 +277,30 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/sobreERP.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Sistemas ERP'
         },
         {
           url: '/cronos-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Cronos - Sistema Customizado'
         },
         {
           url: '/billdog-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Billdog - Sistema de Gestão'
         }
       ],
       features: [
         {
-          name: 'Software Desktop',
-          imageUrl: '/controlb-png.png'
+          name: 'Android Nativo (Jetpack Compose)',
+          loadComponent: () => import('./examples/native-app-demo/native-app-demo.component').then(m => m.NativeAppDemoComponent),
+          customComponentInputs: { platform: 'android' }
         },
         {
-          name: 'Migração de Sistemas',
-          imageUrl: '/papiro-png.png'
+          name: 'iOS Nativo (Liquid Glass)',
+          loadComponent: () => import('./examples/native-app-demo/native-app-demo.component').then(m => m.NativeAppDemoComponent),
+          customComponentInputs: { platform: 'ios' }
         }
       ]
     },
@@ -298,28 +312,47 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/sobreERP.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Sistemas ERP'
         },
         {
           url: '/cronos-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Cronos - Sistema Customizado'
         },
         {
           url: '/billdog-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Billdog - Sistema de Gestão'
         }
       ],
       features: [
         {
-          name: 'Software Desktop',
-          imageUrl: '/controlb-png.png'
+          name: 'Windows (WPF / .NET)',
+          loadComponent: () => import('./examples/desktop-software-demo/desktop-software-demo.component').then(m => m.DesktopSoftwareDemoComponent),
+          customComponentInputs: { os: 'windows' }
         },
         {
-          name: 'Migração de Sistemas',
-          imageUrl: '/papiro-png.png'
+          name: 'macOS (Swift / Electron)',
+          loadComponent: () => import('./examples/desktop-software-demo/desktop-software-demo.component').then(m => m.DesktopSoftwareDemoComponent),
+          customComponentInputs: { os: 'macos' }
+        },
+        {
+          name: 'Linux (GTK / Qt)',
+          loadComponent: () => import('./examples/desktop-software-demo/desktop-software-demo.component').then(m => m.DesktopSoftwareDemoComponent),
+          customComponentInputs: { os: 'linux' }
+        },
+        {
+          name: 'Biometria Integrada (Fingerprint)',
+          loadComponent: () => import('./examples/hardware-demos/fingerprint-scanner/fingerprint-scanner.component').then(m => m.FingerprintScannerComponent)
+        },
+        {
+          name: 'Leitura de Código de Barras (Barcode)',
+          loadComponent: () => import('./examples/hardware-demos/barcode-scanner/barcode-scanner.component').then(m => m.BarcodeScannerComponent)
+        },
+        {
+          name: 'Automação Comercial (Thermal Printer)',
+          loadComponent: () => import('./examples/commercial-automation/commercial-automation.component').then(m => m.CommercialAutomationComponent)
         }
       ]
     },
@@ -331,24 +364,49 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/sobreERP.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Sistemas ERP'
         },
         {
           url: '/cronos-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Cronos - Sistema Customizado'
         },
         {
           url: '/billdog-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Billdog - Sistema de Gestão'
         }
       ],
       features: [
         {
-          name: 'Software Desktop',
-          imageUrl: '/controlb-png.png'
+          name: 'Wearable (Android Wear)',
+          loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
+          customComponentInputs: { type: 'wearable', platform: 'android-wear' }
+        },
+        {
+          name: 'Wearable (Apple Watch)',
+          loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
+          customComponentInputs: { type: 'wearable', platform: 'apple-watch' }
+        },
+        {
+          name: 'Sistemas Embarcados (ESP/IoT)',
+          loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
+          customComponentInputs: { type: 'embedded' }
+        },
+        {
+          name: 'Sensores e Atuadores (IoT)',
+          loadComponent: () => import('./examples/hardware-demos/sensors-actuators/sensors-actuators.component').then(m => m.SensorsActuatorsComponent)
+        },
+        {
+          name: 'Smart Hub (IoT Interface)',
+          loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
+          customComponentInputs: { type: 'smart-hub' }
+        },
+        {
+          name: 'Edge AI (Visão Computacional)',
+          loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
+          customComponentInputs: { type: 'edge-ai' }
         },
         {
           name: 'Sistemas ERP/CRM',
@@ -357,14 +415,6 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
         {
           name: 'Integrações API',
           imageUrl: '/hermes-png.png'
-        },
-        {
-          name: 'MVPs Rápidos',
-          imageUrl: '/billdog-png.png'
-        },
-        {
-          name: 'Migração de Sistemas',
-          imageUrl: '/papiro-png.png'
         }
       ]
     },
@@ -373,6 +423,47 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
   // Menu items para Infraestrutura On-Premise
   infrastructureMenuItems: MenuItem[] = [
     {
+      id: 'smart-home',
+      title: 'Smart Home',
+      subtitle: 'Automação Residencial',
+      description: 'Soluções completas para automação residencial, controle de iluminação, climatização e segurança.',
+      carouselImages: [
+        {
+          url: '/aiot.jpg',
+          link: 'https://unrender.dev',
+          alt: 'Smart Home'
+        },
+        {
+          url: '/echoshow feature.gif',
+          link: 'https://unrender.dev',
+          alt: 'Controle por Voz'
+        },
+        {
+          url: '/gps.png',
+          link: 'https://unrender.dev',
+          alt: 'Segurança'
+        }
+      ],
+      features: [
+        {
+          name: 'Controle Residencial',
+          loadComponent: () => import('./examples/smart-home/smart-home.component').then(m => m.SmartHomeComponent)
+        },
+        {
+          name: 'Iluminação Inteligente',
+          imageUrl: '/aiot.jpg'
+        },
+        {
+          name: 'Climatização Automatizada',
+          imageUrl: '/server.jpg'
+        },
+        {
+          name: 'Segurança e Monitoramento',
+          imageUrl: '/gps.png'
+        }
+      ]
+    },
+    {
       id: 'hardware-consulting',
       title: 'Consultoria de Hardware',
       subtitle: 'Análise e Assessoria Técnica',
@@ -380,21 +471,25 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/consulting.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Consultoria de Hardware'
         },
         {
           url: '/server.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Servidores e Infraestrutura'
         },
         {
           url: '/support.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Suporte Técnico'
         }
       ],
       features: [
+        {
+          name: 'Busca e Consultoria de Hardware',
+          loadComponent: () => import('./examples/hardware-consulting/hardware-consulting.component').then(m => m.HardwareConsultingComponent)
+        },
         {
           name: 'Análise de Necessidades',
           imageUrl: '/consulting.jpg'
@@ -437,24 +532,24 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/sobrePDV.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Sistemas PDV'
         },
         {
           url: '/qotar-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Qotar - Sistema de Vendas'
         },
         {
           url: '/pequi-png.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Pequi - Automação Comercial'
         }
       ],
       features: [
         {
           name: 'Sistemas PDV (Ponto de Venda)',
-          imageUrl: '/qotar-png.png'
+          loadComponent: () => import('./examples/commercial-automation/commercial-automation.component').then(m => m.CommercialAutomationComponent)
         },
         {
           name: 'Monitores Touchscreen',
@@ -470,7 +565,7 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
         },
         {
           name: 'Leitores de Código de Barras',
-          imageUrl: '/gps.png'
+          loadComponent: () => import('./examples/hardware-demos/barcode-scanner/barcode-scanner.component').then(m => m.BarcodeScannerComponent)
         }
       ]
     },
@@ -482,24 +577,28 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/server.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Servidores de IA'
         },
         {
           url: '/aiot.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'AIoT Solutions'
         },
         {
           url: '/sobreAI.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Inteligência Artificial'
         }
       ],
       features: [
         {
-          name: 'Servidores para Treinamento',
-          imageUrl: '/server.jpg'
+          name: 'Cluster de Treinamento Distribuído',
+          loadComponent: () => import('./examples/ai-server-cluster/ai-server-cluster.component').then(m => m.AiServerClusterComponent)
+        },
+        {
+          name: 'Visualização Física de Rack',
+          loadComponent: () => import('./examples/physical-server-rack/physical-server-rack.component').then(m => m.PhysicalServerRackComponent)
         },
         {
           name: 'Servidores para Inferência',
@@ -539,24 +638,32 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/server.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Infraestrutura de Rede'
         },
         {
           url: '/support.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Suporte de TI'
         },
         {
           url: '/consulting.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Consultoria de Rede'
         }
       ],
       features: [
         {
-          name: 'Switches Gerenciáveis',
-          imageUrl: '/server.jpg'
+          name: 'Gerenciamento de Rede Corporativa',
+          loadComponent: () => import('./examples/network-management/network-management.component').then(m => m.NetworkManagementComponent)
+        },
+        {
+          name: 'Topologia Física de Rede',
+          loadComponent: () => import('./examples/physical-network-topology/physical-network-topology.component').then(m => m.PhysicalNetworkTopologyComponent)
+        },
+        {
+          name: 'Monitoramento de Produtividade',
+          loadComponent: () => import('./examples/employee-monitoring/employee-monitoring.component').then(m => m.EmployeeMonitoringComponent)
         },
         {
           name: 'Roteadores Corporativos',
@@ -584,21 +691,29 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       carouselImages: [
         {
           url: '/3d-scan.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Hardware Customizado'
         },
         {
           url: '/aiot.jpg',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'AIoT Devices'
         },
         {
           url: '/comma4.png',
-          link: 'https://unrender.online',
+          link: 'https://unrender.dev',
           alt: 'Dispositivos Inteligentes'
         }
       ],
       features: [
+        {
+          name: 'Laboratório de Hardware',
+          loadComponent: () => import('./examples/hardware-showcase/hardware-showcase.component').then(m => m.HardwareShowcaseComponent)
+        },
+        {
+          name: 'Drones & Escaneamento Aéreo',
+          loadComponent: () => import('./examples/drone-simulation/drone-simulation.component').then(m => m.DroneSimulationComponent)
+        },
         {
           name: 'Dispositivos IA Embarcada',
           imageUrl: '/aiot.jpg'
@@ -696,21 +811,21 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private scrollToContent(): void {
-    // On mobile, scroll to the content area when changing sub-menu items
+    // Scroll to the content area when changing sub-menu items
     setTimeout(() => {
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
-        const contentWrapper = document.querySelector('.modern-content-wrapper');
-        if (contentWrapper) {
-          const headerOffset = 60;
-          const elementPosition = contentWrapper.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      const contentWrapper = document.querySelector('.modern-content-wrapper');
+      if (contentWrapper) {
+        const isMobile = window.innerWidth < 768;
+        // Adjust offset based on device
+        const headerOffset = isMobile ? 60 : 100;
 
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-        }
+        const elementPosition = contentWrapper.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
       }
     }, 150);
   }
@@ -890,6 +1005,7 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
     this.onDeviceOrientation(event);
   }
 
+
   // Parallax methods
   onMouseMove(event: MouseEvent): void {
     const container = event.currentTarget as HTMLElement;
@@ -925,6 +1041,16 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
 
       this.updateParallax();
     }
+  }
+
+  updateParallax() {
+    const handX = this.mouseX * 10 + this.deviceOrientation.x * 5;
+    const handY = this.mouseY * 10 + this.deviceOrientation.y * 5;
+    this.handTransform = `translate(${handX}px, ${handY}px)`;
+
+    const sofaX = this.mouseX * 15 + this.deviceOrientation.x * 8;
+    const sofaY = this.mouseY * 15 + this.deviceOrientation.y * 8;
+    this.sofaTransform = `translate(${sofaX}px, ${sofaY}px)`;
   }
 
   // Carousel methods
@@ -994,38 +1120,27 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  private updateParallax(): void {
-    // Hand parallax - subtle movement
-    const handOffsetX = this.mouseX * 10 + this.deviceOrientation.x * 5;
-    const handOffsetY = this.mouseY * 10 + this.deviceOrientation.y * 5;
-    this.handTransform = `translate(${handOffsetX}px, ${handOffsetY}px)`;
+  reloadGif(feature: Feature): void {
+    if (feature.isReloading) return;
 
-    // Sofa parallax - more movement but constrained
-    const sofaOffsetX = this.mouseX * 15 + this.deviceOrientation.x * 8;
-    const sofaOffsetY = this.mouseY * 15 + this.deviceOrientation.y * 8;
-    this.sofaTransform = `translate(${sofaOffsetX}px, ${sofaOffsetY}px)`;
+    feature.isReloading = true;
+
+    // Wait for fade out animation
+    setTimeout(() => {
+      if (feature.gifUrl) {
+        // Append timestamp to force reload
+        const cleanUrl = feature.gifUrl.split('?')[0];
+        feature.gifUrl = `${cleanUrl}?t=${new Date().getTime()}`;
+      }
+
+      // Fade back in
+      setTimeout(() => {
+        feature.isReloading = false;
+      }, 50);
+    }, 300);
   }
 
-  // Method to get background class for custom component features
-  getCustomComponentBackgroundClass(menuItemId: string, featureIndex: number): string {
-    // Find the menu item and count custom components before this one
-    let customComponentCount = 0;
-    const menuItems = [
-      ...this.developmentMenuItems,
-      ...this.infrastructureMenuItems,
-      ...this.designMenuItems
-    ];
-
-    const menuItem = menuItems.find(item => item.id === menuItemId);
-    if (menuItem && menuItem.features) {
-      for (let i = 0; i <= featureIndex; i++) {
-        if (menuItem.features[i] && (menuItem.features[i].customComponent || menuItem.features[i].customHtml)) {
-          customComponentCount++;
-        }
-      }
-    }
-
-    // Alternate between orange and purple based on count
-    return customComponentCount % 2 === 1 ? 'bg-unrender-accent' : 'bg-unrender-purple';
+  getCustomComponentBackgroundClass(itemId: string, index: number): string {
+    return 'bg-unrender-accent';
   }
 }

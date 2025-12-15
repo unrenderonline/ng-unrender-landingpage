@@ -3,20 +3,32 @@
   display: block;
   position: relative;
   width: 100%;
-  height: 100vh;
+  // Use viewport height but account for fixed navbar
+  --navbar-h: 64px; // h-16 on mobile
+  height: auto;
+  // Prevent any vertical scroll inside this component
+  overflow: hidden;
+  // Tailwind-like reset via CSS: ensure all children respect box-sizing
+  *, *::before, *::after { box-sizing: border-box; }
 }
 
 .hero-section {
   position: relative;
-  height: 100vh;
+  // Fill the viewport but subtract fixed navbar height so content isn't hidden
+  min-height: calc(100svh - var(--navbar-h));
   width: 100%;
   background-color: #0a0311; // Fundo roxo espacial
+  // Allow content to extend naturally; we'll manage overflow on small screens
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Montserrat', sans-serif;
   color: #ffffff;
+  // Create space so the fixed navbar doesn't overlap the hero content
+  padding-top: var(--navbar-h);
+  // Remove default margins from inner elements to avoid compounding overflow
+  * { margin-block: 0; }
 }
 
 #particle-canvas {
@@ -32,11 +44,26 @@
   position: relative;
   z-index: 2;
   animation: fadeIn 1.5s ease-out;
+  // Constrain content to available viewport height and shrink if needed
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  max-height: calc(100svh - var(--navbar-h));
+  width: 100%;
+  padding: 0 0.75rem;
+  box-sizing: border-box;
 }
 
 h1.display-4 {
   letter-spacing: 1px;
-  font-size: 40px;
+  // Scale title responsively to avoid overflow on short screens
+  // Shrink more aggressively on short screens
+  font-size: clamp(1rem, 3.5vw + 0.3vh, 1.75rem);
+  line-height: 1.1;
+  text-wrap: balance;
+  text-align: center;
 }
 
 .highlight {
@@ -46,6 +73,10 @@ h1.display-4 {
 p.lead {
   color: #ccc; // Cinza claro para melhor leitura
   font-weight: 300;
+  // Scale paragraph text with viewport to prevent overflow
+  font-size: clamp(0.75rem, 1vw + 0.3vh, 0.95rem);
+  line-height: 1.3;
+  text-align: center;
 }
 
 .values-list {
@@ -70,7 +101,8 @@ p.lead {
 
 .project-showcase {
   position: relative;
-  padding-bottom: 25px; // Espaço para os pontos de navegação
+  // Keep the media area from exceeding available viewport height
+  max-height: calc(100svh - var(--navbar-h) - 7rem);
 }
 
 // Estilos do Carrossel
@@ -78,7 +110,11 @@ p.lead {
   position: relative;
   width: 100%;
   // A altura será definida pela imagem
+  // Restore original portrait ratio used by the design
   aspect-ratio: 8 / 9; 
+  // Do not exceed half the viewport height to keep everything visible
+  max-height: min(44svh, 480px);
+  margin: 0 auto;
 
   .carousel-slide {
     position: absolute;
@@ -88,6 +124,8 @@ p.lead {
     height: 100%;
     opacity: 0;
     transition: opacity 0.8s ease-in-out; // Transição de fade
+    border-radius: 0.5rem;
+    overflow: hidden;
 
     &.active {
       opacity: 1;
@@ -96,6 +134,7 @@ p.lead {
     img {
       width: 100%;
       height: 100%;
+      // Use cover to match original visual while the container preserves aspect-ratio
       object-fit: cover;
       border: 3px solid rgba(245, 166, 35, 0.2);
     }
@@ -107,20 +146,20 @@ p.lead {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to top, rgba(10, 3, 17, 0.9), transparent);
-  padding: 2.5rem 1.5rem 1.5rem 1.5rem;
-  border-bottom-left-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
+  background: linear-gradient(to top, rgba(10, 3, 17, 0.95) 0%, rgba(10, 3, 17, 0.6) 60%, transparent 100%);
+  padding: 2.5rem 1rem 1rem 1rem;
+  z-index: 10;
+  // Ensure caption text scales
+  font-size: clamp(0.75rem, 0.9vw + 0.3vh, 0.95rem);
 }
 
 // Estilos dos Pontos de Navegação
 .carousel-dots {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static; // prevent overlapping / overflow in short viewports
   display: flex;
+  justify-content: center;
   gap: 10px;
+  margin-top: 0.5rem;
 
   .dot {
     width: 10px;
@@ -157,18 +196,102 @@ p.lead {
 @media (max-width: 991.98px) {
   .hero-section {
     align-items: flex-start; // Alinha no topo em telas menores
-    padding-top: 6rem;
-    height: auto; // Altura automática para caber o conteúdo
-    min-height: 100vh;
+    // keep fullscreen feel while avoiding overlap
+    min-height: calc(100svh - var(--navbar-h));
+    // Keep overflow hidden to prevent scroll on short screens
+    overflow: hidden;
   }
-  .text-start {
+  .text-start,
+  .text-left {
     text-align: center !important;
   }
   .values-list .value-item {
     justify-content: center;
   }
   .project-showcase {
-    margin-top: 3rem;
+    margin-top: 1rem;
+  }
+
+  // Ajustes de tipografia para telas menores
+  h1 {
+    font-size: clamp(0.95rem, 4.5vw + 0.4vh, 1.6rem); // tighter
+    line-height: 1.15;
+  }
+  .project-caption {
+    padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+    font-size: clamp(0.7rem, 0.8vw + 0.3vh, 0.9rem);
+  }
+  .carousel-slides {
+    aspect-ratio: 8 / 9;
+    max-height: min(40svh, 420px);
+  }
+  .carousel-dots {
+    position: static; // evita sobrepor conteúdo
+    transform: none;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+}
+
+// Extra small devices
+@media (max-width: 575.98px) {
+  .hero-section {
+    // mobile navbar = 64px already handled by var(--navbar-h)
+    padding-bottom: 0.5rem;
+    align-items: flex-start;
+  }
+  .project-showcase {
+    margin-top: 0.5rem; // reduce extra spacing between text and carousel
+  }
+  .hero-content {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    justify-content: flex-start;
+    padding-top: 1rem;
+  }
+  h1 {
+    font-size: clamp(1.1rem, 6vw, 1.5rem); // smaller cap
+    margin-bottom: 0.5rem;
+  }
+  p {
+    font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+    line-height: 1.3;
+  }
+  .values-list {
+    margin-top: 1rem;
+    .value-item {
+      margin-bottom: 0.75rem;
+      i {
+        font-size: 1.25rem;
+        margin-right: 0.5rem;
+      }
+      h5 {
+        font-size: 0.95rem;
+        margin-bottom: 0.1rem;
+      }
+    }
+  }
+  .carousel-slides {
+    max-height: 35vh;
+  }
+  .project-caption h6 {
+    font-size: clamp(0.7rem, 0.8vw + 0.3vh, 0.85rem);
+    margin-bottom: 0.1rem;
+  }
+  .project-caption p {
+    font-size: clamp(0.65rem, 0.8vw + 0.3vh, 0.8rem);
+    line-height: 1.2;
+  }
+}
+
+// Large screens: navbar height increases to 80px (h-20)
+@media (min-width: 1024px) {
+  :host {
+    --navbar-h: 80px; // h-20 on large screens
+  }
+  .hero-section {
+    min-height: calc(100svh - var(--navbar-h));
+    padding-top: var(--navbar-h);
   }
 }
 

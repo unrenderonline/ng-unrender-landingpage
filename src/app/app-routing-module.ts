@@ -11,10 +11,11 @@ const routes: Routes = [
     path: 'sobre',
     loadComponent: () => import('./pages/sobre/sobre').then((m) => m.Sobre),
   },
-  {
-    path: 'ecossistema ',
-    loadComponent: () => import('./pages/ecosistema/ecosistema').then((m) => m.Ecosistema),
-  },
+  // ecossistema disabled
+  // {
+  //   path: 'ecossistema',
+  //   loadComponent: () => import('./pages/ecosistema/ecosistema').then((m) => m.Ecosistema),
+  // },
   {
     path: 'galaga',
     loadComponent: () => import('./components/galaga-game/galaga-game.component').then((m) => m.GalagaArcadeComponent),

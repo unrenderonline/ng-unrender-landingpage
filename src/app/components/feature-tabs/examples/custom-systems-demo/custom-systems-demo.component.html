@@ -1,0 +1,112 @@
+<div class="demo-container">
+  
+  <!-- Wearable Simulation -->
+  <div *ngIf="type === 'wearable'" class="wearable-device" [ngClass]="platform">
+    <div class="screen">
+      <!-- Apple Watch UI -->
+      <div *ngIf="platform === 'apple-watch'" class="watch-ui apple">
+        <div class="header">
+          <span class="time">{{ currentTime }}</span>
+          <span class="status-icon"><fa-icon [icon]="faBolt" class="charging"></fa-icon></span>
+        </div>
+        <div class="content">
+          <div class="activity-rings">
+            <!-- Simplified rings representation -->
+            <div class="ring red"></div>
+            <div class="ring green"></div>
+            <div class="ring blue"></div>
+          </div>
+          <div class="stats-list">
+            <div class="stat-item">
+              <fa-icon [icon]="faFire" class="icon-red"></fa-icon>
+              <div class="data">
+                <span class="value">{{ calories }}</span>
+                <span class="label">CAL</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <fa-icon [icon]="faWalking" class="icon-green"></fa-icon>
+              <div class="data">
+                <span class="value">{{ steps }}</span>
+                <span class="label">STEPS</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <fa-icon [icon]="faHeartbeat" class="icon-red"></fa-icon>
+              <div class="data">
+                <span class="value">{{ heartRate }}</span>
+                <span class="label">BPM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Android Wear OS UI -->
+      <div *ngIf="platform === 'android-wear'" class="watch-ui android">
+        <div class="watch-face">
+          <div class="time-large">{{ currentTime }}</div>
+          <div class="date">Wed, Oct 24</div>
+        </div>
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-header">
+              <fa-icon [icon]="faHeartbeat"></fa-icon> Heart Rate
+            </div>
+            <div class="card-body">
+              <span class="big-value">{{ heartRate }}</span> <span class="unit">bpm</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <fa-icon [icon]="faWalking"></fa-icon> Steps
+            </div>
+            <div class="card-body">
+              <span class="big-value">{{ steps }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Watch Body Details -->
+    <div class="crown" *ngIf="platform === 'apple-watch'"></div>
+    <div class="button" *ngIf="platform === 'apple-watch'"></div>
+  </div>
+
+  <!-- Embedded System (ESP) Simulation -->
+  <div *ngIf="type === 'embedded'" class="embedded-system">
+    <div class="pcb-board">
+      <div class="chip esp32">
+        <div class="label">ESP32</div>
+        <div class="pins left"></div>
+        <div class="pins right"></div>
+      </div>
+      <div class="led-indicator" [class.on]="ledStatus"></div>
+      <div class="label-text">IoT Controller</div>
+      <div class="traces"></div>
+    </div>
+    
+    <div class="terminal-screen">
+      <div class="terminal-header">
+        <fa-icon [icon]="faTerminal"></fa-icon> Serial Monitor (COM3)
+      </div>
+      <div class="terminal-content">
+        <div *ngFor="let log of logs" class="log-line">
+          {{ log }}
+        </div>
+        <div class="cursor-line">> <span class="cursor">_</span></div>
+      </div>
+      <div class="dashboard-overlay">
+        <div class="dash-item">
+          <div class="label">TEMP</div>
+          <div class="val">{{ temperature | number:'1.1-1' }}°C</div>
+        </div>
+        <div class="dash-item">
+          <div class="label">HUM</div>
+          <div class="val">{{ humidity | number:'1.0-0' }}%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

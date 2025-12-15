@@ -1,0 +1,42 @@
+/* Employee Monitoring Styles */
+:host {
+    display: block;
+    width: 100%;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-flash {
+    animation: flash 1s ease-out forwards;
+}
+
+@keyframes flash {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Custom scrollbar */
+.overflow-y-auto {
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        background: rgba(30, 41, 59, 0.5);
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(71, 85, 105, 0.8);
+        border-radius: 2px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 1);
+    }
+}

@@ -60,7 +60,7 @@ $design-color: #f97316; // Laranja Escuro
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-x: hidden;
+  overflow: visible;
   max-width: 100vw;
 }
 
@@ -142,7 +142,7 @@ $design-color: #f97316; // Laranja Escuro
   padding: 1rem 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
 
   @media (min-width: 768px) {
     padding: 2rem 0;
@@ -225,7 +225,7 @@ $design-color: #f97316; // Laranja Escuro
 .tabs-accordion {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
 
   .accordion-tab-wrapper {
     border-bottom: 2px solid #e5e7eb;
@@ -233,6 +233,14 @@ $design-color: #f97316; // Laranja Escuro
 
     &:last-child {
       border-bottom: none;
+    }
+
+    .sticky-header {
+      position: sticky;
+      top: 4rem;
+      z-index: 40;
+      background-color: inherit;
+      /* Inherit from parent or set specific */
     }
 
     .tab-item {
@@ -297,7 +305,7 @@ $design-color: #f97316; // Laranja Escuro
       border-top: 1px solid rgba(255, 255, 255, 0.2);
       width: 100%;
       max-width: 100%;
-      overflow-x: hidden;
+      overflow: visible;
     }
   }
 }
@@ -316,11 +324,14 @@ $design-color: #f97316; // Laranja Escuro
 }
 
 .mobile-nav-container {
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  background-color: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   ul {
     list-style: none;
@@ -375,7 +386,7 @@ $design-color: #f97316; // Laranja Escuro
   padding: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
   position: relative;
   /* Creates positioning context for sticky children */
 }
@@ -383,7 +394,7 @@ $design-color: #f97316; // Laranja Escuro
 @media (min-width: 768px) {
   .main-section {
     display: grid !important;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 200px minmax(0, 1fr); // Fix: Prevent grid blowout by huge children
     align-items: start;
     /* Ensures sidebar can stick properly */
     min-height: auto;
@@ -393,7 +404,7 @@ $design-color: #f97316; // Laranja Escuro
 
 @media (min-width: 1024px) {
   .main-section {
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 220px minmax(0, 1fr); // Fix: Prevent grid blowout
   }
 }
 
@@ -443,6 +454,7 @@ $design-color: #f97316; // Laranja Escuro
       margin-bottom: 1.5rem;
     }
   }
+
 }
 
 .nav-pills .nav-link {
@@ -480,7 +492,7 @@ $design-color: #f97316; // Laranja Escuro
   /* Allow natural height growth */
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
   overflow-y: visible;
   /* Allow natural height growth */
 
@@ -505,7 +517,7 @@ $design-color: #f97316; // Laranja Escuro
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow: visible;
   overflow-y: visible;
   /* Allow natural height growth */
 
@@ -701,7 +713,7 @@ $design-color: #f97316; // Laranja Escuro
         max-width: 100%;
         border-radius: 0.5rem;
       }
-      
+
       // Ensure Angular components don't add extra height
       :deep(app-responsive-demo) {
         display: block;
@@ -940,7 +952,7 @@ $design-color: #f97316; // Laranja Escuro
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 100%!important;
+    width: 100% !important;
     min-width: 100% !important;
 
     @media (min-width: 640px) {

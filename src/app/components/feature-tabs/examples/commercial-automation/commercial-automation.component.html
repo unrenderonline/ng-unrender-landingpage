@@ -1,0 +1,165 @@
+<div class="w-full h-full bg-white rounded-xl overflow-hidden flex flex-col md:flex-row p-4 gap-6 font-sans">
+
+  <!-- POS Monitor Section -->
+  <div class="flex-1 bg-white rounded-xl shadow-xl border border-slate-200 flex flex-col overflow-hidden relative">
+    <!-- Screen Glare/Reflection -->
+    <div
+      class="absolute top-0 right-0 w-full h-full bg-gradient-to-tr from-transparent via-white/20 to-transparent pointer-events-none z-10">
+    </div>
+
+    <!-- Monitor Header -->
+    <div class="bg-white text-unrender-purple p-3 flex justify-between items-center border-b border-slate-200">
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="faDesktop" class="text-unrender-accent"></fa-icon>
+        <span class="font-bold tracking-wide">UNRENDER POS</span>
+      </div>
+      <div class="text-xs text-slate-500">{{ currentDate | date:'HH:mm' }}</div>
+    </div>
+
+    <!-- Monitor Content -->
+    <div class="flex-1 flex overflow-hidden bg-gray-50">
+      <!-- Products Grid -->
+      <div class="flex-1 p-4 overflow-y-auto">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <button *ngFor="let product of products" (click)="addToCart(product)"
+            class="bg-white hover:bg-gray-100 active:scale-95 transition-all p-3 rounded-lg flex flex-col items-center gap-2 text-center border border-slate-200 shadow-sm group">
+            <span class="text-2xl group-hover:scale-110 transition-transform">{{ product.icon }}</span>
+            <span class="text-slate-700 text-xs font-medium">{{ product.name }}</span>
+            <span class="text-unrender-purple font-bold text-sm">{{ product.price | currency:'BRL' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cart Sidebar -->
+      <div class="w-1/3 min-w-[120px] bg-white border-l border-slate-200 flex flex-col z-20">
+        <div class="p-2 bg-gray-100 text-slate-500 text-xs font-bold uppercase tracking-wider">Cupom Fiscal</div>
+
+        <div class="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
+          <div *ngFor="let item of cart; let i = index"
+            class="flex justify-between items-center text-xs text-slate-600 p-1 hover:bg-gray-50 rounded group">
+            <span class="truncate flex-1">{{ item.name }}</span>
+            <span class="font-mono ml-1">{{ item.price | number:'1.2-2' }}</span>
+            <button (click)="removeFromCart(i)"
+              class="ml-1 text-red-500 opacity-0 group-hover:opacity-100 hover:text-red-400 cursor-pointer">
+              <fa-icon [icon]="faTrash"></fa-icon>
+            </button>
+          </div>
+          <div *ngIf="cart.length === 0" class="text-slate-400 text-xs text-center mt-4 italic">Carrinho vazio</div>
+        </div>
+
+        <div class="p-3 bg-gray-100 border-t border-slate-200">
+          <div class="flex justify-between text-slate-500 text-xs mb-1">
+            <span>Total:</span>
+          </div>
+          <div class="text-2xl font-bold text-green-600 text-right mb-3 font-mono">{{ total | currency:'BRL' }}</div>
+
+          <button (click)="printReceipt()" [disabled]="cart.length === 0 || isPrinting"
+            class="w-full bg-green-600 hover:bg-green-500 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold py-2 rounded shadow-lg active:translate-y-0.5 transition-all flex justify-center items-center gap-2 cursor-pointer">
+            <fa-icon [icon]="isPrinting ? faPrint : faMoneyBillWave" [class.animate-pulse]="isPrinting"></fa-icon>
+            {{ isPrinting ? 'IMPRIMINDO...' : 'PAGAR' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thermal Printer Section -->
+  <div class="w-full md:w-1/3 flex flex-col items-center justify-end relative min-h-[300px]">
+
+    <!-- The Receipt Animation Area -->
+    <div class="absolute bottom-[140px] w-48 z-0 flex flex-col-reverse items-center perspective-1000">
+      <!-- Active Printing Receipt -->
+      <div *ngIf="isPrinting"
+        class="w-40 bg-white shadow-sm p-3 text-[10px] font-mono text-slate-800 animate-print-receipt origin-bottom border-t-2 border-dashed border-slate-300 relative z-25">
+        <div class="text-center font-bold mb-2 border-b border-slate-200 pb-1">UNRENDER STORE</div>
+        <div class="flex justify-between mb-1" *ngFor="let item of cart">
+          <span>{{item.name}}</span>
+          <span>{{item.price | number:'1.2-2'}}</span>
+        </div>
+        <div class="border-t border-slate-200 pt-1 mt-2 flex justify-between font-bold">
+          <span>TOTAL</span>
+          <span>{{total | currency:'BRL'}}</span>
+        </div>
+        <div class="text-center mt-2 text-[8px] text-slate-400">*** DOCUMENTO AUXILIAR ***</div>
+      </div>
+
+      <!-- Past Receipts (Stacked) -->
+      <div *ngFor="let receipt of receipts; let i = index"
+        class="w-40 bg-white shadow-md p-3 text-[10px] font-mono text-slate-800 mb-[-100px] transition-all duration-500 border-t-2 border-dashed border-slate-300 opacity-80 hover:opacity-100 hover:mb-[-20px] hover:z-30 cursor-pointer transform rotate-1"
+        [style.transform]="'rotate(' + (i % 2 === 0 ? 1 : -1) + 'deg) translateY(' + (i * -5) + 'px)'"
+        [style.zIndex]="24 - i">
+        <div class="text-center font-bold mb-2 border-b border-slate-200 pb-1">UNRENDER STORE</div>
+        <div class="text-center text-[8px] text-slate-500 mb-1">{{receipt.date | date:'dd/MM/yyyy HH:mm'}}</div>
+        <div class="flex justify-between font-bold">
+          <span>TOTAL</span>
+          <span>{{receipt.total | currency:'BRL'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Printer Body (Bematech Style - Light Version) -->
+    <div class="w-64 relative z-10 flex flex-col items-center">
+
+      <!-- Top Lid (Paper Exit) -->
+      <div
+        class="w-56 h-16 bg-gray-200 rounded-t-[2rem] border-b border-gray-300 relative z-30 shadow-lg flex justify-center items-start pt-3 overflow-hidden">
+        <!-- Paper Slot -->
+        <div class="w-40 h-2 bg-gray-800 rounded-full shadow-inner opacity-80"></div>
+        <!-- Glossy reflection -->
+        <div
+          class="absolute top-0 right-10 w-20 h-full bg-gradient-to-b from-white/40 to-transparent skew-x-12 pointer-events-none">
+        </div>
+      </div>
+
+      <!-- Curved Front Face (Control Panel) -->
+      <div
+        class="w-60 h-24 bg-gradient-to-b from-gray-200 to-gray-300 -mt-2 relative z-20 rounded-b-2xl shadow-[0_10px_20px_rgba(0,0,0,0.1)] flex flex-col items-center justify-start pt-3 border-x border-gray-200">
+
+        <!-- Buttons & LEDs Row -->
+        <div class="flex items-center gap-6 mb-4">
+          <!-- Button 1 -->
+          <div
+            class="w-12 h-5 bg-gray-400 rounded-full shadow-[0_2px_0_rgba(0,0,0,0.2)] border-t border-gray-300 active:translate-y-0.5 active:shadow-none cursor-pointer transition-transform">
+          </div>
+
+          <!-- LEDs -->
+          <div class="flex gap-3">
+            <div class="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,1)] animate-pulse"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-green-600 opacity-40"></div>
+          </div>
+
+          <!-- Button 2 -->
+          <div
+            class="w-12 h-5 bg-gray-400 rounded-full shadow-[0_2px_0_rgba(0,0,0,0.2)] border-t border-gray-300 active:translate-y-0.5 active:shadow-none cursor-pointer transition-transform">
+          </div>
+        </div>
+
+        <!-- Logo Area -->
+        <div class="mt-auto mb-4 flex items-center gap-1 opacity-90">
+          <span class="font-sans font-bold text-slate-700 text-xl tracking-tight">bematech</span>
+          <div class="flex items-center">
+            <div class="w-2 h-2 rounded-full bg-slate-400/30"></div>
+            <div class="w-4 h-4 rounded-full bg-slate-400/30 -ml-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Body -->
+      <div
+        class="w-64 h-24 bg-gray-300 -mt-6 rounded-b-xl shadow-xl relative z-10 flex items-end justify-between px-6 pb-4">
+        <!-- Side Switch -->
+        <div
+          class="w-4 h-8 bg-gray-800 border border-gray-700 rounded mb-2 shadow-inner flex items-center justify-center">
+          <div class="w-2 h-4 bg-gray-600 rounded-sm"></div>
+        </div>
+        <!-- Model Number -->
+        <span class="text-[10px] text-slate-500 font-mono font-bold">MP-4200 TH</span>
+      </div>
+
+    </div>
+
+    <!-- Table Surface -->
+    <div class="absolute bottom-0 w-full h-4 bg-slate-200 rounded-full opacity-50 blur-sm"></div>
+  </div>
+
+</div>

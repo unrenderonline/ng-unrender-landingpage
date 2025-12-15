@@ -1,0 +1,140 @@
+<div class="w-full h-full bg-white text-slate-700 p-4 rounded-xl font-mono overflow-hidden flex flex-col gap-4 border border-slate-200 shadow-lg">
+  
+  <!-- Header -->
+  <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="faNetworkWired" class="text-unrender-purple"></fa-icon>
+      <h2 class="font-bold text-lg text-unrender-purple">Gerenciador de Cluster IA</h2>
+    </div>
+    <div class="flex gap-4 text-xs">
+      <div class="flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-green-500"></span> Online
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-red-500"></span> Offline
+      </div>
+      <div class="flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Ocupado
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-hidden">
+    
+    <!-- Server Rack (Left & Center) -->
+    <div class="lg:col-span-2 flex flex-col gap-3 overflow-y-auto pr-2">
+      <div *ngFor="let server of servers" 
+           class="bg-white rounded-lg border border-slate-200 p-3 transition-all duration-300 shadow-sm"
+           [ngClass]="{'opacity-60 grayscale': server.status === 'offline'}">
+        
+        <!-- Server Header -->
+        <div class="flex justify-between items-center mb-3">
+          <div class="flex items-center gap-2 min-w-0 flex-1 mr-2">
+            <fa-icon [icon]="faServer" [class.text-green-500]="server.status === 'online'" [class.text-red-500]="server.status === 'offline'" class="shrink-0"></fa-icon>
+            <span class="font-bold text-slate-800 truncate">{{ server.name }}</span>
+            <span class="text-[10px] sm:text-xs px-2 py-0.5 rounded bg-gray-100 uppercase text-slate-600 border border-slate-200 shrink-0">{{ server.status }}</span>
+          </div>
+          
+          <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">CPU: {{ server.cpuLoad | number:'1.0-0' }}%</div>
+            <button (click)="toggleServerStatus(server)" 
+                    class="text-[10px] sm:text-xs px-2 py-1 rounded border border-slate-200 hover:bg-gray-50 transition-colors text-slate-600 whitespace-nowrap">
+              {{ server.status === 'online' ? 'Simular Falha' : 'Reiniciar' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- GPU Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div *ngFor="let gpu of server.gpus" 
+               class="bg-gray-50 rounded p-2 border border-slate-200 relative overflow-hidden">
+            
+            <!-- Status Bar -->
+            <div class="absolute top-0 left-0 h-1 bg-gradient-to-r from-green-500 to-yellow-500 transition-all duration-300"
+                 [style.width.%]="gpu.load"></div>
+
+            <div class="flex justify-between items-start mb-2">
+              <div class="flex items-center gap-2">
+                <fa-icon [icon]="faMicrochip" class="text-slate-400"></fa-icon>
+                <span class="text-xs font-bold text-slate-700">{{ gpu.name }}</span>
+              </div>
+              <fa-icon [icon]="faBolt" 
+                       [class.text-yellow-400]="gpu.status === 'working'" 
+                       [class.text-slate-300]="gpu.status === 'idle'"
+                       class="text-xs animate-pulse"></fa-icon>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-500 mb-2">
+              <div class="flex items-center gap-1">
+                <fa-icon [icon]="faTemperatureHigh"></fa-icon>
+                {{ gpu.temp | number:'1.0-0' }}°C
+              </div>
+              <div>MEM: {{ gpu.memory }}GB</div>
+            </div>
+
+            <!-- Current Task -->
+            <div class="h-6 bg-white border border-slate-200 rounded flex items-center px-2 text-[10px] relative overflow-hidden">
+              <div class="absolute left-0 top-0 h-full bg-unrender-purple/10 transition-all duration-300"
+                   [style.width.%]="gpu.load"></div>
+              <span class="relative z-10 truncate w-full text-slate-600">
+                {{ gpu.currentTask || 'Ocioso - Aguardando...' }}
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Task Queue & Logs (Right) -->
+    <div class="flex flex-col gap-4">
+      
+      <!-- Queue -->
+      <div class="bg-white rounded-lg border border-slate-200 p-3 flex-1 flex flex-col shadow-sm">
+        <h3 class="text-xs font-bold text-slate-500 uppercase mb-2 flex justify-between">
+          Fila de Tarefas 
+          <span class="bg-unrender-purple text-white px-1.5 rounded-full">{{ taskQueue.length }}</span>
+        </h3>
+        
+        <div class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+          <div *ngFor="let task of taskQueue" 
+               class="bg-gray-50 p-2 rounded border-l-2 border-unrender-purple text-xs shadow-sm">
+            <div class="flex justify-between mb-1">
+              <span class="font-bold truncate text-slate-700">{{ task.name }}</span>
+              <span class="text-slate-400">{{ task.id }}</span>
+            </div>
+            <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-unrender-purple h-full transition-all duration-300" 
+                   [style.width.%]="task.progress"></div>
+            </div>
+            <div class="flex justify-between mt-1 text-[10px] text-slate-500">
+              <span>{{ task.assignedTo ? 'Processando em ' + task.assignedTo : 'Aguardando alocação...' }}</span>
+              <span>{{ task.progress }}%</span>
+            </div>
+          </div>
+          
+          <div *ngIf="taskQueue.length === 0" class="text-center text-slate-400 text-xs py-4">
+            Nenhuma tarefa pendente
+          </div>
+        </div>
+      </div>
+
+      <!-- Completed -->
+      <div class="bg-white rounded-lg border border-slate-200 p-3 h-1/3 flex flex-col shadow-sm">
+        <h3 class="text-xs font-bold text-slate-500 uppercase mb-2">Tarefas Concluídas</h3>
+        <div class="overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+          <div *ngFor="let task of completedTasks" class="flex items-center gap-2 text-xs text-slate-600">
+            <fa-icon [icon]="faCheckCircle" class="text-green-500"></fa-icon>
+            <span class="truncate">{{ task.name }}</span>
+            <span class="ml-auto text-slate-400">{{ task.id }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

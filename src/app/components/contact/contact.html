@@ -1,4 +1,56 @@
 <div class="container mx-auto px-4 text-white">
+  
+  <div class="mb-12 border-b border-gray-800 pb-8">
+    <h5 class="uppercase mb-4 font-bold text-xl">Entre em contato</h5>
+    <form (ngSubmit)="sendMessage()" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+      <div class="md:col-span-3 text-left">
+        <label for="name" class="block text-xs font-medium mb-1 text-gray-400">Nome</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="contactName"
+          class="w-full bg-opacity-10 bg-white border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-unrender-accent focus:ring-1 focus:ring-unrender-accent transition-all text-sm"
+          placeholder="Seu nome"
+          required
+        />
+      </div>
+      <div class="md:col-span-3 text-left">
+        <label for="contact" class="block text-xs font-medium mb-1 text-gray-400">Contato</label>
+        <input
+          type="text"
+          id="contact"
+          name="contact"
+          [(ngModel)]="contactInfo"
+          (input)="detectAndFormatContactInfo($event)"
+          class="w-full bg-opacity-10 bg-white border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-unrender-accent focus:ring-1 focus:ring-unrender-accent transition-all text-sm"
+          placeholder="Email ou Telefone"
+          required
+        />
+      </div>
+      <div class="md:col-span-4 text-left">
+        <label for="message" class="block text-xs font-medium mb-1 text-gray-400">Mensagem</label>
+        <input
+          type="text"
+          id="message"
+          name="message"
+          [(ngModel)]="contactMessage"
+          class="w-full bg-opacity-10 bg-white border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-unrender-accent focus:ring-1 focus:ring-unrender-accent transition-all text-sm"
+          placeholder="Como podemos ajudar?"
+          required
+        />
+      </div>
+      <div class="md:col-span-2">
+        <button
+          type="submit"
+          class="w-full bg-unrender-accent text-black font-bold py-2 px-4 rounded hover:bg-white hover:scale-105 transform transition-all duration-300 uppercase shadow-lg text-sm h-[38px]"
+        >
+          Enviar
+        </button>
+      </div>
+    </form>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
     <div class="lg:col-span-3">
       <h5 class="uppercase mb-6 font-bold text-lg">Menu</h5>
@@ -39,12 +91,12 @@
           Bosque da Saude, Cuiabá - MT<br />
           CEP: 78050-020<br />
           <a
-            href="https://wa.me/5565993505186"
+            href="https://wa.me/5565999207154"
             target="_blank"
             rel="noopener noreferrer"
             class="text-white no-underline hover:text-unrender-accent transition-colors"
           >
-            <span class="hover-grow inline-block"> (65) 99350-5186</span>
+            <span class="hover-grow inline-block"> (65) 99920-7154</span>
           </a>
         </address>
       </a>
@@ -56,12 +108,12 @@
       <p class="mb-4">Leia o QR Code ou clique para entrar em contato</p>
       <div class="flex items-center mb-6">
         <img
-          src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://wa.me/5565993505186"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://wa.me/5565999207154"
           alt="QR Code para WhatsApp"
           class="mr-4 w-auto hover-grow"
         />
         <a
-          href="https://wa.me/5565993505186"
+          href="https://wa.me/5565999207154"
           target="_blank"
           rel="noopener noreferrer"
         >

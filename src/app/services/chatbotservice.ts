@@ -50,7 +50,7 @@ export class ChatbotService {
   setApiKey(apiKey: string): void {
     this.apiKey = apiKey;
     this.genAI = new GoogleGenerativeAI(this.apiKey);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
   }
 
   /**
@@ -74,15 +74,25 @@ export class ChatbotService {
    * Calls the Gemini API.
    * @param systemMessage The system prompt to guide the AI.
    * @param history The chat history.
+   * @param modelName Optional model name to use for this request.
    * @returns An Observable<string> with the AI's response.
    */
-  getGeminiResponse(systemMessage: string, history: Message[]): Observable<string> {
-    if (!this.model) {
+  getGeminiResponse(systemMessage: string, history: Message[], modelName?: string): Observable<string> {
+    if (!this.genAI) {
       throw new Error('API key not set. Call setApiKey() first.');
     }
 
+    let model = this.model;
+    if (modelName) {
+      model = this.genAI.getGenerativeModel({ model: modelName });
+    }
+
+    if (!model) {
+       throw new Error('Model not initialized.');
+    }
+
     // Prepare the chat session
-    const chat = this.model.startChat({
+    const chat = model.startChat({
       history: [
         {
           role: 'user',

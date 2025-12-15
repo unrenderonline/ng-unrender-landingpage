@@ -1,0 +1,71 @@
+<div class="integration-container">
+  <div class="network-viz">
+    <!-- Connection Lines (SVG Layer) -->
+    <svg class="connections-layer">
+      <g *ngFor="let node of integrations">
+        <!-- Static Line -->
+        <line x1="50%" y1="50%" [attr.x2]="node.x + '%'" [attr.y2]="node.y + '%'" 
+              class="connection-line" [class.active]="node.connected"></line>
+      </g>
+    </svg>
+
+    <!-- Data Packets Layer (CSS Animation) -->
+    <div class="packets-layer">
+      <ng-container *ngFor="let node of integrations">
+        <div *ngIf="node.syncing" 
+             class="data-packet"
+             [style.left.%]="50" 
+             [style.top.%]="50"
+             [style.--target-x.%]="node.x"
+             [style.--target-y.%]="node.y">
+        </div>
+        <div *ngIf="node.syncing" 
+             class="data-packet incoming"
+             [style.left.%]="node.x" 
+             [style.top.%]="node.y"
+             [style.--target-x.%]="50"
+             [style.--target-y.%]="50">
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Central Hub -->
+    <div class="central-hub">
+      <div class="hub-core">
+        <fa-icon [icon]="faPlug"></fa-icon>
+      </div>
+      <div class="hub-pulse"></div>
+      <div class="hub-label">API Gateway</div>
+    </div>
+
+    <!-- Integration Nodes -->
+    <div *ngFor="let node of integrations" 
+         class="node-item" 
+         [style.left.%]="node.x" 
+         [style.top.%]="node.y"
+         [class.syncing]="node.syncing"
+         [class.disconnected]="!node.connected"
+         (click)="toggleConnection(node)"
+         title="Click to toggle connection">
+      
+      <div class="node-icon" [style.color]="node.connected ? node.color : '#94a3b8'" [style.border-color]="node.connected ? node.color : 'transparent'">
+        <fa-icon [icon]="node.icon"></fa-icon>
+      </div>
+      
+      <div class="status-indicator" [class.connected]="node.connected">
+        <fa-icon [icon]="node.connected ? faCheckCircle : faTimesCircle"></fa-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <h3>Integrações Ilimitadas</h3>
+    <p>Conecte seu sistema a qualquer serviço do mercado. Clique nos ícones para ativar/desativar integrações.</p>
+    <div class="tags">
+      <span class="tag">REST API</span>
+      <span class="tag">GraphQL</span>
+      <span class="tag">Webhooks</span>
+      <span class="tag">WebSocket</span>
+    </div>
+  </div>
+</div>

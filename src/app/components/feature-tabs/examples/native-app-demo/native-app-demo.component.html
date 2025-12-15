@@ -1,0 +1,123 @@
+<div class="phone-container" [ngClass]="platform">
+  <div class="phone-bezel">
+    <div class="phone-screen">
+      
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <div class="time">{{ currentTime }}</div>
+        <div class="status-icons">
+          <div class="icon signal"></div>
+          <div class="icon wifi"></div>
+          <div class="icon battery"></div>
+        </div>
+      </div>
+
+      <!-- App Content -->
+      <div class="app-content">
+        
+        <!-- Header -->
+        <header class="app-header">
+          <div class="header-left">
+            <div class="menu-icon">
+              <fa-icon [icon]="faBars"></fa-icon>
+            </div>
+          </div>
+          <h1 class="app-title">Tarefas</h1>
+          <div class="header-right">
+            <div class="icon-btn add-btn" *ngIf="platform === 'ios'" (click)="addActivity()">
+               <fa-icon [icon]="faPlus"></fa-icon>
+            </div>
+            <div class="avatar" *ngIf="platform === 'android'">
+              <fa-icon [icon]="faUser"></fa-icon>
+            </div>
+          </div>
+        </header>
+
+        <!-- Body -->
+        <div class="scroll-content">
+          
+          <!-- Hero Card -->
+          <div class="card hero-card">
+            <div class="card-content">
+              <h2>Olá, Usuário</h2>
+              <p>Bem-vindo à sua experiência {{ platform === 'android' ? 'Material You' : 'Glass' }}.</p>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <h3>Atividade Recente</h3>
+            <span class="see-all">Ver Tudo</span>
+          </div>
+          
+          <!-- List Items -->
+          <div class="list-container">
+            <div class="list-item" *ngFor="let activity of activities" (click)="toggleActivity(activity)">
+              <div class="item-icon" [ngClass]="activity.colorClass">
+                <fa-icon [icon]="activity.icon"></fa-icon>
+              </div>
+              <div class="item-text">
+                <div class="item-title" [class.completed]="activity.completed">{{ activity.title }}</div>
+                <div class="item-subtitle">{{ activity.subtitle }}</div>
+              </div>
+              <div class="item-action checkbox" [class.checked]="activity.completed">
+                 <fa-icon [icon]="faCheck" *ngIf="activity.completed"></fa-icon>
+              </div>
+            </div>
+          </div>
+
+           <!-- Feature Cards Row -->
+           <div class="feature-row">
+             <div class="feature-card card-1">
+               <div class="card-icon">
+                 <fa-icon [icon]="faChartBar"></fa-icon>
+               </div>
+               <span>Estatísticas</span>
+             </div>
+             <div class="feature-card card-2">
+               <div class="card-icon">
+                 <fa-icon [icon]="faFolder"></fa-icon>
+               </div>
+               <span>Arquivos</span>
+             </div>
+           </div>
+
+        </div>
+
+        <!-- FAB (Android only) -->
+        <div class="fab" *ngIf="platform === 'android'" (click)="addActivity()">
+          <span class="plus">+</span>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+          <div class="nav-item active pt-2">
+            <div class="nav-icon home"></div>
+            <span class="nav-label">Início</span>
+          </div>
+          <div class="nav-item pt-2">
+            <div class="nav-icon search"></div>
+            <span class="nav-label">Buscar</span>
+          </div>
+          <div class="nav-item pt-2">
+            <div class="nav-icon profile"></div>
+            <span class="nav-label">Perfil</span>
+          </div>
+        </nav>
+
+      </div>
+      
+      <!-- System Nav -->
+      <div class="system-nav" *ngIf="platform === 'ios'">
+        <div class="nav-indicator"></div>
+      </div>
+
+      <!-- Android Nav -->
+      <div class="android-nav" *ngIf="platform === 'android'">
+        <div class="nav-btn back"></div>
+        <div class="nav-btn home"></div>
+        <div class="nav-btn overview"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
