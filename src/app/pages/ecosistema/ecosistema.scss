@@ -39,7 +39,7 @@ h1.display-4 {
 }
 
 .highlight {
-  color: #f5a623; // Laranja da marca
+  color: #f99126; // Laranja da marca
 }
 
 p.lead {
@@ -49,16 +49,19 @@ p.lead {
 
 .values-list {
   margin-top: 2rem;
+
   .value-item {
     display: flex;
     align-items: flex-start;
     margin-bottom: 1.5rem;
+
     i {
       font-size: 2rem;
-      color: #f5a623;
+      color: #f99126;
       margin-right: 1rem;
       margin-top: 0.25rem;
     }
+
     p {
       margin-bottom: 0;
       color: #aaa;
@@ -77,7 +80,7 @@ p.lead {
   position: relative;
   width: 100%;
   // A altura será definida pela imagem
-  aspect-ratio: 8 / 9; 
+  aspect-ratio: 8 / 9;
 
   .carousel-slide {
     position: absolute;
@@ -134,7 +137,7 @@ p.lead {
     }
 
     &.active {
-      background-color: #f5a623;
+      background-color: #f99126;
     }
   }
 }
@@ -146,6 +149,7 @@ p.lead {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -160,12 +164,15 @@ p.lead {
     height: auto; // Altura automática para caber o conteúdo
     min-height: 100vh;
   }
+
   .text-start {
     text-align: center !important;
   }
+
   .values-list .value-item {
     justify-content: center;
   }
+
   .project-showcase {
     margin-top: 3rem;
   }

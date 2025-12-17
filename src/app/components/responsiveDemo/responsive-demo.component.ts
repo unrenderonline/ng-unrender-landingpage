@@ -159,9 +159,9 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
     }
 
     .device-btn.active {
-      background-color: #f5a623;
+      background-color: #f99126;
       color: white;
-      border-color: #f5a623;
+      border-color: #f99126;
     }
 
     .scale-wrapper {
@@ -217,7 +217,7 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       transform: translateX(-50%);
       width: 80px;
       height: 10px;
-      background-color: #f5a623;
+      background-color: #f99126;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
       z-index: 2;
@@ -234,7 +234,7 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
       transform: translateX(-50%);
       width: 40px;
       height: 40px;
-      border: 2px solid #f5a623;
+      border: 2px solid #f99126;
       border-radius: 50%;
       z-index: 2;
       background-color: #10051c;
@@ -330,7 +330,7 @@ type DeviceType = 'phone' | 'tablet' | 'desktop';
     .monitor-stand .stand-base {
       width: 250px;
       height: 15px;
-      background-color: #f5a623;
+      background-color: #f99126;
       border-radius: 5px 5px 0 0;
       box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
     }

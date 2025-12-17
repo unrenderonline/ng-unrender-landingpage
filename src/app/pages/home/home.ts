@@ -34,18 +34,18 @@ export class Home implements OnDestroy {
       logo: ['landingpage-png.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'landingpage-png.png', 
+        {
+          src: 'landingpage-png.png',
           label: 'Design Responsivo',
           description: 'Design criativo e único que se adapta perfeitamente a todos os dispositivos e tamanhos de tela.'
         },
-        { 
-          src: 'landingpage-png.png', 
+        {
+          src: 'landingpage-png.png',
           label: 'Experiência Única',
           description: 'Criação personalizada focada em proporcionar a melhor experiência para seus usuários.'
         },
-        { 
-          src: 'landingpage-png.png', 
+        {
+          src: 'landingpage-png.png',
           label: 'Performance Alta',
           description: 'Landing pages rápidas e otimizadas para máximo desempenho e conversão.'
         },
@@ -59,23 +59,23 @@ export class Home implements OnDestroy {
       logo: ['controlb-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'controlb-logo.png', 
+        {
+          src: 'controlb-logo.png',
           label: 'Dashboard Principal',
           description: 'Visão completa e em tempo real de todas as operações da sua empresa em um só lugar.'
         },
-        { 
-          src: 'controlb-logo.png', 
+        {
+          src: 'controlb-logo.png',
           label: 'Relatórios Financeiros',
           description: 'Análises financeiras detalhadas para tomada de decisões estratégicas.'
         },
-        { 
-          src: 'controlb-logo.png', 
+        {
+          src: 'controlb-logo.png',
           label: 'Gestão de Estoque',
           description: 'Controle completo de entradas, saídas e inventário com alertas automáticos.'
         },
-        { 
-          src: 'controlb-logo.png', 
+        {
+          src: 'controlb-logo.png',
           label: 'Controle de Vendas',
           description: 'Gerencie todo o processo de vendas, desde o orçamento até o faturamento.'
         },
@@ -89,18 +89,18 @@ export class Home implements OnDestroy {
       logo: ['pequi-png.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'pequi-png.png', 
+        {
+          src: 'pequi-png.png',
           label: 'Chat Seguro',
           description: 'Comunicação interna criptografada e segura entre colaboradores da empresa.'
         },
-        { 
-          src: 'pequi-png.png', 
+        {
+          src: 'pequi-png.png',
           label: 'Agendamento de Reuniões',
           description: 'Agende e organize reuniões facilmente com notificações automáticas.'
         },
-        { 
-          src: 'pequi-png.png', 
+        {
+          src: 'pequi-png.png',
           label: 'Compartilhamento de Arquivos',
           description: 'Compartilhe documentos e arquivos com total segurança e controle de acesso.'
         },
@@ -114,23 +114,23 @@ export class Home implements OnDestroy {
       logo: ['papiro-png.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'papiro-png.png', 
+        {
+          src: 'papiro-png.png',
           label: 'Cliente de Email Seguro',
           description: 'Plataforma de email com segurança e criptografia de dados, sem anúncios e super rápido.'
         },
-        { 
-          src: 'papiro-png.png', 
+        {
+          src: 'papiro-png.png',
           label: 'Organização com IA',
           description: 'IA organiza emails automaticamente por categorias, destacando os mais relevantes como um assistente.'
         },
-        { 
-          src: 'papiro-png.png', 
+        {
+          src: 'papiro-png.png',
           label: 'Apps Multiplataforma',
           description: 'Aplicativos nativos para web, desktop, Android e iOS com sincronização em tempo real.'
         },
-        { 
-          src: 'papiro-png.png', 
+        {
+          src: 'papiro-png.png',
           label: 'Notificações Inteligentes',
           description: 'Receba alertas de emails importantes via WhatsApp ou Pequi.chat automaticamente.'
         },
@@ -144,18 +144,18 @@ export class Home implements OnDestroy {
       logo: ['nanee.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'nanee.png', 
+        {
+          src: 'nanee.png',
           label: 'Atendente Virtual',
           description: 'Atendimento automático com IA para responder clientes 24/7 de forma natural e eficiente.'
         },
-        { 
-          src: 'nanee.png', 
+        {
+          src: 'nanee.png',
           label: 'Automação de Vendas',
           description: 'Vendedores virtuais que auxiliam no processo de vendas e fechamento de negócios.'
         },
-        { 
-          src: 'nanee.png', 
+        {
+          src: 'nanee.png',
           label: 'Respostas SAC',
           description: 'Sistema de atendimento ao cliente automatizado com respostas inteligentes e precisas.'
         },
@@ -169,18 +169,18 @@ export class Home implements OnDestroy {
       logo: ['cronos-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'cronos-logo.png', 
+        {
+          src: 'cronos-logo.png',
           label: 'Gerenciamento de Tempo',
           description: 'Controle de ponto com reconhecimento facial, impressão digital ou senha, banco de horas automático.'
         },
-        { 
-          src: 'cronos-logo.png', 
+        {
+          src: 'cronos-logo.png',
           label: 'Plataforma de Contratação',
           description: 'Gerencie todo processo seletivo, desde a criação de vagas até a contratação final.'
         },
-        { 
-          src: 'cronos-logo.png', 
+        {
+          src: 'cronos-logo.png',
           label: 'Integração Social',
           description: 'Publique vagas automaticamente em redes sociais e LinkedIn, sem depender de outras plataformas.'
         },
@@ -194,18 +194,18 @@ export class Home implements OnDestroy {
       logo: ['qotar-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'qotar-logo.png', 
+        {
+          src: 'qotar-logo.png',
           label: 'Busca com IA',
           description: 'Encontre produtos rapidamente com busca inteligente alimentada por inteligência artificial.'
         },
-        { 
-          src: 'qotar-logo.png', 
+        {
+          src: 'qotar-logo.png',
           label: 'Negociação Automática',
           description: 'Sistema de negociação automática que busca os melhores preços e condições para você.'
         },
-        { 
-          src: 'qotar-logo.png', 
+        {
+          src: 'qotar-logo.png',
           label: 'Sistema de Compras',
           description: 'Plataforma completa de compras com integração com fornecedores e gestão de pedidos.'
         },
@@ -219,23 +219,23 @@ export class Home implements OnDestroy {
       logo: ['hermes-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'hermes-logo.png', 
+        {
+          src: 'hermes-logo.png',
           label: 'Rastreamento em Tempo Real',
           description: 'Acompanhe entregas e motoristas em tempo real com câmeras e GPS integrados.'
         },
-        { 
-          src: 'hermes-logo.png', 
+        {
+          src: 'hermes-logo.png',
           label: 'Monitoramento com IA',
           description: 'IA detecta sinais de perigo, sonolência, mudança de rota e comportamentos suspeitos.'
         },
-        { 
-          src: 'hermes-logo.png', 
+        {
+          src: 'hermes-logo.png',
           label: 'Verificação Segura',
           description: 'Sistema de verificação com fotos, código dinâmico e confirmação de identidade do destinatário.'
         },
-        { 
-          src: 'hermes-logo.png', 
+        {
+          src: 'hermes-logo.png',
           label: 'Suporte em Tempo Real',
           description: 'Altere destinatário ou instruções durante a entrega com termos de responsabilidade.'
         },
@@ -249,23 +249,23 @@ export class Home implements OnDestroy {
       logo: ['hefesto-png.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'hefesto-png.png', 
+        {
+          src: 'hefesto-png.png',
           label: 'Solicitação de Produtos',
           description: 'Engenheiros solicitam materiais com integração ao Qotar para compra rápida e negociação.'
         },
-        { 
-          src: 'hefesto-png.png', 
+        {
+          src: 'hefesto-png.png',
           label: 'Planejamento de Obras',
           description: 'Configure e planeje edificações com cronograma, etapas e recursos necessários.'
         },
-        { 
-          src: 'hefesto-png.png', 
+        {
+          src: 'hefesto-png.png',
           label: 'Gestão de Tarefas',
           description: 'Gerenciamento completo de tarefas e rastreamento de produtividade da equipe.'
         },
-        { 
-          src: 'hefesto-png.png', 
+        {
+          src: 'hefesto-png.png',
           label: 'Entrega Integrada',
           description: 'Integração com Hermes para rastreamento seguro de entregas de materiais na obra.'
         },
@@ -279,23 +279,23 @@ export class Home implements OnDestroy {
       logo: ['janus-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'janus-logo.png', 
+        {
+          src: 'janus-logo.png',
           label: 'Monitoramento em Tempo Real',
           description: 'Visualize múltiplas câmeras simultaneamente, configure TVs e monitores para vigilância 24/7.'
         },
-        { 
-          src: 'janus-logo.png', 
+        {
+          src: 'janus-logo.png',
           label: 'Detecção de Perigo com IA',
           description: 'IA analisa imagens em tempo real detectando sinais de perigo e comportamentos suspeitos.'
         },
-        { 
-          src: 'janus-logo.png', 
+        {
+          src: 'janus-logo.png',
           label: 'Alertas Automatizados',
           description: 'Sistema aciona automaticamente polícia, alarmes e notifica equipe de segurança.'
         },
-        { 
-          src: 'janus-logo.png', 
+        {
+          src: 'janus-logo.png',
           label: 'Gestão de Equipe',
           description: 'Gerencie trabalhadores e guardas de segurança com controle de acesso e relatórios.'
         },
@@ -309,23 +309,23 @@ export class Home implements OnDestroy {
       logo: ['higia-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'higia-logo.png', 
+        {
+          src: 'higia-logo.png',
           label: 'Agenda Médica',
           description: 'Sistema completo de agendamentos com confirmações automáticas e lembretes aos pacientes.'
         },
-        { 
-          src: 'higia-logo.png', 
+        {
+          src: 'higia-logo.png',
           label: 'Prontuário Eletrônico',
           description: 'Prontuários digitais seguros com histórico completo de consultas, exames e tratamentos.'
         },
-        { 
-          src: 'higia-logo.png', 
+        {
+          src: 'higia-logo.png',
           label: 'Faturamento',
           description: 'Gestão financeira com faturamento automático de consultas e convênios médicos.'
         },
-        { 
-          src: 'higia-logo.png', 
+        {
+          src: 'higia-logo.png',
           label: 'Gestão de Pacientes',
           description: 'Cadastro completo de pacientes com histórico médico e acompanhamento de tratamentos.'
         },
@@ -339,23 +339,23 @@ export class Home implements OnDestroy {
       logo: ['freya-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'freya-logo.png', 
+        {
+          src: 'freya-logo.png',
           label: 'Agendamento Pet',
           description: 'Sistema de agendamentos para banho, tosa e consultas veterinárias com lembretes automáticos.'
         },
-        { 
-          src: 'freya-logo.png', 
+        {
+          src: 'freya-logo.png',
           label: 'Histórico Clínico',
           description: 'Prontuário completo dos pets com histórico de consultas, cirurgias e tratamentos.'
         },
-        { 
-          src: 'freya-logo.png', 
+        {
+          src: 'freya-logo.png',
           label: 'Controle de Vacinas',
           description: 'Calendário de vacinação com alertas de vencimento e histórico completo de imunizações.'
         },
-        { 
-          src: 'freya-logo.png', 
+        {
+          src: 'freya-logo.png',
           label: 'Vendas e Produtos',
           description: 'Gestão de vendas de produtos, ração, acessórios e controle de estoque integrado.'
         },
@@ -369,23 +369,23 @@ export class Home implements OnDestroy {
       logo: ['mimir-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'mimir-logo.png', 
+        {
+          src: 'mimir-logo.png',
           label: 'Gerenciamento Escolar',
           description: 'Gestão completa de alunos, notas, frequência e desempenho de professores.'
         },
-        { 
-          src: 'mimir-logo.png', 
+        {
+          src: 'mimir-logo.png',
           label: 'Análise com IA',
           description: 'IA analisa desempenho e sugere abordagens personalizadas para cada estudante.'
         },
-        { 
-          src: 'mimir-logo.png', 
+        {
+          src: 'mimir-logo.png',
           label: 'Aulas de Reforço Online',
           description: 'Plataforma de aulas virtuais e reforço individual alimentado por IA para assuntos específicos.'
         },
-        { 
-          src: 'mimir-logo.png', 
+        {
+          src: 'mimir-logo.png',
           label: 'Testes Seguros',
           description: 'Criação fácil de provas com questões randomizadas, anti-cola e geração para impressão.'
         },
@@ -399,23 +399,23 @@ export class Home implements OnDestroy {
       logo: ['brok-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'brok-logo.png', 
+        {
+          src: 'brok-logo.png',
           label: 'Ordem de Serviço',
           description: 'Controle completo de ordens de serviço desde o orçamento até a entrega do veículo.'
         },
-        { 
-          src: 'brok-logo.png', 
+        {
+          src: 'brok-logo.png',
           label: 'Controle de Estoque',
           description: 'Gestão de estoque de peças com alertas de reposição e controle de fornecedores.'
         },
-        { 
-          src: 'brok-logo.png', 
+        {
+          src: 'brok-logo.png',
           label: 'Gestão de Clientes',
           description: 'Cadastro de clientes com histórico de serviços e veículos para melhor atendimento.'
         },
-        { 
-          src: 'brok-logo.png', 
+        {
+          src: 'brok-logo.png',
           label: 'Relatórios',
           description: 'Relatórios detalhados de vendas, serviços e performance da oficina.'
         },
@@ -429,23 +429,23 @@ export class Home implements OnDestroy {
       logo: ['dice-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'dice-logo.png', 
+        {
+          src: 'dice-logo.png',
           label: 'Gestão de Processos',
           description: 'Controle total de processos jurídicos com organização por cliente, fase e tipo.'
         },
-        { 
-          src: 'dice-logo.png', 
+        {
+          src: 'dice-logo.png',
           label: 'Controle de Prazos',
           description: 'Sistema de alertas automáticos para prazos processuais e audiências.'
         },
-        { 
-          src: 'dice-logo.png', 
+        {
+          src: 'dice-logo.png',
           label: 'Faturamento',
           description: 'Gestão de honorários com controle de recebimentos e emissão de notas fiscais.'
         },
-        { 
-          src: 'dice-logo.png', 
+        {
+          src: 'dice-logo.png',
           label: 'Documentos',
           description: 'Armazenamento seguro e organizado de petições, contratos e documentos jurídicos.'
         },
@@ -459,23 +459,23 @@ export class Home implements OnDestroy {
       logo: ['kardapio-logo.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'kardapio-logo.png', 
+        {
+          src: 'kardapio-logo.png',
           label: 'Cardápio Digital',
           description: 'Cardápio online interativo com fotos, descrições e valores atualizados em tempo real.'
         },
-        { 
-          src: 'kardapio-logo.png', 
+        {
+          src: 'kardapio-logo.png',
           label: 'Gestão de Pedidos',
           description: 'Controle completo de pedidos desde a cozinha até a entrega, com status em tempo real.'
         },
-        { 
-          src: 'kardapio-logo.png', 
+        {
+          src: 'kardapio-logo.png',
           label: 'Delivery',
           description: 'Sistema de delivery integrado com rastreamento de entrega e gestão de entregadores.'
         },
-        { 
-          src: 'kardapio-logo.png', 
+        {
+          src: 'kardapio-logo.png',
           label: 'Relatórios de Vendas',
           description: 'Análise de vendas, produtos mais pedidos e performance do restaurante.'
         },
@@ -489,18 +489,18 @@ export class Home implements OnDestroy {
       logo: ['aqui-shopping-f.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'aqui-shopping-f.png', 
+        {
+          src: 'aqui-shopping-f.png',
           label: 'Mercado Local',
           description: 'Marketplace conectando consumidores a comerciantes locais com produtos variados.'
         },
-        { 
-          src: 'aqui-shopping-f.png', 
+        {
+          src: 'aqui-shopping-f.png',
           label: 'Entrega Rápida',
           description: 'Sistema de entrega ágil com opções de atacado e varejo para todos os públicos.'
         },
-        { 
-          src: 'aqui-shopping-f.png', 
+        {
+          src: 'aqui-shopping-f.png',
           label: 'Busca Fácil',
           description: 'Encontre produtos facilmente com sistema de busca inteligente e avaliações de clientes.'
         },
@@ -514,23 +514,23 @@ export class Home implements OnDestroy {
       logo: ['ahlugar.png'],
       link: '#',
       carouselImages: [
-        { 
-          src: 'ahlugar.png', 
+        {
+          src: 'ahlugar.png',
           label: 'Gerenciamento Imobiliário',
           description: 'Plataforma para corretores gerenciarem imóveis, comissões e também para proprietários venderem diretamente.'
         },
-        { 
-          src: 'ahlugar.png', 
+        {
+          src: 'ahlugar.png',
           label: 'Assistência com IA',
           description: 'Atendimento automatizado com IA para responder dúvidas sobre imóveis e processos.'
         },
-        { 
-          src: 'ahlugar.png', 
+        {
+          src: 'ahlugar.png',
           label: 'Documentação Segura',
           description: 'Sistema de fotos e termos antes de alugar/vender, durante e ao devolver o imóvel.'
         },
-        { 
-          src: 'ahlugar.png', 
+        {
+          src: 'ahlugar.png',
           label: 'Gestão de Contratos',
           description: 'Controle completo de contratos de locação e venda com documentação fotográfica.'
         },
@@ -541,6 +541,30 @@ export class Home implements OnDestroy {
   selectedSoftware: SoftwareItem = this.softwareItems[0];
   currentSlideIndex: number = 0;
   private autoplayInterval: any;
+
+  // Modal State
+  showSaasModal = false;
+  showOnPremiseModal = false;
+
+  openSaasModal() {
+    this.showSaasModal = true;
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  }
+
+  closeSaasModal() {
+    this.showSaasModal = false;
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+
+  openOnPremiseModal() {
+    this.showOnPremiseModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeOnPremiseModal() {
+    this.showOnPremiseModal = false;
+    document.body.style.overflow = '';
+  }
 
   selectSoftware(item: SoftwareItem) {
     this.selectedSoftware = item;

@@ -2,11 +2,11 @@
   <!-- Seção do Herói com o componente do cubo 3D - Estendida -->
   <section class="hero-section-extended">
     @defer (on viewport) {
-      <app-hero-cube></app-hero-cube>
+    <app-hero-cube></app-hero-cube>
     } @placeholder {
-      <div class="w-full h-full flex items-center justify-center bg-gray-100 min-h-[500px]">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-unrender-purple"></div>
-      </div>
+    <div class="w-full h-full flex items-center justify-center bg-gray-100 min-h-[500px]">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-unrender-purple"></div>
+    </div>
     }
   </section>
 
@@ -20,13 +20,13 @@
             NOSSOS PRODUTOS
           </h2>
           <div class="flex flex-wrap justify-center gap-4 mb-4">
-            <span
-              class="inline-flex items-center px-5 py-2.5 rounded-full bg-unrender-accent/05 border-2 border-unrender-accent text-unrender-purple text-sm font-bold">
+            <span (click)="openSaasModal()"
+              class="cursor-pointer inline-flex items-center px-5 py-2.5 rounded-full bg-unrender-accent/05 border-2 border-unrender-accent text-unrender-purple text-sm font-bold hover:bg-unrender-accent/10 transition-colors">
               <i class="fa-solid fa-cloud mr-2 text-unrender-accent"></i>
               SaaS - Assinatura
             </span>
-            <span
-              class="inline-flex items-center px-5 py-2.5 rounded-full bg-unrender-purple border-2 border-unrender-accent text-white text-sm font-bold">
+            <span (click)="openOnPremiseModal()"
+              class="cursor-pointer inline-flex items-center px-5 py-2.5 rounded-full bg-unrender-purple border-2 border-unrender-accent text-white text-sm font-bold hover:bg-unrender-purple/90 transition-colors">
               <i class="fa-solid fa-server mr-2 text-unrender-accent"></i>
               On-Premise - Instalado nos seus servidores
             </span>
@@ -45,13 +45,15 @@
           <div class="w-full max-w-2xl">
             <div id="software-details-content" class="bg-white rounded-2xl shadow-lg p-4 lg:p-8">
               <div class="flex flex-col h-full">
-                <h3 class="text-2xl lg:text-3xl font-bold mb-2 lg:mb-4 text-unrender-purple">{{ getCurrentTitle() }}</h3>
+                <h3 class="text-2xl lg:text-3xl font-bold mb-2 lg:mb-4 text-unrender-purple">{{ getCurrentTitle() }}
+                </h3>
                 <p class="text-gray-700 mb-4 lg:mb-6 text-base lg:text-lg leading-relaxed">
                   {{ getCurrentDescription() }}
                 </p>
 
                 <!-- Carousel -->
-                <div class="relative w-full h-48 lg:h-80 mb-4 lg:mb-6 bg-gray-100 rounded-xl overflow-hidden shadow-inner">
+                <div
+                  class="relative w-full h-48 lg:h-80 mb-4 lg:mb-6 bg-gray-100 rounded-xl overflow-hidden shadow-inner">
                   <!-- Carousel Images -->
                   @for (image of selectedSoftware.carouselImages; track $index) {
                   <a [href]="selectedSoftware.link"
@@ -107,7 +109,9 @@
                 class="w-16 h-16 object-contain filter transition-all duration-300"
                 [class.grayscale]="selectedSoftware.id !== item.id"
                 [class.grayscale-0]="selectedSoftware.id === item.id">
-              <span class="font-bold transition-colors text-center text-[10px] sm:text-xs md:text-base break-words w-full px-1 leading-tight" [class.text-unrender-purple]="selectedSoftware.id === item.id"
+              <span
+                class="font-bold transition-colors text-center text-[10px] sm:text-xs md:text-base break-words w-full px-1 leading-tight"
+                [class.text-unrender-purple]="selectedSoftware.id === item.id"
                 [class.text-gray-400]="selectedSoftware.id !== item.id">
                 {{ item.name }}
               </span>
@@ -138,4 +142,182 @@
       <app-contact></app-contact>
     </div>
   </section>
+
+  <!-- SaaS Modal -->
+  @if (showSaasModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" (click)="closeSaasModal()"></div>
+
+    <!-- Modal Content -->
+    <div
+      class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all animate-fadeIn">
+      <!-- Header -->
+      <div class="bg-unrender-purple p-6 flex justify-between items-center">
+        <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-cloud text-unrender-accent"></i>
+          SaaS - Software as a Service
+        </h3>
+        <button (click)="closeSaasModal()" class="text-white/80 hover:text-white transition-colors">
+          <i class="fa-solid fa-times text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 md:p-8 space-y-4">
+        <p class="text-gray-700 leading-relaxed text-lg">
+          O modelo <strong class="text-unrender-purple">SaaS (Software as a Service)</strong> é a solução ideal para
+          empresas que buscam agilidade e baixo custo inicial.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 py-4">
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-check text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Acesso em qualquer lugar</h4>
+              <p class="text-sm text-gray-600 mt-1">Acesse seu sistema de qualquer dispositivo com internet.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-check text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Atualizações Automáticas</h4>
+              <p class="text-sm text-gray-600 mt-1">Receba sempre as últimas funcionalidades sem custo extra.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-check text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Infraestrutura Inclusa</h4>
+              <p class="text-sm text-gray-600 mt-1">Não se preocupe com servidores, backups ou manutenção.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-check text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Escalabilidade</h4>
+              <p class="text-sm text-gray-600 mt-1">Adicione usuários e recursos conforme sua empresa cresce.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-unrender-accent/10 border-l-4 border-unrender-purple p-4 rounded-r">
+          <p class="text-sm text-unrender-purple">
+            <strong>Ideal para:</strong> Startups, pequenas e médias empresas que precisam de implementação rápida e
+            foco total no negócio.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-6 bg-gray-50 flex justify-end">
+        <button (click)="closeSaasModal()"
+          class="px-6 py-2 bg-unrender-purple text-white font-bold rounded-lg hover:bg-unrender-purple/90 transition-colors">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- On-Premise Modal -->
+  @if (showOnPremiseModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" (click)="closeOnPremiseModal()"></div>
+
+    <!-- Modal Content -->
+    <div
+      class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all animate-fadeIn">
+      <!-- Header -->
+      <div class="bg-unrender-purple p-6 flex justify-between items-center">
+        <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-server text-unrender-accent"></i>
+          On-Premise - Instalação Local
+        </h3>
+        <button (click)="closeOnPremiseModal()" class="text-white/80 hover:text-white transition-colors">
+          <i class="fa-solid fa-times text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 md:p-8 space-y-4">
+        <p class="text-gray-700 leading-relaxed text-lg">
+          O modelo <strong class="text-unrender-purple">On-Premise</strong> oferece controle total, permitindo que o
+          software
+          seja instalado diretamente na sua infraestrutura.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4 py-4">
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-shield-alt text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Controle Total de Dados</h4>
+              <p class="text-sm text-gray-600 mt-1">Seus dados nunca saem da sua empresa, garantindo conformidade
+                máxima.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-network-wired text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Performance Dedicada</h4>
+              <p class="text-sm text-gray-600 mt-1">Utilize todo o poder do seu hardware sem compartilhar recursos.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-lock text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Segurança Personalizada</h4>
+              <p class="text-sm text-gray-600 mt-1">Aplique suas próprias políticas de segurança e firewall.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="mt-1 bg-unrender-accent/10 p-2 rounded-full">
+              <i class="fa-solid fa-wifi text-unrender-purple"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-gray-900">Funcionamento Offline</h4>
+              <p class="text-sm text-gray-600 mt-1">Opere mesmo sem conexão com a internet externa (Intranet).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-unrender-accent/10 border-l-4 border-unrender-purple p-4 rounded-r">
+          <p class="text-sm text-unrender-purple">
+            <strong>Ideal para:</strong> Grandes corporações, governos e setores altamente regulamentados que exigem
+            soberania total dos dados.
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-6 bg-gray-50 flex justify-end">
+        <button (click)="closeOnPremiseModal()"
+          class="px-6 py-2 bg-unrender-purple text-white font-bold rounded-lg hover:bg-unrender-purple/90 transition-colors">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+  }
 </main>

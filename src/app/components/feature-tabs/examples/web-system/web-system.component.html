@@ -12,7 +12,7 @@
     <nav class="flex flex-row md:!flex-col w-full justify-around md:justify-start gap-1 md:gap-2">
       <div
         class="flex flex-col md:flex-row items-center md:gap-3 p-2 md:px-4 md:py-3 rounded-xl cursor-pointer transition-colors text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-        [class.bg-slate-50]="true" [class.text-slate-900]="true" [class.font-semibold]="true">
+        [class.bg-unrender-purple]="true" [class.text-white]="true" [class.font-semibold]="true">
         <fa-icon [icon]="faHome" class="text-lg md:text-base"></fa-icon>
         <span class="text-[10px] md:text-sm">Visão Geral</span>
       </div>
@@ -62,12 +62,12 @@
         <div class="relative cursor-pointer text-slate-500 hover:text-slate-700">
           <fa-icon [icon]="faBell" class="text-lg"></fa-icon>
           <span
-            class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">3</span>
+            class="absolute -top-1 -right-1 w-4 h-4 bg-unrender-accent text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">3</span>
         </div>
         <div class="relative cursor-pointer text-slate-500 hover:text-slate-700 hidden sm:block">
           <fa-icon [icon]="faEnvelope" class="text-lg"></fa-icon>
           <span
-            class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">5</span>
+            class="absolute -top-1 -right-1 w-4 h-4 bg-unrender-purple text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">5</span>
         </div>
         <div class="flex items-center gap-3 pl-3 md:pl-6 border-l border-slate-200">
           <div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
@@ -94,26 +94,28 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+        <div
+          class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col items-start justify-between h-full"
           *ngFor="let stat of stats">
-          <div class="flex items-start justify-between mb-4">
+          <div class="flex flex-col items-start gap-2 mb-4 w-full">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg" [ngClass]="{
                    'bg-green-100 text-green-600': stat.color === 'green',
-                   'bg-blue-100 text-blue-600': stat.color === 'blue',
-                   'bg-orange-100 text-orange-600': stat.color === 'orange',
+                   'bg-unrender-purple/10 text-unrender-purple': stat.color === 'blue',
+                   'bg-unrender-accent/10 text-unrender-accent': stat.color === 'orange',
                    'bg-purple-100 text-purple-600': stat.color === 'purple'
                  }">
               <fa-icon [icon]="stat.icon"></fa-icon>
             </div>
             <span class="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1"
-              [ngClass]="stat.isPositive ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'">
+              [ngClass]="stat.isPositive ? 'bg-green-50 text-green-600' : 'bg-unrender-accent/10 text-unrender-accent'">
               <fa-icon [icon]="stat.isPositive ? faArrowUp : faArrowDown" class="text-[10px]"></fa-icon>
               {{ stat.change }}
             </span>
           </div>
-          <div>
-            <span class="text-slate-500 text-sm font-medium block mb-1">{{ stat.label }}</span>
-            <span class="text-2xl font-bold text-slate-800">{{ stat.value }}</span>
+          <div class="w-full text-left">
+            <span class="text-slate-500 text-sm font-medium block mb-1 text-left">{{ stat.label }}</span>
+            <span class="text-2xl font-bold text-slate-800 text-left block truncate" title="{{ stat.value }}">{{
+              stat.value }}</span>
           </div>
         </div>
       </div>
@@ -134,7 +136,7 @@
                 <div class="w-full flex-1 flex items-end justify-center relative rounded-t-lg">
                   <!-- The Bar -->
                   <div
-                    class="w-full max-w-[40px] bg-unrender-purple rounded-t-sm relative group-hover:bg-indigo-500 transition-all duration-500"
+                    class="w-full max-w-[40px] bg-unrender-purple rounded-t-sm relative group-hover:bg-unrender-accent transition-all duration-500"
                     [style.height.%]="height">
                     <!-- Tooltip -->
                     <div
@@ -157,29 +159,30 @@
           </div>
           <div class="flex-1 flex flex-col items-center justify-center gap-6">
             <div
-              class="relative w-48 h-48 rounded-full border-[16px] border-slate-100 flex items-center justify-center">
+              class="relative w-full max-w-[12rem] aspect-square rounded-full border-[16px] border-slate-100 flex items-center justify-center">
               <!-- Simple CSS Donut representation -->
               <svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
                 <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none"
-                  stroke="#6366f1" stroke-width="4" stroke-dasharray="85, 100" />
+                  stroke="#d35400" stroke-width="4" stroke-dasharray="85, 100" />
               </svg>
-              <div class="text-center">
-                <span class="block text-3xl font-bold text-slate-800">85%</span>
-                <span class="text-xs text-slate-500 uppercase tracking-wider">Mobile</span>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span class="block text-lg sm:text-xl font-bold text-slate-800">85%</span>
+                <span class="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider">Mobile</span>
               </div>
             </div>
-            <div class="w-full space-y-3">
-              <div class="flex items-center justify-between text-sm">
-                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Mobile
+            <div class="w-full space-y-2">
+              <div class="flex flex-wrap items-center justify-between text-xs sm:text-sm">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-unrender-accent"></span>
+                  Mobile
                 </div>
                 <span class="font-bold text-slate-700">65%</span>
               </div>
-              <div class="flex items-center justify-between text-sm">
+              <div class="flex flex-wrap items-center justify-between text-xs sm:text-sm">
                 <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Desktop
                 </div>
                 <span class="font-bold text-slate-700">25%</span>
               </div>
-              <div class="flex items-center justify-between text-sm">
+              <div class="flex flex-wrap items-center justify-between text-xs sm:text-sm">
                 <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-200"></span> Tablet
                 </div>
                 <span class="font-bold text-slate-700">10%</span>
@@ -194,7 +197,7 @@
         <div class="flex flex-col sm:flex-row justify-between items-center p-6 border-b border-slate-200 gap-4">
           <h3 class="font-bold text-slate-800 text-lg">Pedidos Recentes</h3>
           <button
-            class="px-4 py-2 bg-indigo-50 text-indigo-600 text-sm font-medium rounded-lg hover:bg-indigo-100 transition-colors w-full sm:w-auto">Ver
+            class="px-4 py-2 bg-unrender-purple/5 text-unrender-purple text-sm font-medium rounded-lg hover:bg-unrender-purple hover:text-white transition-colors w-full sm:w-auto">Ver
             Todos</button>
         </div>
         <div class="overflow-x-auto">
@@ -216,7 +219,7 @@
                 <td class="p-4">
                   <div class="flex items-center gap-3">
                     <div
-                      class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                      class="w-8 h-8 rounded-full bg-unrender-purple/10 text-unrender-purple flex items-center justify-center font-bold text-xs">
                       {{ order.customer.charAt(0) }}</div>
                     <span class="font-medium">{{ order.customer }}</span>
                   </div>
@@ -228,8 +231,8 @@
                   <span class="px-2 py-1 rounded-full text-xs font-medium border" [ngClass]="{
                     'bg-green-50 text-green-600 border-green-100': order.status === 'Concluído',
                     'bg-yellow-50 text-yellow-600 border-yellow-100': order.status === 'Pendente',
-                    'bg-blue-50 text-blue-600 border-blue-100': order.status === 'Processando',
-                    'bg-red-50 text-red-600 border-red-100': order.status === 'Cancelado'
+                    'bg-unrender-purple/10 text-unrender-purple border-blue-100': order.status === 'Processando',
+                    'bg-unrender-accent/10 text-unrender-accent border-red-100': order.status === 'Cancelado'
                   }">{{ order.status }}</span>
                 </td>
               </tr>

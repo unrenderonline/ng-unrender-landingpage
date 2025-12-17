@@ -1,3 +1,13 @@
 <div class="mocap-container">
-  <div id="container" #container></div>
+  <img *ngIf="!isStarted" src="mocap.gif" class="background-gif" alt="Mocap Preview">
+  <div id="container" #container [style.display]="isStarted ? 'block' : 'none'"></div>
+
+  <div class="controls-overlay" [class.active]="isStarted">
+    <button *ngIf="!isStarted" (click)="start()" class="btn-glass start">
+      LIGAR CÂMERA
+    </button>
+    <button *ngIf="isStarted" (click)="stop()" class="btn-glass stop">
+      PARAR CÂMERA
+    </button>
+  </div>
 </div>

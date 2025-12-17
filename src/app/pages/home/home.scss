@@ -119,8 +119,8 @@ main {
 /* Estilo do botão personalizado */
 .btn-custom-unrender {
   background-color: transparent;
-  border: 2px solid #f5a623; // Cor laranja da sua identidade visual
-  color: #f5a623;
+  border: 2px solid #f99126; // Cor laranja da sua identidade visual
+  color: #f99126;
   font-weight: bold;
   padding: 0.5rem 1.5rem;
   border-radius: 5px;
@@ -128,7 +128,7 @@ main {
   transition: all 0.3s ease-in-out; // Animação suave
 
   &:hover {
-    background-color: #f5a623;
+    background-color: #f99126;
     color: #ffffff; // Texto fica branco no hover
     transform: translateY(-2px); // Leve efeito de elevação
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -259,8 +259,8 @@ main {
 
 .btn-custom-unrender {
   background-color: transparent;
-  border: 2px solid #f5a623; // Cor laranja da sua identidade visual
-  color: #f5a623;
+  border: 2px solid #f99126; // Cor laranja da sua identidade visual
+  color: #f99126;
   font-weight: bold;
   padding: 0.5rem 1.5rem;
   border-radius: 5px;
@@ -268,7 +268,7 @@ main {
   transition: all 0.3s ease-in-out; // Animação suave
 
   &:hover {
-    background-color: #f5a623;
+    background-color: #f99126;
     color: #ffffff; // Texto fica branco no hover
     transform: translateY(-2px); // Leve efeito de elevação
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

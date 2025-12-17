@@ -380,6 +380,10 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       ],
       features: [
         {
+          name: 'Totem de Autoatendimento',
+          loadComponent: () => import('./examples/self-service-kiosk/self-service-kiosk.component').then(m => m.SelfServiceKioskComponent)
+        },
+        {
           name: 'Wearable (Android Wear)',
           loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
           customComponentInputs: { type: 'wearable', platform: 'android-wear' }
@@ -557,7 +561,7 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
         },
         {
           name: 'Totens de Autoatendimento',
-          imageUrl: '/pequi-png.png'
+          loadComponent: () => import('./examples/self-service-kiosk/self-service-kiosk.component').then(m => m.SelfServiceKioskComponent)
         },
         {
           name: 'Impressoras Fiscais',
@@ -593,10 +597,10 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       ],
       features: [
         {
-          name: 'Cluster de Treinamento Distribuído',
-          loadComponent: () => import('./examples/ai-server-cluster/ai-server-cluster.component').then(m => m.AiServerClusterComponent)
-        },
-        {
+          name: 'Edge AI (Visão Computacional)',
+          loadComponent: () => import('./examples/custom-systems/custom-systems.component').then(m => m.CustomSystemsComponent),
+          customComponentInputs: { type: 'edge-ai' }
+        }, {
           name: 'Visualização Física de Rack',
           loadComponent: () => import('./examples/physical-server-rack/physical-server-rack.component').then(m => m.PhysicalServerRackComponent)
         },
@@ -706,6 +710,10 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
         }
       ],
       features: [
+        {
+          name: 'Kiosk Customizado',
+          loadComponent: () => import('./examples/self-service-kiosk/self-service-kiosk.component').then(m => m.SelfServiceKioskComponent)
+        },
         {
           name: 'Laboratório de Hardware',
           loadComponent: () => import('./examples/hardware-showcase/hardware-showcase.component').then(m => m.HardwareShowcaseComponent)

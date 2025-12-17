@@ -15,7 +15,7 @@ export class Graphs implements AfterViewInit {
 
   private network: any;
 
-  constructor() {}
+  constructor() { }
 
   ngAfterViewInit(): void {
     this.createGraph();
@@ -187,7 +187,7 @@ export class Graphs implements AfterViewInit {
         arrows: 'to',
       },
       { from: 'freya', to: 'controlb', label: 'Vendas e Pets', arrows: 'to' },
-  { from: 'dice', to: 'controlb', label: 'Processos', arrows: 'to' },
+      { from: 'dice', to: 'controlb', label: 'Processos', arrows: 'to' },
       { from: 'kardapio', to: 'controlb', label: 'Pedidos', arrows: 'to' },
       { from: 'odin', to: 'controlb', label: 'Dados Acadêmicos', arrows: 'to' },
       { from: 'janus', to: 'controlb', label: 'Alertas e Logs', arrows: 'to' },
@@ -249,7 +249,7 @@ export class Graphs implements AfterViewInit {
       { from: 'ava', to: 'seshat', label: 'Automatiza', arrows: 'to' },
       { from: 'courier', to: 'seshat', label: 'Envia Emails', arrows: 'to' },
       { from: 'qotar', to: 'brok', label: 'Orçamentos', arrows: 'to' },
-  { from: 'qotar', to: 'dice', label: 'Propostas', arrows: 'to' },
+      { from: 'qotar', to: 'dice', label: 'Propostas', arrows: 'to' },
       { from: 'controlb', to: 'norna', arrows: 'to', dashes: [5, 5] },
       { from: 'mani', to: 'norna', arrows: 'to', dashes: [5, 5] },
       { from: 'seshat', to: 'norna', arrows: 'to', dashes: [5, 5] },
@@ -265,15 +265,15 @@ export class Graphs implements AfterViewInit {
         borderWidthSelected: 3,
         color: {
           // Cor da borda quando o nó é selecionado
-          border: '#f5a623',
+          border: '#f99126',
           background: 'transparent', // Fundo padrão transparente
           // Garante que o fundo permaneça transparente ao interagir
           highlight: {
-            border: '#f5a623',
+            border: '#f99126',
             background: 'transparent',
           },
           hover: {
-            border: '#f5a623',
+            border: '#f99126',
             background: 'transparent',
           },
         },
@@ -302,8 +302,8 @@ export class Graphs implements AfterViewInit {
           // Cor padrão das linhas e setas
           color: '#FFFFFF',
           // Cor ao passar o mouse ou selecionar
-          highlight: '#f5a623',
-          hover: '#f5a623',
+          highlight: '#f99126',
+          hover: '#f99126',
           opacity: 0.6,
         },
         arrows: {

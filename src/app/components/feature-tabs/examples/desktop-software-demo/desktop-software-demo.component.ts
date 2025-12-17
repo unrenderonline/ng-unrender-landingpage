@@ -1,22 +1,38 @@
 import { Component, Input, OnInit, HostListener, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChatWidgetComponent } from '../../../chat-widget/chat-widget.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faWindowMinimize, faWindowMaximize, faTimes, faDesktop, faWifi, faVolumeUp, faBatteryFull,
-  faSearch, faThLarge, faCog, faFolder, faTerminal, faCode, faGlobe
+  faSearch, faThLarge, faCog, faFolder, faTerminal, faCode, faGlobe, faBrain
 } from '@fortawesome/free-solid-svg-icons';
 import { faMicrosoft, faApple, faUbuntu } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-desktop-software-demo',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, FontAwesomeModule, ChatWidgetComponent],
   templateUrl: './desktop-software-demo.component.html',
   styleUrls: ['./desktop-software-demo.component.scss']
 })
 export class DesktopSoftwareDemoComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() os: 'windows' | 'macos' | 'linux' = 'windows';
   @ViewChild('monitorContainer') monitorContainer!: ElementRef;
+
+  activeTab: string = 'dashboard';
+
+  config = {
+    notifications: true,
+    updates: false
+  };
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+  }
+
+  toggleConfig(key: keyof typeof this.config) {
+    this.config[key] = !this.config[key];
+  }
 
   scaleFactor: number = 1;
   containerHeight: number = 0;
@@ -46,6 +62,7 @@ export class DesktopSoftwareDemoComponent implements OnInit, AfterViewInit, OnDe
   faTerminal = faTerminal;
   faCode = faCode;
   faGlobe = faGlobe;
+  faBrain = faBrain;
 
   // Brand Icons
   faWindowsBrand = faMicrosoft;

@@ -2,7 +2,8 @@
   <div class="viewport">
     <video #videoElement playsinline muted></video>
     <canvas #canvasElement></canvas>
-    
+    <img *ngIf="!isCameraActive" src="cv-test.gif" class="background-gif" alt="Computer Vision Preview">
+
     <div class="overlay-controls" [class.camera-active]="isCameraActive">
       <div *ngIf="loadingStatus" class="loading-container">
         <div class="spinner"></div>

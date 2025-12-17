@@ -104,14 +104,14 @@ export class ComputerVisionComponent implements AfterViewInit, OnDestroy {
     'toothbrush': 'escova de dentes'
   };
 
-  constructor(private cameraService: CameraService) {}
+  constructor(private cameraService: CameraService) { }
 
   async ngAfterViewInit() {
     // Defer model loading to prevent UI blocking during tab switch
     setTimeout(async () => {
       try {
         this.model = await cocoSsd.load();
-        this.checkPermissionsAndStart();
+        this.loadingStatus = null;
       } catch (err) {
         this.error = 'Failed to load TensorFlow model.';
         this.loadingStatus = null;
@@ -128,7 +128,7 @@ export class ComputerVisionComponent implements AfterViewInit, OnDestroy {
 
     try {
       const stream = await this.cameraService.startCamera();
-      
+
       this.videoElement.nativeElement.srcObject = stream;
       this.videoElement.nativeElement.onloadedmetadata = () => {
         this.videoElement.nativeElement.play();

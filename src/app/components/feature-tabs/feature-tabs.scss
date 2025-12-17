@@ -1,7 +1,7 @@
 // Definição das variáveis de cor para fácil customização
-$research-color: #f5a623; // Laranja
+$research-color: var(--unrender-accent); // Laranja
 $strategy-color: #10051c; // Roxo Profundo
-$design-color: #f97316; // Laranja Escuro
+$design-color: var(--unrender-accent); // Laranja Escuro
 
 // Carousel Styles
 .carousel-container {
@@ -413,7 +413,7 @@ $design-color: #f97316; // Laranja Escuro
   position: sticky !important;
   background-color: #ffffff;
   padding: 1rem;
-  border-right: 2px solid #f97316;
+  border-right: 2px solid var(--unrender-accent);
   top: 20px;
   /* Offset from top when sticky */
   align-self: flex-start;
@@ -445,7 +445,7 @@ $design-color: #f97316; // Laranja Escuro
   }
 
   .subtitle {
-    color: #f97316;
+    color: var(--unrender-accent);
     font-size: 0.625rem;
     margin-bottom: 1rem;
 
@@ -472,13 +472,13 @@ $design-color: #f97316; // Laranja Escuro
 
 .nav-pills .nav-link:hover {
   background-color: #fff7ed;
-  color: #f97316;
+  color: var(--unrender-accent);
 }
 
 .nav-pills .nav-link.active {
-  background-color: #f97316;
+  background-color: var(--unrender-accent);
   /* Laranja */
-  background: linear-gradient(45deg, #f97316, #ea580c);
+  background: linear-gradient(45deg, var(--unrender-accent), var(--unrender-accent));
   color: white;
   box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
 }
@@ -621,11 +621,11 @@ $design-color: #f97316; // Laranja Escuro
     &:hover {
       transform: translateX(8px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
-      border-color: #f97316;
+      border-color: var(--unrender-accent);
     }
 
     .feature-media-square {
-      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      background: linear-gradient(135deg, var(--unrender-accent) 0%, var(--unrender-accent) 100%);
       padding: 0.25rem;
       box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
 

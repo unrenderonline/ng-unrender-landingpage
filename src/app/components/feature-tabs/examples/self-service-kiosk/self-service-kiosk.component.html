@@ -1,0 +1,207 @@
+<div class="kiosk-container">
+    <!-- MODE TOGGLE -->
+    <div class="mode-toggle">
+        <button [class.active]="kioskMode === 'food'" (click)="setMode('food')">
+            <fa-icon [icon]="faUtensils"></fa-icon> Food
+        </button>
+        <button [class.active]="kioskMode === 'photo'" (click)="setMode('photo')">
+            <fa-icon [icon]="faCamera"></fa-icon> Photo
+        </button>
+    </div>
+    <!-- Kiosk Hardware Frame -->
+    <div class="kiosk-frame">
+        <div class="kiosk-bezel">
+            <div class="camera-hole"></div>
+
+            <!-- IDLE SCREEN -->
+            <div class="screen idle-screen" *ngIf="kioskMode === 'food' && state === 'idle'" (click)="startOrder()">
+                <div class="logo-area">
+                    <div class="icon-circle">
+                        <fa-icon [icon]="faUtensils"></fa-icon>
+                    </div>
+                    <h1>Unrender<br>Burgers</h1>
+                </div>
+                <div class="touch-hint">
+                    <fa-icon [icon]="faHandPointer" class="pulse-icon"></fa-icon>
+                    <span>Toque para começar</span>
+                </div>
+                <div class="promo-banner">
+                    <p>Experimente o novo <strong>Mega Cheddar!</strong></p>
+                </div>
+            </div>
+
+            <!-- MENU SCREEN -->
+            <div class="screen menu-screen" *ngIf="kioskMode === 'food' && state === 'menu'">
+                <header class="menu-header">
+                    <div class="brand-small">Unrender Burgers</div>
+                    <button class="cancel-btn" (click)="state = 'idle'">
+                        <fa-icon [icon]="faTimes"></fa-icon> Cancelar
+                    </button>
+                </header>
+
+                <nav class="category-nav">
+                    <button *ngFor="let cat of categories" [class.active]="selectedCategory === cat.id"
+                        (click)="selectCategory(cat.id)">
+                        <fa-icon [icon]="cat.icon"></fa-icon>
+                        <span>{{ cat.name }}</span>
+                    </button>
+                </nav>
+
+                <main class="product-grid">
+                    <div class="product-card" *ngFor="let product of currentProducts" (click)="addToCart(product)">
+                        <div class="product-img">{{ product.img }}</div>
+                        <div class="product-info">
+                            <h3>{{ product.name }}</h3>
+                            <p class="desc">{{ product.desc }}</p>
+                            <p class="price">{{ product.price | currency:'BRL' }}</p>
+                        </div>
+                        <button class="add-btn">
+                            +
+                        </button>
+                    </div>
+                </main>
+
+                <footer class="cart-summary" (click)="viewCart()" [class.has-items]="cart.length > 0">
+                    <div class="cart-info">
+                        <span class="count">{{ cart.length }} itens</span>
+                        <span class="total">{{ total | currency:'BRL' }}</span>
+                    </div>
+                    <button class="view-cart-btn" [disabled]="cart.length === 0">
+                        Ver Pedido <fa-icon [icon]="faShoppingCart"></fa-icon>
+                    </button>
+                </footer>
+            </div>
+
+            <!-- CART SCREEN -->
+            <div class="screen cart-screen" *ngIf="kioskMode === 'food' && state === 'cart'">
+                <header class="cart-header">
+                    <button class="back-btn" (click)="backToMenu()">
+                        <fa-icon [icon]="faArrowLeft"></fa-icon> Voltar
+                    </button>
+                    <h2>Seu Pedido</h2>
+                </header>
+
+                <div class="cart-list">
+                    <div class="cart-item" *ngFor="let item of cart; let i = index">
+                        <div class="item-icon">{{ item.img }}</div>
+                        <div class="item-details">
+                            <h4>{{ item.name }}</h4>
+                            <p>{{ item.price | currency:'BRL' }}</p>
+                        </div>
+                        <button class="remove-btn" (click)="removeFromCart(i, $event)">
+                            <fa-icon [icon]="faTimes"></fa-icon>
+                        </button>
+                    </div>
+                    <div class="empty-cart-msg" *ngIf="cart.length === 0">
+                        Seu carrinho está vazio
+                    </div>
+                </div>
+
+                <footer class="checkout-footer">
+                    <div class="total-row">
+                        <span>Total</span>
+                        <span class="big-price">{{ total | currency:'BRL' }}</span>
+                    </div>
+                    <button class="pay-btn" (click)="checkout()" [disabled]="cart.length === 0">
+                        Pagar Agora <fa-icon [icon]="faCreditCard"></fa-icon>
+                    </button>
+                </footer>
+            </div>
+
+            <!-- PROCESSING SCREEN -->
+            <div class="screen processing-screen" *ngIf="kioskMode === 'food' && state === 'processing'">
+                <div class="spinner"></div>
+                <h3>Processando Pagamento...</h3>
+                <p>Aproxime seu cartão ou celular</p>
+            </div>
+
+            <!-- SUCCESS SCREEN -->
+            <div class="screen success-screen" *ngIf="kioskMode === 'food' && state === 'success'">
+                <div class="success-icon">
+                    <fa-icon [icon]="faCheckCircle"></fa-icon>
+                </div>
+                <h2>Pedido Confirmado!</h2>
+                <div class="order-number">
+                    <span>Senha</span>
+                    <strong>{{ orderNumber }}</strong>
+                </div>
+                <div class="printing-msg">
+                    <fa-icon [icon]="faReceipt"></fa-icon> Imprimindo comprovante...
+                </div>
+
+                <!-- Animated Receipt -->
+                <div class="receipt-animation">
+                    <div class="receipt-paper">
+                        <h3>RECIBO</h3>
+                        <p>PEDIDO #{{ orderNumber }}</p>
+                        <hr>
+                        <div *ngFor="let item of cart">
+                            {{ item.name }} - {{ item.price | currency:'BRL' }}
+                        </div>
+                        <hr>
+                        <strong>TOTAL: {{ total | currency:'BRL' }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO CABIN MODE (NEW) -->
+            <div class="photo-cabin-screen" *ngIf="kioskMode === 'photo'">
+                <!-- Decorations -->
+                <div class="curtain left"></div>
+                <div class="curtain right"></div>
+
+                <!-- Live Preview State -->
+                <div class="camera-view" [class.hidden]="photoState !== 'idle' && photoState !== 'countdown'">
+                    <video #videoElement autoplay playsinline muted></video>
+                    <canvas #canvasElement style="display: none;"></canvas>
+
+                    <div class="overlay-ui">
+                        <div class="countdown-overlay" *ngIf="photoState === 'countdown'">
+                            <span>{{ countdownValue }}</span>
+                        </div>
+
+                        <div class="camera-controls" *ngIf="photoState === 'idle'">
+                            <button class="snap-btn" (click)="startCountdown()">
+                                <div class="inner-circle"></div>
+                            </button>
+                            <p>Toque para capturar</p>
+                        </div>
+                    </div>
+
+                    <div class="flash" [class.active]="flashActive"></div>
+                </div>
+
+                <!-- Printing State -->
+                <div class="printing-view" *ngIf="photoState === 'printing'">
+                    <div class="printer-slot">
+                        <div class="paper-photo">
+                            <img [src]="capturedImage" alt="Printing Photo">
+                            <div class="processing-bar"></div>
+                        </div>
+                    </div>
+                    <p class="printing-text">Imprimindo sua recordação...</p>
+                </div>
+
+                <!-- Captured Result State -->
+                <div class="result-view" *ngIf="photoState === 'captured'">
+                    <div class="photo-strip">
+                        <img [src]="capturedImage" alt="Captured Photo">
+                    </div>
+
+                    <div class="result-actions">
+                        <button class="action-btn retake" (click)="retakePhoto()">
+                            <fa-icon [icon]="faRedo"></fa-icon> Tentar Novamente
+                        </button>
+                        <button class="action-btn save" (click)="savePhoto()">
+                            <fa-icon [icon]="faDownload"></fa-icon> Salvar Foto
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Kiosk Stand Base (Visual only) -->
+        <div class="kiosk-base-connector"></div>
+    </div>
+</div>

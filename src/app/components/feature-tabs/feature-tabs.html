@@ -154,7 +154,8 @@
                   <div class="feature-item animated-card">
 
                     <!-- Image Layout: Square image on left, name on right (compact row) -->
-                    @if (feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent) {
+                    @if (feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent &&
+                    !feature.loadComponent) {
                     <div
                       class="feature-row feature-row-image flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all group">
                       <div
@@ -218,7 +219,8 @@
                         {{ feature.name }}
                       </span>
                       <div class="feature-custom-content">
-                        <app-lazy-renderer [loader]="feature.loadComponent" [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
+                        <app-lazy-renderer [loader]="feature.loadComponent"
+                          [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
                       </div>
                     </div>
                     }
@@ -240,7 +242,8 @@
                     }
 
                     <!-- Text only (no media) -->
-                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent &&
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent &&
+                    !feature.loadComponent &&
                     !feature.iframeUrl) {
                     <div
                       class="feature-row feature-row-text flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
@@ -467,7 +470,8 @@
                         {{ feature.name }}
                       </span>
                       <div class="feature-custom-content">
-                        <app-lazy-renderer [loader]="feature.loadComponent" [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
+                        <app-lazy-renderer [loader]="feature.loadComponent"
+                          [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
                       </div>
                     </div>
                     }
@@ -489,7 +493,8 @@
                     }
 
                     <!-- Text only (no media) -->
-                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent &&
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent &&
+                    !feature.loadComponent &&
                     !feature.iframeUrl) {
                     <div
                       class="feature-row feature-row-text flex items-center gap-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
@@ -508,24 +513,24 @@
                 </div>
 
                 <!-- Call to Action - Infraestrutura On-Premise -->
-                <div class="cta-section animated-card mt-8">
-                  <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div>
+                <div class="bg-unrender-purple w-full cta-section animated-card mt-8">
+                  <div class="w-full flex flex-wrap items-center justify-between gap-4">
+                    <div class="w-full">
                       <h4 class="text-xl font-bold mb-2 text-white">Precisa de equipamentos de TI?</h4>
                       <p class="text-white mb-3">
                         Você está interessado em:
                         <span
-                          class="inline-flex items-center px-3 py-1 ml-1 rounded-full text-sm font-semibold bg-white text-purple-700 shadow-md">
+                          class="inline-flex items-center px-3 py-1 ml-1 rounded-full text-sm font-semibold bg-white text-unrender-purple shadow-md">
                           {{ selectedInfrastructureItem.title }}
                         </span>
                       </p>
-                      <p class="text-sm text-purple-100">
+                      <p class="text-sm text-purple-100 pt-2">
                         Usaremos essa informação para personalizar a consultoria e o registro do lead.
                       </p>
                     </div>
-                    <div class="flex flex-col items-stretch gap-2 min-w-[220px] text-right">
-                      <button class="cta-button">Solicitar Consultoria</button>
-                      <span class="text-[11px] text-purple-100">
+                    <div class="w-full">
+                      <button class="cta-button text-unrender-purple">Solicitar Consultoria</button>
+                      <span class="block text-[11px] text-purple-100 mt-2">
                         O interesse selecionado será enviado junto com o seu contato.
                       </span>
                     </div>
@@ -589,7 +594,7 @@
             <div class="text-center mb-8">
               <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
                 class="inline-block mb-4 text-5xl md:text-7xl font-black bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105"
-                style="background-image: linear-gradient(to right, #f5a623, #f5a623); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                style="background-image: linear-gradient(to right, var(--unrender-accent), var(--unrender-accent)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 UNRENDER.GAMES
               </a>
               <p class="text-xl md:text-2xl text-gray-600 mb-6">Nosso Estúdio de Games</p>
@@ -606,7 +611,8 @@
                   <i class="fab fa-linkedin text-3xl"></i>
                 </a>
                 <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
-                  class="inline-block px-6 py-3 text-white text-base font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300" style="background-color: #130220;">
+                  class="inline-block px-6 py-3 text-white text-base font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  style="background-color: #130220;">
                   ACESSAR →
                 </a>
               </div>
@@ -617,31 +623,38 @@
               <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 text-center">Especialidades</h4>
               <div class="flex flex-wrap gap-3 justify-center">
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Modelagem 3D
                 </span>
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Gamificação
                 </span>
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Jogos Educacionais
                 </span>
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Audiovisual
                 </span>
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Realidade Virtual
                 </span>
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Web Interativa
                 </span>
                 <span
-                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-5 py-2.5 text-white rounded-full text-sm md:text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  style="background-color: var(--unrender-accent);">
                   Realidade Aumentada
                 </span>
               </div>
@@ -652,31 +665,38 @@
               <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 text-center">Plataformas</h4>
               <div class="flex flex-wrap gap-3 justify-center">
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-android"></i> Android
                 </span>
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-apple"></i> iOS
                 </span>
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-windows"></i> Windows
                 </span>
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-linux"></i> Linux
                 </span>
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fa-solid fa-globe"></i> Web
                 </span>
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-apple"></i> Mac
                 </span>
                 <span
-                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-4 py-2 text-white rounded-full text-xs md:text-sm font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fa-solid fa-vr-cardboard"></i> Meta Quest
                 </span>
               </div>
@@ -816,7 +836,8 @@
                     @if (feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent) {
                     <div class="feature-row feature-row-gif flex flex-col items-start gap-3">
                       <div class="feature-name-container w-full">
-                        <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg whitespace-normal"
+                        <span
+                          class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg whitespace-normal"
                           style="background-color: #fe8a2f;">
                           {{ feature.name }}
                         </span>
@@ -860,7 +881,8 @@
                         {{ feature.name }}
                       </span>
                       <div class="feature-custom-content">
-                        <app-lazy-renderer [loader]="feature.loadComponent" [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
+                        <app-lazy-renderer [loader]="feature.loadComponent"
+                          [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
                       </div>
                     </div>
                     }
@@ -882,7 +904,8 @@
                     }
 
                     <!-- Text only (no image, gif, or custom HTML) -->
-                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent &&
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent &&
+                    !feature.loadComponent &&
                     !feature.iframeUrl) {
                     <div class="feature-row feature-row-text flex items-center gap-3 p-3 bg-white rounded-lg shadow-md">
                       <div
@@ -1034,7 +1057,8 @@
                     @if (feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent) {
                     <div class="feature-row feature-row-gif flex flex-col items-start gap-3">
                       <div class="feature-name-container w-full">
-                        <span class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg whitespace-normal"
+                        <span
+                          class="inline-block px-3 py-1.5 text-white text-sm font-medium rounded-full shadow-lg whitespace-normal"
                           style="background-color: #fe8a2f;">
                           {{ feature.name }}
                         </span>
@@ -1078,7 +1102,8 @@
                         {{ feature.name }}
                       </span>
                       <div class="feature-custom-content">
-                        <app-lazy-renderer [loader]="feature.loadComponent" [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
+                        <app-lazy-renderer [loader]="feature.loadComponent"
+                          [inputs]="feature.customComponentInputs || {}"></app-lazy-renderer>
                       </div>
                     </div>
                     }
@@ -1100,7 +1125,8 @@
                     }
 
                     <!-- Text only -->
-                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent && !feature.loadComponent &&
+                    @if (!feature.imageUrl && !feature.gifUrl && !feature.customHtml && !feature.customComponent &&
+                    !feature.loadComponent &&
                     !feature.iframeUrl) {
                     <div class="feature-row feature-row-text flex items-center gap-3 p-3 bg-white rounded-lg shadow-md">
                       <div
@@ -1204,7 +1230,8 @@
                   <i class="fab fa-linkedin text-2xl"></i>
                 </a>
                 <a href="https://unrender.games" target="_blank" rel="noopener noreferrer"
-                  class="inline-block px-4 py-2 text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300" style="background-color: #130220;">
+                  class="inline-block px-4 py-2 text-white text-sm font-bold rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                  style="background-color: #130220;">
                   ACESSAR →
                 </a>
               </div>
@@ -1215,27 +1242,33 @@
               <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3 text-center">Especialidades</h4>
               <div class="flex flex-wrap gap-2 justify-center">
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #f5a623;">
                   Modelagem 3D
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #f5a623;">
                   Gamificação
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #f5a623;">
                   Jogos Educacionais
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #f5a623;">
                   Efeitos Especiais
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #f5a623;">
                   Realidade Virtual
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #f5a623;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #f5a623;">
                   Realidade Aumentada
                 </span>
               </div>
@@ -1246,31 +1279,38 @@
               <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3 text-center">Plataformas</h4>
               <div class="flex flex-wrap gap-2 justify-center">
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-android"></i> Android
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-apple"></i> iOS
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-windows"></i> Windows
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-linux"></i> Linux
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fa-solid fa-globe"></i> Web
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-apple"></i> Mac
                 </span>
                 <span
-                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all" style="background-color: #130220;">
+                  class="px-3 py-1.5 text-white rounded-full text-xs font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                  style="background-color: #130220;">
                   <i class="fab fa-vr-cardboard"></i> Meta Quest
                 </span>
               </div>

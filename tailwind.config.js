@@ -7,7 +7,7 @@ module.exports = {
     extend: {
       colors: {
         'unrender-purple': '#10051c',
-        'unrender-accent': '#f5a623',
+        'unrender-accent': '#f99126',
       },
       fontFamily: {
         'sans': ['Montserrat', 'Roboto', 'Inter', 'sans-serif'],

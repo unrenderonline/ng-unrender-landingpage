@@ -2,6 +2,7 @@
   font-family: "Montserrat", "Roboto", "Inter", sans-serif !important;
   transition: background-color 0.4s ease-out, backdrop-filter 0.4s ease-out;
   transition: padding 0.4s ease-out;
+
   .navbar-brand,
   .nav-link {
     display: flex;
@@ -12,6 +13,7 @@
       transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
     position: relative;
+
     // Underline effect
     &::after {
       content: "";
@@ -21,7 +23,7 @@
       right: 0;
       bottom: -2px;
       height: 3px;
-      background: #ffa500;
+      background: #f99126; // unrender-accent
       border-radius: 2px;
       opacity: 0;
       transform: scaleX(0);
@@ -41,8 +43,10 @@
     &:focus,
     &.active {
       transform: scale(1.08);
+      color: #f99126; // unrender-accent
     }
   }
+
   .container {
     transition: all 0.4s ease-out;
   }
@@ -71,8 +75,10 @@
 
 // Animação suave para o menu hambúrguer em telas menores
 @media (max-width: 991.98px) {
+
   // Breakpoint 'lg' do Bootstrap
   .navbar .navbar-collapse {
+
     // A classe .collapsing é adicionada pelo JS do Bootstrap durante a animação
     &.collapsing {
       height: 0; // Removido o !important para permitir que o JS do Bootstrap funcione

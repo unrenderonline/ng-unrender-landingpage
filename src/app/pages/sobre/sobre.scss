@@ -8,8 +8,13 @@
   height: auto;
   // Prevent any vertical scroll inside this component
   overflow: hidden;
+
   // Tailwind-like reset via CSS: ensure all children respect box-sizing
-  *, *::before, *::after { box-sizing: border-box; }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 }
 
 .hero-section {
@@ -27,8 +32,11 @@
   color: #ffffff;
   // Create space so the fixed navbar doesn't overlap the hero content
   padding-top: var(--navbar-h);
+
   // Remove default margins from inner elements to avoid compounding overflow
-  * { margin-block: 0; }
+  * {
+    margin-block: 0;
+  }
 }
 
 #particle-canvas {
@@ -67,7 +75,7 @@ h1.display-4 {
 }
 
 .highlight {
-  color: #f5a623; // Laranja da marca
+  color: #f99126; // Laranja da marca
 }
 
 p.lead {
@@ -81,16 +89,19 @@ p.lead {
 
 .values-list {
   margin-top: 2rem;
+
   .value-item {
     display: flex;
     align-items: flex-start;
     margin-bottom: 1.5rem;
+
     i {
       font-size: 2rem;
-      color: #f5a623;
+      color: #f99126;
       margin-right: 1rem;
       margin-top: 0.25rem;
     }
+
     p {
       margin-bottom: 0;
       color: #aaa;
@@ -111,7 +122,7 @@ p.lead {
   width: 100%;
   // A altura será definida pela imagem
   // Restore original portrait ratio used by the design
-  aspect-ratio: 8 / 9; 
+  aspect-ratio: 8 / 9;
   // Do not exceed half the viewport height to keep everything visible
   max-height: min(44svh, 480px);
   margin: 0 auto;
@@ -174,7 +185,7 @@ p.lead {
     }
 
     &.active {
-      background-color: #f5a623;
+      background-color: #f99126;
     }
   }
 }
@@ -186,6 +197,7 @@ p.lead {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -201,13 +213,16 @@ p.lead {
     // Keep overflow hidden to prevent scroll on short screens
     overflow: hidden;
   }
+
   .text-start,
   .text-left {
     text-align: center !important;
   }
+
   .values-list .value-item {
     justify-content: center;
   }
+
   .project-showcase {
     margin-top: 1rem;
   }
@@ -217,14 +232,17 @@ p.lead {
     font-size: clamp(0.95rem, 4.5vw + 0.4vh, 1.6rem); // tighter
     line-height: 1.15;
   }
+
   .project-caption {
     padding: 0.75rem 0.5rem 0.5rem 0.5rem;
     font-size: clamp(0.7rem, 0.8vw + 0.3vh, 0.9rem);
   }
+
   .carousel-slides {
     aspect-ratio: 8 / 9;
     max-height: min(40svh, 420px);
   }
+
   .carousel-dots {
     position: static; // evita sobrepor conteúdo
     transform: none;
@@ -240,44 +258,55 @@ p.lead {
     padding-bottom: 0.5rem;
     align-items: flex-start;
   }
+
   .project-showcase {
     margin-top: 0.5rem; // reduce extra spacing between text and carousel
   }
+
   .hero-content {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
     justify-content: flex-start;
     padding-top: 1rem;
   }
+
   h1 {
     font-size: clamp(1.1rem, 6vw, 1.5rem); // smaller cap
     margin-bottom: 0.5rem;
   }
+
   p {
     font-size: clamp(0.75rem, 3.5vw, 0.9rem);
     line-height: 1.3;
   }
+
   .values-list {
     margin-top: 1rem;
+
     .value-item {
       margin-bottom: 0.75rem;
+
       i {
         font-size: 1.25rem;
         margin-right: 0.5rem;
       }
+
       h5 {
         font-size: 0.95rem;
         margin-bottom: 0.1rem;
       }
     }
   }
+
   .carousel-slides {
     max-height: 35vh;
   }
+
   .project-caption h6 {
     font-size: clamp(0.7rem, 0.8vw + 0.3vh, 0.85rem);
     margin-bottom: 0.1rem;
   }
+
   .project-caption p {
     font-size: clamp(0.65rem, 0.8vw + 0.3vh, 0.8rem);
     line-height: 1.2;
@@ -289,14 +318,9 @@ p.lead {
   :host {
     --navbar-h: 80px; // h-20 on large screens
   }
+
   .hero-section {
     min-height: calc(100svh - var(--navbar-h));
     padding-top: var(--navbar-h);
   }
 }
-
-
-
-
-
-

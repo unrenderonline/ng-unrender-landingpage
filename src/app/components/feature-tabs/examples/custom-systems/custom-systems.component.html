@@ -1,16 +1,15 @@
 <div class="demo-container">
-  
+
   <!-- Wearable Simulation -->
-  <div *ngIf="type === 'wearable'" class="wearable-device" [ngClass]="platform"
-       (mousedown)="onTouchStart($event)" (mouseup)="onTouchEnd($event)" (mouseleave)="onTouchEnd($event)"
-       (mousemove)="onTouchMove($event)"
-       (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)" (touchmove)="onTouchMove($event)">
+  <div *ngIf="type === 'wearable'" class="wearable-device" [ngClass]="platform" (mousedown)="onTouchStart($event)"
+    (mouseup)="onTouchEnd($event)" (mouseleave)="onTouchEnd($event)" (mousemove)="onTouchMove($event)"
+    (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)" (touchmove)="onTouchMove($event)">
     <div class="screen">
       <!-- Apple Watch UI -->
       <div *ngIf="platform === 'apple-watch'" class="watch-ui apple">
-        
+
         <div class="views-container" [style.transform]="watchTransform" [class.animate]="!isDragging">
-          
+
           <!-- Face View -->
           <div class="view-face view-slide">
             <div class="header">
@@ -18,64 +17,67 @@
               <span class="status-icon"><fa-icon [icon]="faBolt" class="charging"></fa-icon></span>
             </div>
             <div class="content">
-            <div class="activity-rings">
-              <div class="ring red"><fa-icon [icon]="faFire"></fa-icon></div>
-              <div class="ring green"><fa-icon [icon]="faWalking"></fa-icon></div>
-              <div class="ring blue"><fa-icon [icon]="faArrowLeft" [style.transform]="'rotate(-90deg)'"></fa-icon></div>
+              <div class="activity-rings">
+                <div class="ring red"><fa-icon [icon]="faFire"></fa-icon></div>
+                <div class="ring green"><fa-icon [icon]="faWalking"></fa-icon></div>
+                <div class="ring blue"><fa-icon [icon]="faArrowLeft" [style.transform]="'rotate(-90deg)'"></fa-icon>
+                </div>
+              </div>
+              <div class="complications">
+                <div class="comp-item"><fa-icon [icon]="faFire" class="icon-red"></fa-icon> {{ calories }}</div>
+                <div class="comp-item"><fa-icon [icon]="faHeartbeat" class="icon-red pulse-anim"></fa-icon> {{ heartRate
+                  }}</div>
+              </div>
             </div>
-            <div class="complications">
-              <div class="comp-item"><fa-icon [icon]="faFire" class="icon-red"></fa-icon> {{ calories }}</div>
-              <div class="comp-item"><fa-icon [icon]="faHeartbeat" class="icon-red pulse-anim"></fa-icon> {{ heartRate }}</div>
+          </div>
+
+          <!-- Apps View -->
+          <div class="view-apps view-slide">
+            <div class="app-grid">
+              <div class="app-icon red"><fa-icon [icon]="faHeartbeat"></fa-icon></div>
+              <div class="app-icon green"><fa-icon [icon]="faWalking"></fa-icon></div>
+              <div class="app-icon blue"><fa-icon [icon]="faCloud"></fa-icon></div>
+              <div class="app-icon orange"><fa-icon [icon]="faClock"></fa-icon></div>
+              <div class="app-icon purple"><fa-icon [icon]="faCog"></fa-icon></div>
+              <div class="app-icon gray"><fa-icon [icon]="faTerminal"></fa-icon></div>
+            </div>
+          </div>
+
+          <!-- Health View -->
+          <div class="view-health view-slide">
+            <div class="health-header">Resumo</div>
+            <div class="stats-list">
+              <div class="stat-item">
+                <fa-icon [icon]="faFire" class="icon-red"></fa-icon>
+                <div class="data">
+                  <span class="value">{{ calories }}</span>
+                  <span class="label">CAL</span>
+                </div>
+              </div>
+              <div class="stat-item">
+                <fa-icon [icon]="faWalking" class="icon-green"></fa-icon>
+                <div class="data">
+                  <span class="value">{{ steps }}</span>
+                  <span class="label">PASSOS</span>
+                </div>
+              </div>
+              <div class="stat-item">
+                <fa-icon [icon]="faHeartbeat" class="icon-red pulse-anim"></fa-icon>
+                <div class="data">
+                  <span class="value">{{ heartRate }}</span>
+                  <span class="label">BPM</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- Apps View -->
-        <div class="view-apps view-slide">
-          <div class="app-grid">
-            <div class="app-icon red"><fa-icon [icon]="faHeartbeat"></fa-icon></div>
-            <div class="app-icon green"><fa-icon [icon]="faWalking"></fa-icon></div>
-            <div class="app-icon blue"><fa-icon [icon]="faCloud"></fa-icon></div>
-            <div class="app-icon orange"><fa-icon [icon]="faClock"></fa-icon></div>
-            <div class="app-icon purple"><fa-icon [icon]="faCog"></fa-icon></div>
-            <div class="app-icon gray"><fa-icon [icon]="faTerminal"></fa-icon></div>
-          </div>
-        </div>
-
-        <!-- Health View -->
-        <div class="view-health view-slide">
-          <div class="health-header">Resumo</div>
-          <div class="stats-list">
-            <div class="stat-item">
-              <fa-icon [icon]="faFire" class="icon-red"></fa-icon>
-              <div class="data">
-                <span class="value">{{ calories }}</span>
-                <span class="label">CAL</span>
-              </div>
-            </div>
-            <div class="stat-item">
-              <fa-icon [icon]="faWalking" class="icon-green"></fa-icon>
-              <div class="data">
-                <span class="value">{{ steps }}</span>
-                <span class="label">PASSOS</span>
-              </div>
-            </div>
-            <div class="stat-item">
-              <fa-icon [icon]="faHeartbeat" class="icon-red pulse-anim"></fa-icon>
-              <div class="data">
-                <span class="value">{{ heartRate }}</span>
-                <span class="label">BPM</span>
-              </div>
-            </div>
-          </div>
-        </div>        </div>
       </div>
 
       <!-- Android Wear OS UI -->
       <div *ngIf="platform === 'android-wear'" class="watch-ui android">
-        
+
         <div class="views-container" [style.transform]="watchTransform" [class.animate]="!isDragging">
-          
+
           <!-- Face View -->
           <div class="view-face view-slide">
             <div class="watch-face">
@@ -89,12 +91,12 @@
 
           <!-- Tiles View (Apps) -->
           <div class="view-tiles view-slide">
-             <div class="app-grid-android">
-                <div class="app-icon"><fa-icon [icon]="faHeartbeat"></fa-icon></div>
-                <div class="app-icon"><fa-icon [icon]="faWalking"></fa-icon></div>
-                <div class="app-icon"><fa-icon [icon]="faCloud"></fa-icon></div>
-                <div class="app-icon"><fa-icon [icon]="faClock"></fa-icon></div>
-             </div>
+            <div class="app-grid-android">
+              <div class="app-icon"><fa-icon [icon]="faHeartbeat"></fa-icon></div>
+              <div class="app-icon"><fa-icon [icon]="faWalking"></fa-icon></div>
+              <div class="app-icon"><fa-icon [icon]="faCloud"></fa-icon></div>
+              <div class="app-icon"><fa-icon [icon]="faClock"></fa-icon></div>
+            </div>
           </div>
 
           <!-- Health View -->
@@ -138,7 +140,7 @@
       <div class="label-text">Controlador IoT</div>
       <div class="traces"></div>
     </div>
-    
+
     <div class="terminal-screen">
       <div class="terminal-header">
         <fa-icon [icon]="faTerminal"></fa-icon> Monitor Serial (COM3)
@@ -149,7 +151,8 @@
         </div>
         <div class="input-line">
           <span class="prompt">></span>
-          <input type="text" [(ngModel)]="terminalInput" (keydown.enter)="handleTerminalInput($event)" placeholder="Digite um comando..." />
+          <input type="text" [(ngModel)]="terminalInput" (keydown.enter)="handleTerminalInput($event)"
+            placeholder="Digite um comando..." />
         </div>
       </div>
       <div class="dashboard-overlay">
@@ -176,14 +179,14 @@
           <fa-icon [icon]="faCog"></fa-icon>
         </div>
       </div>
-      
+
       <div class="hub-main">
         <div class="info-section">
           <div class="time-display">
             <div class="date">{{ currentDate }}</div>
             <div class="time">{{ currentTime }}</div>
           </div>
-          
+
           <!-- Dynamic Content Area -->
           <div class="dynamic-content">
             <div *ngIf="activeHubTab === 'ev'" class="detail-view">
@@ -194,7 +197,7 @@
                 <div class="sub">1h 20m restante</div>
               </div>
             </div>
-            
+
             <div *ngIf="activeHubTab === 'home'" class="detail-view">
               <div class="control-row">
                 <button class="hub-btn" [class.active]="smartLights" (click)="toggleLight()">
@@ -203,6 +206,21 @@
                 <button class="hub-btn" [class.active]="smartLock" (click)="toggleLock()">
                   <fa-icon [icon]="faLock"></fa-icon> Tranca
                 </button>
+              </div>
+            </div>
+
+            <div *ngIf="activeHubTab === 'solar'" class="detail-view">
+              <div class="solar-stats" style="display: flex; gap: 30px; text-align: center;">
+                <div>
+                  <div class="label" style="color: #fff;">Geração</div>
+                  <div class="value" style="color: #fff; font-size: 24px;">{{ solarGeneration | number:'1.1-1' }} kW
+                  </div>
+                </div>
+                <div>
+                  <div class="label" style="color: #fff;">Consumo</div>
+                  <div class="value" style="color: #fff; font-size: 24px;">{{ homeConsumption | number:'1.1-1' }} kW
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -232,9 +250,9 @@
             <div class="icon-circle"><fa-icon [icon]="faHome"></fa-icon></div>
             <div class="card-label">Casa Inteligente</div>
           </div>
-          <div class="hub-card" [class.active]="activeHubTab === 'meter'" (click)="setHubTab('meter')">
+          <div class="hub-card" [class.active]="activeHubTab === 'solar'" (click)="setHubTab('solar')">
             <div class="icon-circle"><fa-icon [icon]="faSun"></fa-icon></div>
-            <div class="card-label">Medidor</div>
+            <div class="card-label">Gerador Solar</div>
           </div>
           <div class="hub-card" [class.active]="activeHubTab === 'thermostat'" (click)="setHubTab('thermostat')">
             <div class="icon-circle"><fa-icon [icon]="faThermometerHalf"></fa-icon></div>
@@ -249,14 +267,9 @@
   <div *ngIf="type === 'edge-ai'" class="edge-ai-system">
     <div class="camera-feed">
       <div class="feed-overlay">
-        <div class="detection-box" *ngFor="let obj of detectedObjects"
-             [style.left.px]="obj.x" [style.top.px]="obj.y" 
-             [style.width.px]="obj.w" [style.height.px]="obj.h"
-             [style.border-color]="obj.color">
-          <span class="obj-label" [style.background-color]="obj.color">{{ obj.label }} {{ confidence }}%</span>
-        </div>
+
       </div>
-      <div class="camera-label"><fa-icon [icon]="faCamera"></fa-icon> LIVE FEED</div>
+      <div class="camera-label"><fa-icon [icon]="faCamera"></fa-icon> AO VIVO</div>
     </div>
     <div class="ai-stats">
       <div class="stat-row">

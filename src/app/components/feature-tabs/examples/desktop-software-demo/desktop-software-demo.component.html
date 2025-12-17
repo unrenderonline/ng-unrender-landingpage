@@ -69,20 +69,21 @@
         <!-- Window Content -->
         <div class="window-content">
           <!-- Sidebar -->
+          <!-- Sidebar -->
           <div class="sidebar">
-            <div class="sidebar-item active">
+            <div class="sidebar-item" [class.active]="activeTab === 'dashboard'" (click)="setActiveTab('dashboard')">
               <fa-icon [icon]="faThLarge"></fa-icon>
               <span>Dashboard</span>
             </div>
-            <div class="sidebar-item">
+            <div class="sidebar-item" [class.active]="activeTab === 'arquivos'" (click)="setActiveTab('arquivos')">
               <fa-icon [icon]="faFolder"></fa-icon>
               <span>Arquivos</span>
             </div>
-            <div class="sidebar-item">
-              <fa-icon [icon]="faTerminal"></fa-icon>
-              <span>Terminal</span>
+            <div class="sidebar-item" [class.active]="activeTab === 'ia'" (click)="setActiveTab('ia')">
+              <fa-icon [icon]="faBrain"></fa-icon>
+              <span>IA</span>
             </div>
-            <div class="sidebar-item">
+            <div class="sidebar-item" [class.active]="activeTab === 'config'" (click)="setActiveTab('config')">
               <fa-icon [icon]="faCog"></fa-icon>
               <span>Config</span>
             </div>
@@ -90,24 +91,124 @@
 
           <!-- Main View -->
           <div class="main-view">
-            <h1>Bem-vindo, Admin</h1>
-            <p>Sistema operacional: {{ os | titlecase }}</p>
-            <p>{{ currentDate }} - {{ currentTime }}</p>
+            <!-- Dashboard View -->
+            <ng-container *ngIf="activeTab === 'dashboard'">
+              <div class="header-flex">
+                <div>
+                  <h1>Bem-vindo, Admin</h1>
+                  <p class="subtitle">{{ currentDate }} - {{ currentTime }}</p>
+                </div>
+                <div class="os-badge">{{ os === 'macos' ? 'OSX' : (os | titlecase) }}</div>
+              </div>
 
-            <div class="stats-grid">
-              <div class="stat-card">
-                <h3>Usuários</h3>
-                <div class="value">1,204</div>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <h3>Usuários</h3>
+                  <div class="value">1,204</div>
+                  <div class="chart-mini bar-chart">
+                    <div class="bar" style="height: 40%"></div>
+                    <div class="bar" style="height: 70%"></div>
+                    <div class="bar" style="height: 50%"></div>
+                    <div class="bar" style="height: 90%"></div>
+                    <div class="bar" style="height: 60%"></div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <h3>Vendas</h3>
+                  <div class="value">$45k</div>
+                  <div class="chart-mini line-chart-svg">
+                    <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+                      <path d="M0,35 C20,35 20,10 40,10 C60,10 60,25 80,25 C90,25 90,5 100,5" fill="none"
+                        stroke="#27c93f" stroke-width="2" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <h3>Ativos</h3>
+                  <div class="value">85%</div>
+                  <div class="pie-chart-mini"></div>
+                </div>
               </div>
-              <div class="stat-card">
-                <h3>Vendas</h3>
-                <div class="value">$45k</div>
+
+              <!-- Main Chart Section -->
+              <div class="main-chart-section">
+                <h3>Tendência de Acessos</h3>
+                <div class="chart-container">
+                  <svg viewBox="0 0 800 200" class="main-line-chart">
+                    <!-- Grid Lines -->
+                    <line x1="0" y1="50" x2="800" y2="50" stroke="#eee" />
+                    <line x1="0" y1="100" x2="800" y2="100" stroke="#eee" />
+                    <line x1="0" y1="150" x2="800" y2="150" stroke="#eee" />
+
+                    <!-- Data Path -->
+                    <path d="M0,150 Q200,50 400,100 T800,20" fill="none" stroke="#0078d7" stroke-width="3" />
+
+                    <!-- Area under curve (optional gradient effect simulated with opacity) -->
+                    <path d="M0,150 Q200,50 400,100 T800,20 V200 H0 Z" fill="rgba(0, 120, 215, 0.1)" stroke="none" />
+                  </svg>
+                </div>
               </div>
-              <div class="stat-card">
-                <h3>Ativos</h3>
-                <div class="value">85%</div>
+            </ng-container>
+
+            <!-- Arquivos View -->
+            <ng-container *ngIf="activeTab === 'arquivos'">
+              <h1>Arquivos e Integração Nativa</h1>
+              <p class="description">Gestão completa de hardware e bibliotecas nativas.</p>
+
+              <div class="content-grid">
+                <div class="info-card">
+                  <h3><fa-icon [icon]="faDesktop"></fa-icon> Hardware</h3>
+                  <ul>
+                    <li>Impressoras térmicas</li>
+                    <li>Leitores biométricos</li>
+                    <li>Câmeras e Sensores</li>
+                  </ul>
+                </div>
+
+                <div class="info-card">
+                  <h3><fa-icon [icon]="faCode"></fa-icon> Código Nativo</h3>
+                  <p>Integração direta com bibliotecas do sistema:</p>
+                  <div class="code-snippet">
+                    <span *ngIf="os === 'windows'">driver_win32.dll</span>
+                    <span *ngIf="os === 'linux'">lib_driver.so</span>
+                    <span *ngIf="os === 'macos'">lib_driver.dylib</span>
+                  </div>
+                  <p class="small">Adaptado automaticamente para {{ os | titlecase }}.</p>
+                </div>
               </div>
-            </div>
+            </ng-container>
+
+            <!-- IA View -->
+            <ng-container *ngIf="activeTab === 'ia'">
+              <div class="chat-wrapper">
+                <div class="chat-header">
+                  <h1>Assistente Virtual</h1>
+                  <div class="status-badge online">
+                    <div class="dot"></div> Online
+                  </div>
+                </div>
+                <div class="chat-container">
+                  <app-chat-widget
+                    [systemMessage]="'Você é um assistente virtual integrado ao sistema operacional simulado. Responda de forma curta e prestativa.'"
+                    apiKey="demo-key"></app-chat-widget>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Config View -->
+            <ng-container *ngIf="activeTab === 'config'">
+              <h1>Configurações</h1>
+              <div class="config-list">
+                <div class="config-item" (click)="toggleConfig('notifications')">
+                  <span>Notificações</span>
+                  <div class="toggle" [class.checked]="config.notifications"></div>
+                </div>
+                <div class="config-item" (click)="toggleConfig('updates')">
+                  <span>Atualizações Automáticas</span>
+                  <div class="toggle" [class.checked]="config.updates"></div>
+                </div>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>

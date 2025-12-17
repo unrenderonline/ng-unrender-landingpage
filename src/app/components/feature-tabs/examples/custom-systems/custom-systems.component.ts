@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { 
+import {
   faHeartbeat, faWalking, faFire, faClock, faMicrochip, faWifi, faServer, faCode, faTerminal, faBolt,
   faHome, faThermometerHalf, faSun, faChargingStation, faArrowLeft, faChartLine, faCog, faCloud, faCamera, faEye,
   faLightbulb, faLock, faMusic, faFan, faCar
@@ -55,17 +55,17 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
   heartRate: number = 72;
   steps: number = 3450;
   calories: number = 120;
-  
+
   // Swipe Logic
   watchViewIndex: number = 0; // 0: Face, 1: Apps, 2: Health
   isDragging: boolean = false;
   dragOffset: number = 0;
   private touchStartX: number = 0;
-  
+
   get watchTransform(): string {
     const baseTranslate = -this.watchViewIndex * 33.33; // 3 screens = 100% / 3
     // Convert pixel offset to percentage roughly (assuming ~220px width)
-    const pixelToPercent = (this.dragOffset / 220) * 33.33; 
+    const pixelToPercent = (this.dragOffset / 220) * 33.33;
     return `translateX(calc(${baseTranslate}% + ${pixelToPercent}%))`;
   }
 
@@ -80,19 +80,23 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
   hubTemp: number = 16;
   hubHigh: number = 19;
   hubLow: number = 10;
-  activeHubTab: 'ev' | 'home' | 'meter' | 'thermostat' = 'ev';
-  
+  activeHubTab: 'ev' | 'home' | 'solar' | 'thermostat' = 'ev';
+
   // Smart Hub Controls
   evBattery: number = 78;
   thermostatTarget: number = 21;
   smartLights: boolean = true;
   smartLock: boolean = false;
 
+  // Solar Data
+  solarGeneration: number = 4.2;
+  homeConsumption: number = 2.8;
+
   // Edge AI Data
   inferenceTime: number = 12;
   confidence: number = 98;
   detectedObjects: { label: string, x: number, y: number, w: number, h: number, color: string }[] = [];
-  
+
   private intervalId: any;
 
   ngOnInit() {
@@ -113,7 +117,7 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
   }
 
   // --- Watch Interaction ---
-  
+
   onTouchStart(e: TouchEvent | MouseEvent) {
     this.isDragging = true;
     this.touchStartX = e instanceof TouchEvent ? e.touches[0].clientX : e.clientX;
@@ -129,15 +133,15 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
   onTouchEnd(e: TouchEvent | MouseEvent) {
     if (!this.isDragging) return;
     this.isDragging = false;
-    
+
     const threshold = 50; // px to trigger swipe
-    
+
     if (this.dragOffset < -threshold && this.watchViewIndex < 2) {
       this.watchViewIndex++;
     } else if (this.dragOffset > threshold && this.watchViewIndex > 0) {
       this.watchViewIndex--;
     }
-    
+
     this.dragOffset = 0;
   }
 
@@ -152,7 +156,7 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
     event.preventDefault();
     if (this.terminalInput.trim()) {
       this.addLog(`> ${this.terminalInput}`);
-      
+
       // Simple command processing
       const cmd = this.terminalInput.trim().toLowerCase();
       if (cmd === 'help') {
@@ -167,14 +171,14 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
       } else {
         this.addLog(`[SISTEMA] Comando desconhecido: ${cmd}`);
       }
-      
+
       this.terminalInput = '';
     }
   }
 
   // --- Smart Hub Interaction ---
-  
-  setHubTab(tab: 'ev' | 'home' | 'meter' | 'thermostat') {
+
+  setHubTab(tab: 'ev' | 'home' | 'solar' | 'thermostat') {
     this.activeHubTab = tab;
   }
 
@@ -186,7 +190,7 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
   startSimulation() {
     this.intervalId = setInterval(() => {
       this.updateTime();
-      
+
       if (this.type === 'wearable') {
         // Simulate health data changes
         this.heartRate = 70 + Math.floor(Math.random() * 10);
@@ -197,30 +201,32 @@ export class CustomSystemsComponent implements OnInit, OnDestroy {
         this.temperature = 24 + (Math.random() * 1 - 0.5);
         this.humidity = 60 + (Math.random() * 2 - 1);
         this.ledStatus = !this.ledStatus;
-        
+
         // Only add auto-logs occasionally so user input isn't buried
-        if (Math.random() > 0.6) {
+        if (Math.random() > 0.8) {
           this.addLog(`[SENSOR] Temp: ${this.temperature.toFixed(1)}C | Umid: ${this.humidity.toFixed(0)}%`);
         }
       } else if (this.type === 'edge-ai') {
         this.inferenceTime = 10 + Math.floor(Math.random() * 5);
         this.confidence = 95 + Math.floor(Math.random() * 4);
-        
-        // Simulate object detection boxes
-        if (Math.random() > 0.3) {
-          this.detectedObjects = [
-            { label: 'Pessoa', x: 20 + Math.random() * 10, y: 20 + Math.random() * 10, w: 30, h: 60, color: '#d35400' },
-            { label: 'Carro', x: 60 + Math.random() * 5, y: 40 + Math.random() * 5, w: 30, h: 20, color: '#ffffff' }
-          ];
-        }
+
+      } else if (this.type === 'smart-hub') {
+        // Simulate solar data - Dynamic fluctuation
+        const genFluctuation = (Math.random() * 0.8) - 0.4;
+        this.solarGeneration = Math.max(0, this.solarGeneration + genFluctuation);
+        if (this.solarGeneration > 6) this.solarGeneration = 6;
+        if (this.solarGeneration < 2) this.solarGeneration = 2;
+
+        const consFluctuation = (Math.random() * 0.4) - 0.2;
+        this.homeConsumption = Math.max(0, this.homeConsumption + consFluctuation);
       }
-    }, 2000);
+    }, 1000);
   }
 
   addLog(message: string) {
     const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
     this.logs.push(`[${timestamp}] ${message}`); // Add to bottom
     // Keep last 12 logs
-    if (this.logs.length > 12) this.logs.shift(); 
+    if (this.logs.length > 12) this.logs.shift();
   }
 }

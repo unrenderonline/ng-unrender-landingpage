@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #f8fafc;
+  background: #ffffff;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -16,7 +16,7 @@
   flex: 1;
   position: relative;
   min-height: 600px;
-  background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
+  background: #ffffff;
   overflow: hidden;
 }
 
@@ -74,9 +74,11 @@
   0% {
     opacity: 1;
   }
+
   90% {
     opacity: 1;
   }
+
   100% {
     left: var(--target-x);
     top: var(--target-y);
@@ -139,6 +141,7 @@
     height: 60px;
     opacity: 0.5;
   }
+
   100% {
     width: 140px;
     height: 140px;
@@ -183,7 +186,7 @@
     color: #cbd5e1;
     background: white;
     border-radius: 50%;
-    
+
     &.connected {
       color: #10b981;
     }
@@ -197,13 +200,13 @@
 
   &.disconnected {
     opacity: 0.7;
-    
+
     .node-icon {
       box-shadow: none;
       border-color: #e2e8f0 !important;
       color: #94a3b8 !important;
     }
-    
+
     .status-indicator {
       color: #ef4444;
     }
@@ -215,7 +218,7 @@
   background: white;
   border-left: 1px solid #e2e8f0;
   width: 100%;
-  
+
   @media (min-width: 768px) {
     width: 280px;
   }

@@ -71,10 +71,7 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
 
   async ngAfterViewInit() {
     // Wait for view to initialize
-    setTimeout(async () => {
-      await this.setup();
-      await this.start();
-    }, 1000);
+    // Auto-start removed
   }
 
   async setup() {
