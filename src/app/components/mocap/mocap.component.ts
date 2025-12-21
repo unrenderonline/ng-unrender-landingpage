@@ -67,6 +67,8 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
   avatar: Avatar | null = null;
   isStarted = false;
 
+  cameraSubscribed = false;
+
   constructor(private cameraService: CameraService) { }
 
   async ngAfterViewInit() {
@@ -96,8 +98,10 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
   }
 
   async start() {
+    this.isStarted = true;
     try {
       const stream = await this.cameraService.startCamera();
+      this.cameraSubscribed = true;
 
       const video = document.createElement('video');
       video.setAttribute('autoplay', '');
@@ -139,7 +143,6 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
       }
 
       await this.mindarThree.start();
-      this.isStarted = true;
 
       const { renderer, scene, camera } = this.mindarThree;
       renderer.setAnimationLoop(() => {
@@ -152,6 +155,8 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
 
     } catch (err) {
       console.error('Failed to start MindAR:', err);
+      this.isStarted = false;
+      this.stop();
     }
   }
 
@@ -160,6 +165,10 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
       this.mindarThree.stop();
       const { renderer } = this.mindarThree;
       renderer.setAnimationLoop(null);
+    }
+    if (this.cameraSubscribed) {
+      this.cameraService.stopCamera();
+      this.cameraSubscribed = false;
     }
     this.isStarted = false;
   }
