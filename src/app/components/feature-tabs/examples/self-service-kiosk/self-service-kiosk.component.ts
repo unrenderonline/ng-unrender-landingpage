@@ -20,6 +20,7 @@ import {
     faRedo,
     faSync
 } from '@fortawesome/free-solid-svg-icons';
+import { CameraService } from '../../../../services/camera.service';
 
 @Component({
     selector: 'app-self-service-kiosk',
@@ -98,7 +99,7 @@ export class SelfServiceKioskComponent implements OnInit, OnDestroy {
         ]
     };
 
-    constructor(private cdr: ChangeDetectorRef) { }
+    constructor(private cdr: ChangeDetectorRef, private cameraService: CameraService) { }
 
     ngOnInit(): void {
     }
@@ -122,9 +123,7 @@ export class SelfServiceKioskComponent implements OnInit, OnDestroy {
     // --- PHOTO CABIN LOGIC ---
     async initCamera() {
         try {
-            this.stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 1280, height: 720, facingMode: 'user' }
-            });
+            this.stream = await this.cameraService.startCamera();
             // Wait for view to update
             setTimeout(() => {
                 if (this.videoElement && this.videoElement.nativeElement) {
@@ -138,10 +137,8 @@ export class SelfServiceKioskComponent implements OnInit, OnDestroy {
     }
 
     stopCamera() {
-        if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
-            this.stream = null;
-        }
+        this.cameraService.stopCamera();
+        this.stream = null;
     }
 
     startCountdown() {
@@ -188,7 +185,7 @@ export class SelfServiceKioskComponent implements OnInit, OnDestroy {
                 context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
                 context.fillStyle = 'rgba(255, 255, 255, 0.8)';
                 context.font = 'bold 24px Arial';
-                context.fillText('Unrender PhotoBooth', 20, canvas.height - 20);
+                context.fillText('Totem', 20, canvas.height - 20);
 
                 this.capturedImage = canvas.toDataURL('image/png');
 

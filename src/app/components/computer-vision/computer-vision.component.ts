@@ -129,13 +129,15 @@ export class ComputerVisionComponent implements AfterViewInit, OnDestroy {
     try {
       const stream = await this.cameraService.startCamera();
 
-      this.videoElement.nativeElement.srcObject = stream;
-      this.videoElement.nativeElement.onloadedmetadata = () => {
-        this.videoElement.nativeElement.play();
-        this.isCameraActive = true;
-        this.loadingStatus = null;
-        this.detectFrame();
-      };
+      if (this.videoElement && this.videoElement.nativeElement) {
+        this.videoElement.nativeElement.srcObject = stream;
+        this.videoElement.nativeElement.onloadedmetadata = () => {
+          this.videoElement.nativeElement.play();
+          this.isCameraActive = true;
+          this.loadingStatus = null;
+          this.detectFrame();
+        };
+      }
     } catch (err) {
       this.error = 'Could not access camera. Please allow camera permissions.';
       this.loadingStatus = null;

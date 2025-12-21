@@ -96,16 +96,52 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
   }
 
   async start() {
-    if (!this.mindarThree) {
-      await this.setup();
-    }
-
     try {
+      const stream = await this.cameraService.startCamera();
+
+      const video = document.createElement('video');
+      video.setAttribute('autoplay', '');
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.srcObject = stream; // set srcObject BEFORE waiting
+
+      // Wait for metadata/readiness
+      await new Promise<void>((resolve) => {
+        if (video.readyState >= 1) { // HAVE_METADATA
+          resolve();
+        } else {
+          video.onloadedmetadata = () => {
+            resolve();
+          };
+        }
+      });
+
+      video.play();
+
+      if (!this.mindarThree) {
+        this.mindarThree = new MindARThree({
+          container: this.containerRef.nativeElement,
+          inputVideo: video
+        });
+
+        const { renderer, scene, camera } = this.mindarThree;
+        renderer.setClearColor(0x000000, 0);
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+        const anchor = this.mindarThree.addAnchor(1);
+
+        this.avatar = new Avatar();
+        await this.avatar.init();
+        if (this.avatar.gltf) {
+          this.avatar.gltf.scene.scale.set(2, 2, 2);
+          anchor.group.add(this.avatar.gltf.scene);
+        }
+      }
+
       await this.mindarThree.start();
       this.isStarted = true;
 
       const { renderer, scene, camera } = this.mindarThree;
-
       renderer.setAnimationLoop(() => {
         const estimate = this.mindarThree.getLatestEstimate();
         if (estimate && estimate.blendshapes && this.avatar) {
@@ -113,6 +149,7 @@ export class MocapComponent implements AfterViewInit, OnDestroy {
         }
         renderer.render(scene, camera);
       });
+
     } catch (err) {
       console.error('Failed to start MindAR:', err);
     }

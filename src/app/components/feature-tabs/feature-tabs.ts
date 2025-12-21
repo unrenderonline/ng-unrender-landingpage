@@ -56,7 +56,7 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
 
   // Carousel state management
   currentSlideIndex: { [key: string]: number } = {};
-  carouselIntervals: { [key: string]: any } = {};
+  carouselTimers: { [key: string]: any } = {};
 
   // Sticky sidebar state
 
@@ -124,17 +124,22 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       description: 'Criamos experiências únicas, criativas e responsivas que levam seu negócio a todos os dispositivos.',
       carouselImages: [
         {
-          url: '/webdev.jpg',
+          url: '/landingpage-1.gif',
           link: 'https://unrender.dev',
           alt: 'Desenvolvimento Web e Mobile'
         },
         {
-          url: '/mvp-dev.jpg',
+          url: '/landingpage2.gif',
           link: 'https://unrender.dev',
           alt: 'MVP Development'
         },
         {
-          url: '/aqui-shopping-f.png',
+          url: '/landingpage3.gif',
+          link: 'https://unrender.dev',
+          alt: 'Aqui Shopping - E-commerce Solution'
+        },
+        {
+          url: '/landingpage4.gif',
           link: 'https://unrender.dev',
           alt: 'Aqui Shopping - E-commerce Solution'
         }
@@ -433,19 +438,29 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       description: 'Soluções completas para automação residencial, controle de iluminação, climatização e segurança.',
       carouselImages: [
         {
-          url: '/aiot.jpg',
+          url: '/smarthome-light.gif',
           link: 'https://unrender.dev',
-          alt: 'Smart Home'
+          alt: 'Smart Home Lighting'
         },
         {
-          url: '/echoshow feature.gif',
+          url: '/smarthome.gif',
           link: 'https://unrender.dev',
-          alt: 'Controle por Voz'
+          alt: 'Home Automation'
         },
         {
-          url: '/gps.png',
+          url: '/smart-locker.webp',
           link: 'https://unrender.dev',
-          alt: 'Segurança'
+          alt: 'Smart Locker'
+        },
+        {
+          url: '/smarthome-aspirador.gif',
+          link: 'https://unrender.dev',
+          alt: 'Robot Vacuum'
+        },
+        {
+          url: '/smarthub-tablet.gif',
+          link: 'https://unrender.dev',
+          alt: 'Smart Hub Control'
         }
       ],
       features: [
@@ -755,34 +770,24 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
       description: 'Conheça nosso estúdio de desenvolvimento de jogos e experiências interativas.',
       carouselImages: [
         {
-          url: '/commai1.gif',
+          url: '/landingpage-1.gif',
           link: 'https://unrender.games',
-          alt: 'Autonomous Driving - AI Gaming'
+          alt: 'Unrender Games Showcase 1'
         },
         {
-          url: '/opencv.gif',
+          url: '/landingpage2.gif',
           link: 'https://unrender.games',
-          alt: 'Computer Vision - Game Development'
+          alt: 'Unrender Games Showcase 2'
         },
         {
-          url: '/PLN.gif',
+          url: '/landingpage3.gif',
           link: 'https://unrender.games',
-          alt: 'AI-Powered Gaming'
+          alt: 'Unrender Games Showcase 3'
         },
         {
-          url: '/smarthome.gif',
+          url: '/landingpage4.gif',
           link: 'https://unrender.games',
-          alt: 'Interactive Gaming Experience'
-        },
-        {
-          url: '/echoshow feature.gif',
-          link: 'https://unrender.games',
-          alt: 'Game Features Showcase'
-        },
-        {
-          url: '/commaai2.gif',
-          link: 'https://unrender.games',
-          alt: 'Advanced Game Mechanics'
+          alt: 'Unrender Games Showcase 4'
         }
       ],
       features: [
@@ -1078,15 +1083,15 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private startCarouselAutoplay(menuItemId: string, totalSlides: number): void {
-    // Clear existing interval if any
-    if (this.carouselIntervals[menuItemId]) {
-      clearInterval(this.carouselIntervals[menuItemId]);
+    // Clear existing timer if any
+    if (this.carouselTimers[menuItemId]) {
+      clearTimeout(this.carouselTimers[menuItemId]);
     }
 
-    // Start autoplay - change slide every 4 seconds
-    this.carouselIntervals[menuItemId] = setInterval(() => {
+    // Start autoplay - change slide after 3 seconds
+    this.carouselTimers[menuItemId] = setTimeout(() => {
       this.nextSlide(menuItemId, totalSlides);
-    }, 4000);
+    }, 3000);
   }
 
   nextSlide(menuItemId: string, totalSlides: number): void {
@@ -1115,10 +1120,10 @@ export class FeatureTabs implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clean up all carousel intervals
-    Object.keys(this.carouselIntervals).forEach(key => {
-      if (this.carouselIntervals[key]) {
-        clearInterval(this.carouselIntervals[key]);
+    // Clean up all carousel timers
+    Object.keys(this.carouselTimers).forEach(key => {
+      if (this.carouselTimers[key]) {
+        clearTimeout(this.carouselTimers[key]);
       }
     });
   }

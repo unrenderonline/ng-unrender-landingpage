@@ -13,20 +13,24 @@ class C {
     filterBeta: h = null,
     userDeviceId: s = null,
     environmentDeviceId: c = null,
-    disableFaceMirror: l = !1
+    disableFaceMirror: l = !1,
+    inputVideo: iv = null // New parameter
   }) {
     this.container = a, this.ui = new S({ uiLoading: t, uiScanning: o, uiError: n }), this.controller = new R({
       filterMinCF: e,
       filterBeta: h
-    }), this.disableFaceMirror = l, this.scene = new m(), this.cssScene = new m(), this.renderer = new g({ antialias: !0, alpha: !0 }), this.cssRenderer = new E({ antialias: !0 }), this.renderer.outputColorSpace = 'srgb', this.renderer.setPixelRatio(window.devicePixelRatio), this.camera = new w(), this.userDeviceId = s, this.environmentDeviceId = c, this.anchors = [], this.faceMeshes = [], this.latestEstimate = null, this.container.appendChild(this.renderer.domElement), this.container.appendChild(this.cssRenderer.domElement), this.shouldFaceUser = !0, window.addEventListener("resize", this._resize.bind(this));
+    }), this.disableFaceMirror = l, this.scene = new m(), this.cssScene = new m(), this.renderer = new g({ antialias: !0, alpha: !0 }), this.cssRenderer = new E({ antialias: !0 }), this.renderer.outputColorSpace = 'srgb', this.renderer.setPixelRatio(window.devicePixelRatio), this.camera = new w(), this.userDeviceId = s, this.environmentDeviceId = c, this.anchors = [], this.faceMeshes = [], this.latestEstimate = null, this.container.appendChild(this.renderer.domElement), this.container.appendChild(this.cssRenderer.domElement), this.shouldFaceUser = !0, this.inputVideo = iv, window.addEventListener("resize", this._resize.bind(this));
   }
   async start() {
     this.ui.showLoading(), await this._startVideo(), await this._startAR(), this.ui.hideLoading();
   }
   stop() {
-    this.video.srcObject.getTracks().forEach(function (t) {
-      t.stop();
-    }), this.video.remove(), this.controller.stopProcessVideo();
+    if (!this.inputVideo) { // Only stop tracks if we own the video/stream
+      this.video.srcObject.getTracks().forEach(function (t) {
+        t.stop();
+      });
+    }
+    this.video.remove(), this.controller.stopProcessVideo();
   }
   switchCamera() {
     this.shouldFaceUser = !this.shouldFaceUser, this.stop(), this.start();
@@ -52,6 +56,30 @@ class C {
   }
   _startVideo() {
     return new Promise((a, t) => {
+      console.log('[MindAR] _startVideo called');
+      if (this.inputVideo) {
+        console.log('[MindAR] Using inputVideo');
+        this.video = this.inputVideo;
+        this.video.style.position = "absolute";
+        this.video.style.top = "0px";
+        this.video.style.left = "0px";
+        this.video.style.zIndex = "-2";
+        this.container.appendChild(this.video);
+        if (this.video.readyState >= 2) {
+          console.log('[MindAR] inputVideo readyState >= 2, setting attrs');
+          this.video.setAttribute("width", this.video.videoWidth);
+          this.video.setAttribute("height", this.video.videoHeight);
+          a();
+        } else {
+          console.log('[MindAR] Waiting for inputVideo loadedmetadata');
+          this.video.addEventListener("loadedmetadata", () => {
+            console.log('[MindAR] inputVideo loadedmetadata, setting attrs');
+            this.video.setAttribute("width", this.video.videoWidth), this.video.setAttribute("height", this.video.videoHeight), a();
+          });
+        }
+        return;
+      }
+
       if (this.video = document.createElement("video"), this.video.setAttribute("autoplay", ""), this.video.setAttribute("muted", ""), this.video.setAttribute("playsinline", ""), this.video.style.position = "absolute", this.video.style.top = "0px", this.video.style.left = "0px", this.video.style.zIndex = "-2", this.container.appendChild(this.video), !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         this.ui.showCompatibility(), t();
         return;
@@ -73,6 +101,7 @@ class C {
     return new Promise(async (a, t) => {
       const o = this.video;
       this.container, this.controller.onUpdate = ({ hasFace: e, estimateResult: h }) => {
+        // console.log('[MindAR] Update. hasFace:', e); // Spammy
         for (let s = 0; s < this.anchors.length; s++)
           this.anchors[s].css ? this.anchors[s].group.children.forEach((c) => {
             c.element.style.visibility = e ? "visible" : "hidden";
@@ -113,7 +142,8 @@ class C {
           this.latestEstimate = null;
       }, this._resize();
       const n = this.shouldFaceUser && !this.disableFaceMirror;
-      await this.controller.setup(n), await this.controller.dummyRun(o), this._resize(), this.controller.processVideo(o), a();
+      console.log('[MindAR] Calling controller.setup...');
+      await this.controller.setup(n), await this.controller.dummyRun(o), this._resize(), console.log('[MindAR] Processing video...'), this.controller.processVideo(o), a();
     });
   }
   _resize() {
